@@ -39,13 +39,13 @@ impl Model for LambData {
 }
 
 // Makes sense to also define this here, makes it a bit easier to keep track of
-pub(crate) fn default_state() -> Arc<ViziaState> {
+pub fn default_state() -> Arc<ViziaState> {
     // width , height
     // ViziaState::new(|| (((16.0 / 9.0) * 720.0) as u32, 720))
     ViziaState::new(|| (1280, 720))
 }
 
-pub(crate) fn create(
+pub fn create(
     params: Arc<LambParams>,
     editor_state: Arc<ViziaState>,
     bus_l: Arc<MonoBus>,
@@ -314,7 +314,7 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
         // https://www.desmos.com/calculator/yiwvcjiony
         fn sine(x: f32) -> f32 {
             let pi = std::f32::consts::PI;
-            let xpi = x * pi + 1.5 * pi;
+            let xpi = x.mul_add(pi, 1.5 * pi);
             (xpi.sin() + 1.0) / 2.0
         }
         fn fxk(k: f32, x: f32) -> f32 {
@@ -330,7 +330,7 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
             sine(fm1m2(c, x))
         }
         fn curve(c: f32, x: f32) -> f32 {
-            c2(c.powf(1.0 + 0.42 * c), x)
+            c2(c.powf(0.42f32.mul_add(c, 1.0)), x)
         }
 
         // Fill with background color
@@ -353,10 +353,10 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
         // add the attack / release curve
         canvas.stroke_path(
             &{
-                let x = bounds.x + border_width * 1.0;
-                let y = bounds.y + border_width * 1.5;
-                let w = bounds.w - border_width * 2.0;
-                let h = bounds.h - border_width * 3.0;
+                let x = border_width.mul_add(1.0, bounds.x);
+                let y = border_width.mul_add(1.5, bounds.y);
+                let w = border_width.mul_add(-2.0, bounds.w);
+                let h = border_width.mul_add(-3.0, bounds.h);
                 let center = match zoom_mode {
                     ZoomMode::Shape => w * 0.5,
                     ZoomMode::Relative => w * attack / (attack + release),
@@ -367,7 +367,7 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
                 let mut end = w;
                 if zoom_mode == ZoomMode::Absolute {
                     start = ((max_attack - attack) / max_attack) * center;
-                    end = center + ((release / max_release) * (w - center));
+                    end = (release / max_release).mul_add(w - center, center);
                 }
 
                 let mut path = vg::Path::new();
@@ -387,7 +387,7 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
                     let dy = (dx as f32 - center) / (end - center);
                     path.line_to(
                         x + dx as f32,
-                        y + h - (curve(release_shape, dy * -1.0 + 1.0) * -1.0 + 1.0) * h,
+                        (-curve(release_shape, -dy + 1.0) + 1.0).mul_add(-h, y + h),
                     );
                 }
                 path.line_to(x + end, y);

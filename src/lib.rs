@@ -25,49 +25,49 @@ enum DspVariant {
 }
 impl Default for DspVariant {
     fn default() -> Self {
-        DspVariant::Dsp48k(dsp_48k::LambRs::default_boxed())
+        Self::Dsp48k(dsp_48k::LambRs::default_boxed())
     }
 }
 
 impl DspVariant {
     fn init(&mut self, sample_rate: i32) {
         match sample_rate {
-            0..=48000 => *self = DspVariant::Dsp48k(dsp_48k::LambRs::default_boxed()),
-            48001..=96000 => *self = DspVariant::Dsp96k(dsp_96k::LambRs::default_boxed()),
-            _ => *self = DspVariant::Dsp192k(dsp_192k::LambRs::default_boxed()),
+            0..=48000 => *self = Self::Dsp48k(dsp_48k::LambRs::default_boxed()),
+            48001..=96000 => *self = Self::Dsp96k(dsp_96k::LambRs::default_boxed()),
+            _ => *self = Self::Dsp192k(dsp_192k::LambRs::default_boxed()),
         }
         match self {
-            DspVariant::Dsp48k(ref mut dsp) => dsp.init(sample_rate),
-            DspVariant::Dsp96k(ref mut dsp) => dsp.init(sample_rate),
-            DspVariant::Dsp192k(ref mut dsp) => dsp.init(sample_rate),
+            Self::Dsp48k(ref mut dsp) => dsp.init(sample_rate),
+            Self::Dsp96k(ref mut dsp) => dsp.init(sample_rate),
+            Self::Dsp192k(ref mut dsp) => dsp.init(sample_rate),
         }
     }
 
     fn get_param(&mut self, param_id: ParamIndex) -> Option<f64> {
         match self {
-            DspVariant::Dsp48k(ref dsp) => dsp.get_param(param_id),
-            DspVariant::Dsp96k(ref dsp) => dsp.get_param(param_id),
-            DspVariant::Dsp192k(ref dsp) => dsp.get_param(param_id),
+            Self::Dsp48k(ref dsp) => dsp.get_param(param_id),
+            Self::Dsp96k(ref dsp) => dsp.get_param(param_id),
+            Self::Dsp192k(ref dsp) => dsp.get_param(param_id),
         }
     }
 
     fn set_param(&mut self, param_id: ParamIndex, val: f64) {
         match self {
-            DspVariant::Dsp48k(ref mut dsp) => dsp.set_param(param_id, val),
-            DspVariant::Dsp96k(ref mut dsp) => dsp.set_param(param_id, val),
-            DspVariant::Dsp192k(ref mut dsp) => dsp.set_param(param_id, val),
+            Self::Dsp48k(ref mut dsp) => dsp.set_param(param_id, val),
+            Self::Dsp96k(ref mut dsp) => dsp.set_param(param_id, val),
+            Self::Dsp192k(ref mut dsp) => dsp.set_param(param_id, val),
         }
     }
 
     fn compute(&mut self, count: i32, inputs: &[&[f64]], outputs: &mut [&mut [f64]]) {
         match self {
-            DspVariant::Dsp48k(ref mut dsp) => {
+            Self::Dsp48k(ref mut dsp) => {
                 dsp.compute(count.try_into().unwrap(), inputs, outputs)
             }
-            DspVariant::Dsp96k(ref mut dsp) => {
+            Self::Dsp96k(ref mut dsp) => {
                 dsp.compute(count.try_into().unwrap(), inputs, outputs)
             }
-            DspVariant::Dsp192k(ref mut dsp) => {
+            Self::Dsp192k(ref mut dsp) => {
                 dsp.compute(count.try_into().unwrap(), inputs, outputs)
             }
         }

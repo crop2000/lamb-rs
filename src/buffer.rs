@@ -33,7 +33,7 @@ pub struct TempBuffer {
 
 #[allow(unused)]
 impl TempBuffer {
-    pub fn channel_count(&self) -> usize {
+    pub const fn channel_count(&self) -> usize {
         self.data.len()
     }
     pub fn resize(&mut self, channel_count: usize, max_frames: usize) {
@@ -45,11 +45,11 @@ impl TempBuffer {
             }
         }
     }
-    pub fn data(&self) -> &Vec<Vec<f64>> {
+    pub const fn data(&self) -> &Vec<Vec<f64>> {
         &self.data
     }
 
-    pub fn data_mut(&mut self) -> &mut Vec<Vec<f64>> {
+    pub const fn data_mut(&mut self) -> &mut Vec<Vec<f64>> {
         &mut self.data
     }
 
@@ -64,14 +64,14 @@ impl TempBuffer {
         }
     }
 
-    pub fn add_to_temp_buffer(&self, to_buffer: &mut TempBuffer) {
+    pub fn add_to_temp_buffer(&self, to_buffer: &mut Self) {
         for (self_channel, to_channel) in self.data.iter().zip(to_buffer.data_mut()) {
             for (to, from) in to_channel.iter_mut().zip(self_channel) {
                 *to += *from;
             }
         }
     }
-    pub fn add_to_temp_buffer_frames(&self, to_buffer: &mut TempBuffer, frames: usize) {
+    pub fn add_to_temp_buffer_frames(&self, to_buffer: &mut Self, frames: usize) {
         for (self_channel, to_channel) in self.data.iter().zip(to_buffer.data_mut()) {
             for (to, from) in to_channel[0..frames].iter_mut().zip(self_channel) {
                 *to += *from;

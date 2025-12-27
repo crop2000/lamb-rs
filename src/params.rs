@@ -89,14 +89,14 @@ enum TimeScale {
 }
 
 impl TimeScale {
-    pub fn to_seconds(&self) -> f32 {
+    pub const fn to_seconds(&self) -> f32 {
         match self {
-            TimeScale::OneSec => 1.0,
-            TimeScale::TwoSec => 2.0,
-            TimeScale::FourSec => 4.0,
-            TimeScale::EightSec => 8.0,
-            TimeScale::SixteenSec => 16.0,
-            TimeScale::ThirtytwoSec => 32.0,
+            Self::OneSec => 1.0,
+            Self::TwoSec => 2.0,
+            Self::FourSec => 4.0,
+            Self::EightSec => 8.0,
+            Self::SixteenSec => 16.0,
+            Self::ThirtytwoSec => 32.0,
         }
     }
 }
@@ -134,15 +134,13 @@ pub fn strength_to_ratio() -> Arc<dyn Fn(f32) -> String + Send + Sync> {
             let ratio = 1.0 / (1.0 - strength);
             if ratio <= 10.0 {
                 format!("{ratio:.2}:1")
+            } else if ratio <= 100.0 {
+                format!("{ratio:.1}:1")
             } else {
-                if ratio <= 100.0 {
-                    format!("{ratio:.1}:1")
-                } else {
-                    format!("100:1")
-                }
+                "100:1".to_string()
             }
         } else {
-            format!("inf:1")
+            "inf:1".to_string()
         }
     })
 }
@@ -172,7 +170,7 @@ pub fn ratio_to_strength() -> Arc<dyn Fn(&str) -> Option<f32> + Send + Sync> {
                         strength * 100.0
                         // if parsing fails, we assume inf:1 was meant
                     })
-                    .or_else(|| Some(100.0))
+                    .or(Some(100.0))
             })
     })
 }
