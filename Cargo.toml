@@ -8,9 +8,10 @@ name        = "lamb"
 version     = "2.1.1"
 
 [features]
+# default       = ["default-boxed", "faust-rebuild"]
 default       = ["default-boxed"]
 default-boxed = ["dep:default-boxed"]
-faust-rebuild = ["dep:faust-build"]
+faust-rebuild = ["dep:faust-build", "dep:faust-ui-build"]
 
 [workspace]
 members = ["xtask"]
@@ -33,11 +34,13 @@ cyma           = { git = "https://github.com/exa04/cyma.git" }
 default-boxed  = { version = "0.2.0", optional = true }
 nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 
-faust-types = { path = "../../../faust-types" }
+
+faust-traits = { path = "../../../faust-traits" }
+faust-types  = { path = "../../../faust-types" }
+faust-ui     = { path = "../../../faust-ui" }
 # faust-clack = { path = "../../../faust-clack" }
 # faust-macro  = { path = "../../../faust-macro" }
-# faust-traits = { path = "../../../faust-traits" }
-# faust-ui     = { path = "../../../faust-ui" }
+strum = { version = "0.27.2", features = ["derive"] }
 
 [profile.release]
 lto   = "thin"
@@ -53,4 +56,5 @@ strip    = "none"
 opt-level = 3
 
 [build-dependencies]
-faust-build = { path = "../../../faust-build", optional = true }
+faust-build    = { path = "../../../faust-build", optional = true }
+faust-ui-build = { path = "../../../faust-ui-build", optional = true }

@@ -6,15 +6,15 @@ fn main() {
 
     #[cfg(feature = "faust-rebuild")]
     {
-        let mut a = faust_build::default::for_file("dsp/lamb-rs-48k.dsp", "src/dsp_48k.rs");
+        let mut a = faust_ui_build::file_with_ui("dsp/lamb-rs-48k.dsp", "src/dsp_48k.rs");
         a.set_code_option(Double);
         a.build();
 
-        let mut a = faust_build::default::for_file("dsp/lamb-rs-96k.dsp", "src/dsp_96k.rs");
+        let mut a = faust_ui_build::file_with_ui("dsp/lamb-rs-96k.dsp", "src/dsp_96k.rs");
         a.set_code_option(Double);
         a.build();
 
-        let mut a = faust_build::default::for_file("dsp/lamb-rs-192k.dsp", "src/dsp_192k.rs");
+        let mut a = faust_ui_build::file_with_ui("dsp/lamb-rs-192k.dsp", "src/dsp_192k.rs");
         a.set_code_option(Double);
         a.build();
     }

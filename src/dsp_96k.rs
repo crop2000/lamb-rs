@@ -27,7 +27,14 @@
 #![allow(clippy::significant_drop_tightening)]
 #![allow(clippy::cast_lossless)]
 use faust_types::*;
-#[derive()]
+#[derive(
+    Debug,
+    faust_traits::AssociatedFaustFloat,
+    faust_traits::ComputeDsp,
+    faust_traits::InitDsp,
+    faust_ui::SetDsp,
+    faust_ui::UIEnumsDsp
+)]
 #[cfg_attr(feature = "default-boxed", derive(default_boxed::DefaultBoxed))]
 #[repr(C)]
 pub struct LambRs {
@@ -7843,5 +7850,463 @@ impl FaustDsp for LambRs {
         outputs: &mut [&mut [Self::T]],
     ) {
         self.compute(count as usize, inputs, outputs)
+    }
+}
+use strum::{
+    Display, EnumIter, EnumCount, EnumDiscriminants, IntoStaticStr, VariantArray,
+    VariantNames,
+};
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Display,
+    EnumIter,
+    EnumCount,
+    EnumDiscriminants,
+    VariantNames
+)]
+#[strum_discriminants(
+    derive(Display, EnumIter, EnumCount, IntoStaticStr, VariantArray, VariantNames, Hash)
+)]
+#[strum_discriminants(name(UIActive))]
+pub enum UIActiveValue {
+    Bypass(FaustFloat),
+    FixedLatency(FaustFloat),
+    InputGain(FaustFloat),
+    Strength(FaustFloat),
+    Thresh(FaustFloat),
+    Attack(FaustFloat),
+    AttackShape(FaustFloat),
+    Release(FaustFloat),
+    ReleaseShape(FaustFloat),
+    ReleaseHold(FaustFloat),
+    Knee(FaustFloat),
+    Link(FaustFloat),
+    AdaptiveRelease(FaustFloat),
+    Lookahead(FaustFloat),
+    OutputGain(FaustFloat),
+}
+impl faust_ui::UISelfSet for UIActiveValue {
+    type D = LambRs;
+    fn set(&self, dsp: &mut LambRs) {
+        match self {
+            UIActiveValue::Bypass(value) => dsp.fCheckbox0 = *value,
+            UIActiveValue::FixedLatency(value) => dsp.fCheckbox1 = *value,
+            UIActiveValue::InputGain(value) => dsp.fHslider5 = *value,
+            UIActiveValue::Strength(value) => dsp.fHslider7 = *value,
+            UIActiveValue::Thresh(value) => dsp.fHslider4 = *value,
+            UIActiveValue::Attack(value) => dsp.fHslider1 = *value,
+            UIActiveValue::AttackShape(value) => dsp.fHslider10 = *value,
+            UIActiveValue::Release(value) => dsp.fHslider6 = *value,
+            UIActiveValue::ReleaseShape(value) => dsp.fHslider11 = *value,
+            UIActiveValue::ReleaseHold(value) => dsp.fHslider9 = *value,
+            UIActiveValue::Knee(value) => dsp.fHslider3 = *value,
+            UIActiveValue::Link(value) => dsp.fHslider8 = *value,
+            UIActiveValue::AdaptiveRelease(value) => dsp.fHslider2 = *value,
+            UIActiveValue::Lookahead(value) => dsp.fHslider0 = *value,
+            UIActiveValue::OutputGain(value) => dsp.fHslider12 = *value,
+        }
+    }
+}
+impl faust_ui::UISelfGet for UIActiveValue {
+    type D = LambRs;
+    fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::F {
+        match self {
+            UIActiveValue::Bypass(value) => *value,
+            UIActiveValue::FixedLatency(value) => *value,
+            UIActiveValue::InputGain(value) => *value,
+            UIActiveValue::Strength(value) => *value,
+            UIActiveValue::Thresh(value) => *value,
+            UIActiveValue::Attack(value) => *value,
+            UIActiveValue::AttackShape(value) => *value,
+            UIActiveValue::Release(value) => *value,
+            UIActiveValue::ReleaseShape(value) => *value,
+            UIActiveValue::ReleaseHold(value) => *value,
+            UIActiveValue::Knee(value) => *value,
+            UIActiveValue::Link(value) => *value,
+            UIActiveValue::AdaptiveRelease(value) => *value,
+            UIActiveValue::Lookahead(value) => *value,
+            UIActiveValue::OutputGain(value) => *value,
+        }
+    }
+}
+impl faust_ui::UISet for UIActive {
+    type D = LambRs;
+    fn set(
+        &self,
+        dsp: &mut LambRs,
+        value: <Self::D as faust_traits::AssociatedFaustFloat>::F,
+    ) {
+        match self {
+            UIActive::Bypass => dsp.fCheckbox0 = value,
+            UIActive::FixedLatency => dsp.fCheckbox1 = value,
+            UIActive::InputGain => dsp.fHslider5 = value,
+            UIActive::Strength => dsp.fHslider7 = value,
+            UIActive::Thresh => dsp.fHslider4 = value,
+            UIActive::Attack => dsp.fHslider1 = value,
+            UIActive::AttackShape => dsp.fHslider10 = value,
+            UIActive::Release => dsp.fHslider6 = value,
+            UIActive::ReleaseShape => dsp.fHslider11 = value,
+            UIActive::ReleaseHold => dsp.fHslider9 = value,
+            UIActive::Knee => dsp.fHslider3 = value,
+            UIActive::Link => dsp.fHslider8 = value,
+            UIActive::AdaptiveRelease => dsp.fHslider2 = value,
+            UIActive::Lookahead => dsp.fHslider0 = value,
+            UIActive::OutputGain => dsp.fHslider12 = value,
+        }
+    }
+}
+impl faust_ui::UIRange for UIActive {
+    fn init(&self) -> f32 {
+        match self {
+            UIActive::Bypass => 0f32,
+            UIActive::FixedLatency => 0f32,
+            UIActive::InputGain => 0f32,
+            UIActive::Strength => 100f32,
+            UIActive::Thresh => -1f32,
+            UIActive::Attack => 9f32,
+            UIActive::AttackShape => 0f32,
+            UIActive::Release => 60f32,
+            UIActive::ReleaseShape => 0.5f32,
+            UIActive::ReleaseHold => 50f32,
+            UIActive::Knee => 1f32,
+            UIActive::Link => 0f32,
+            UIActive::AdaptiveRelease => 50f32,
+            UIActive::Lookahead => 100f32,
+            UIActive::OutputGain => 0f32,
+        }
+    }
+    fn min(&self) -> f32 {
+        match self {
+            UIActive::Bypass => 0f32,
+            UIActive::FixedLatency => 0f32,
+            UIActive::InputGain => -24f32,
+            UIActive::Strength => 0f32,
+            UIActive::Thresh => -30f32,
+            UIActive::Attack => 0f32,
+            UIActive::AttackShape => 0f32,
+            UIActive::Release => 1f32,
+            UIActive::ReleaseShape => 0f32,
+            UIActive::ReleaseHold => 0.0104167f32,
+            UIActive::Knee => 0f32,
+            UIActive::Link => 0f32,
+            UIActive::AdaptiveRelease => 0f32,
+            UIActive::Lookahead => 0f32,
+            UIActive::OutputGain => -24f32,
+        }
+    }
+    fn max(&self) -> f32 {
+        match self {
+            UIActive::Bypass => 1f32,
+            UIActive::FixedLatency => 1f32,
+            UIActive::InputGain => 24f32,
+            UIActive::Strength => 100f32,
+            UIActive::Thresh => 0f32,
+            UIActive::Attack => 50f32,
+            UIActive::AttackShape => 1f32,
+            UIActive::Release => 500f32,
+            UIActive::ReleaseShape => 1f32,
+            UIActive::ReleaseHold => 50f32,
+            UIActive::Knee => 30f32,
+            UIActive::Link => 100f32,
+            UIActive::AdaptiveRelease => 100f32,
+            UIActive::Lookahead => 100f32,
+            UIActive::OutputGain => 24f32,
+        }
+    }
+    fn step(&self) -> f32 {
+        match self {
+            UIActive::Bypass => 1f32,
+            UIActive::FixedLatency => 1f32,
+            UIActive::InputGain => 0.1f32,
+            UIActive::Strength => 1f32,
+            UIActive::Thresh => 0.1f32,
+            UIActive::Attack => 0.1f32,
+            UIActive::AttackShape => 0.01f32,
+            UIActive::Release => 1f32,
+            UIActive::ReleaseShape => 0.01f32,
+            UIActive::ReleaseHold => 1f32,
+            UIActive::Knee => 0.1f32,
+            UIActive::Link => 1f32,
+            UIActive::AdaptiveRelease => 1f32,
+            UIActive::Lookahead => 1f32,
+            UIActive::OutputGain => 0.1f32,
+        }
+    }
+}
+impl faust_ui::UIName for UIActive {
+    fn name(&self) -> String {
+        match self {
+            UIActive::Bypass => "Bypass".to_owned(),
+            UIActive::FixedLatency => "FixedLatency".to_owned(),
+            UIActive::InputGain => "InputGain".to_owned(),
+            UIActive::Strength => "Strength".to_owned(),
+            UIActive::Thresh => "Thresh".to_owned(),
+            UIActive::Attack => "Attack".to_owned(),
+            UIActive::AttackShape => "AttackShape".to_owned(),
+            UIActive::Release => "Release".to_owned(),
+            UIActive::ReleaseShape => "ReleaseShape".to_owned(),
+            UIActive::ReleaseHold => "ReleaseHold".to_owned(),
+            UIActive::Knee => "Knee".to_owned(),
+            UIActive::Link => "Link".to_owned(),
+            UIActive::AdaptiveRelease => "AdaptiveRelease".to_owned(),
+            UIActive::Lookahead => "Lookahead".to_owned(),
+            UIActive::OutputGain => "OutputGain".to_owned(),
+        }
+    }
+}
+impl faust_ui::UIToValue for UIActive {
+    type D = LambRs;
+    fn value(
+        &self,
+        value: <Self::D as faust_traits::AssociatedFaustFloat>::F,
+    ) -> <Self::D as faust_ui::UIEnumsDsp>::EA {
+        match self {
+            UIActive::Bypass => UIActiveValue::Bypass(value),
+            UIActive::FixedLatency => UIActiveValue::FixedLatency(value),
+            UIActive::InputGain => UIActiveValue::InputGain(value),
+            UIActive::Strength => UIActiveValue::Strength(value),
+            UIActive::Thresh => UIActiveValue::Thresh(value),
+            UIActive::Attack => UIActiveValue::Attack(value),
+            UIActive::AttackShape => UIActiveValue::AttackShape(value),
+            UIActive::Release => UIActiveValue::Release(value),
+            UIActive::ReleaseShape => UIActiveValue::ReleaseShape(value),
+            UIActive::ReleaseHold => UIActiveValue::ReleaseHold(value),
+            UIActive::Knee => UIActiveValue::Knee(value),
+            UIActive::Link => UIActiveValue::Link(value),
+            UIActive::AdaptiveRelease => UIActiveValue::AdaptiveRelease(value),
+            UIActive::Lookahead => UIActiveValue::Lookahead(value),
+            UIActive::OutputGain => UIActiveValue::OutputGain(value),
+        }
+    }
+}
+impl VariantArray for UIActiveValue {
+    const VARIANTS: &'static [UIActiveValue] = &[
+        Self::Bypass(0.0),
+        Self::FixedLatency(0.0),
+        Self::InputGain(0.0),
+        Self::Strength(100.0),
+        Self::Thresh(-1.0),
+        Self::Attack(9.0),
+        Self::AttackShape(0.0),
+        Self::Release(60.0),
+        Self::ReleaseShape(0.5),
+        Self::ReleaseHold(50.0),
+        Self::Knee(1.0),
+        Self::Link(0.0),
+        Self::AdaptiveRelease(50.0),
+        Self::Lookahead(100.0),
+        Self::OutputGain(0.0),
+    ];
+}
+impl faust_ui::UIVariantArrayIndex for UIActive {
+    fn as_index(&self) -> usize {
+        match self {
+            Self::Bypass => 0usize,
+            Self::FixedLatency => 1usize,
+            Self::InputGain => 2usize,
+            Self::Strength => 3usize,
+            Self::Thresh => 4usize,
+            Self::Attack => 5usize,
+            Self::AttackShape => 6usize,
+            Self::Release => 7usize,
+            Self::ReleaseShape => 8usize,
+            Self::ReleaseHold => 9usize,
+            Self::Knee => 10usize,
+            Self::Link => 11usize,
+            Self::AdaptiveRelease => 12usize,
+            Self::Lookahead => 13usize,
+            Self::OutputGain => 14usize,
+        }
+    }
+}
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Display,
+    EnumIter,
+    EnumCount,
+    EnumDiscriminants,
+    VariantNames
+)]
+#[strum_discriminants(
+    derive(Display, EnumIter, EnumCount, IntoStaticStr, VariantArray, VariantNames, Hash)
+)]
+#[strum_discriminants(name(UIPassive))]
+pub enum UIPassiveValue {
+    Latency(FaustFloat),
+}
+impl faust_ui::UISelfSet for UIPassiveValue {
+    type D = LambRs;
+    fn set(&self, dsp: &mut LambRs) {
+        match self {
+            UIPassiveValue::Latency(value) => dsp.fHbargraph0 = *value,
+        }
+    }
+}
+impl faust_ui::UISelfGet for UIPassiveValue {
+    type D = LambRs;
+    fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::F {
+        match self {
+            UIPassiveValue::Latency(value) => *value,
+        }
+    }
+}
+impl faust_ui::UIGet for UIPassive {
+    type D = LambRs;
+    fn get_value(
+        &self,
+        dsp: &Self::D,
+    ) -> <Self::D as faust_traits::AssociatedFaustFloat>::F {
+        match self {
+            Self::Latency => dsp.fHbargraph0,
+        }
+    }
+    fn get_enum(&self, dsp: &LambRs) -> <Self::D as faust_ui::UIEnumsDsp>::EP {
+        match self {
+            Self::Latency => UIPassiveValue::Latency(dsp.fHbargraph0),
+        }
+    }
+}
+impl faust_ui::UIRange for UIPassive {
+    fn init(&self) -> f32 {
+        match self {
+            Self::Latency => 0f32,
+        }
+    }
+    fn min(&self) -> f32 {
+        match self {
+            Self::Latency => 0f32,
+        }
+    }
+    fn max(&self) -> f32 {
+        match self {
+            Self::Latency => 9600f32,
+        }
+    }
+    fn step(&self) -> f32 {
+        match self {
+            Self::Latency => 0f32,
+        }
+    }
+}
+impl faust_ui::UIName for UIPassive {
+    fn name(&self) -> String {
+        match self {
+            UIPassive::Latency => "Latency".to_owned(),
+        }
+    }
+}
+impl UIPassive {
+    pub fn value(&self, value: FaustFloat) -> UIPassiveValue {
+        match self {
+            Self::Latency => UIPassiveValue::Latency(value),
+        }
+    }
+}
+impl VariantArray for UIPassiveValue {
+    const VARIANTS: &'static [UIPassiveValue] = &[Self::Latency(0.0)];
+}
+impl faust_ui::UIVariantArrayIndex for UIPassive {
+    fn as_index(&self) -> usize {
+        match self {
+            Self::Latency => 0usize,
+        }
+    }
+}
+impl faust_traits::AssociatedFaustFloat for UIActiveValue {
+    type F = FaustFloat;
+}
+impl faust_traits::AssociatedFaustFloat for UIPassiveValue {
+    type F = FaustFloat;
+}
+impl faust_ui::DiscriminantOf for UIPassive {
+    type ValueEnum = UIPassiveValue;
+}
+impl faust_ui::DiscriminantOf for UIActive {
+    type ValueEnum = UIActiveValue;
+}
+pub mod meta {
+    pub const AUTHOR: &'static str = "Bart Brouns";
+    pub const COMPILE_OPTIONS: &'static str = "-lang rust -ct 1 -cn LambRs -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0";
+    pub const FILENAME: &'static str = "lamb-rs-96k.dsp";
+    pub const LAMB_DSP_AUTHOR: &'static str = "Bart Brouns";
+    pub const LAMB_DSP_LICENSE: &'static str = "AGPLv3";
+    pub const LAMB_DSP_NAME: &'static str = "lamb";
+    pub const LAMB_DSP_VERSION: &'static str = "0.1";
+    pub const LICENSE: &'static str = "AGPLv3";
+    pub const NAME: &'static str = "lamb-rs";
+    pub const VERSION: &'static str = "0.1";
+    pub mod libs {
+        pub mod basics {
+            pub const NAME: &'static str = "Faust Basic Element Library";
+            pub const PARALLELMAX_AUTHOR: &'static str = "Bart Brouns";
+            pub const PARALLELMAX_COPYRIGHT: &'static str = "Copyright (c) 2020 Bart Brouns <bart@magnetophon.nl>";
+            pub const PARALLELMAX_LICENCE: &'static str = "GPL-3.0";
+            pub const PARALLELOP_AUTHOR: &'static str = "Bart Brouns";
+            pub const PARALLELOP_COPYRIGHT: &'static str = "Copyright (c) 2020 Bart Brouns <bart@magnetophon.nl>";
+            pub const PARALLELOP_LICENCE: &'static str = "GPL-3.0";
+            pub const TABULATEND_AUTHOR: &'static str = "Bart Brouns";
+            pub const TABULATEND_COPYRIGHT: &'static str = "Copyright (C) 2023 Bart Brouns <bart@magnetophon.nl>";
+            pub const TABULATEND_LICENSE: &'static str = "AGPL-3.0";
+            pub const VERSION: &'static str = "1.22.0";
+        }
+        pub mod interpolators {
+            pub const INTERPOLATE_LINEAR_AUTHOR: &'static str = "Stéphane Letz";
+            pub const INTERPOLATE_LINEAR_LICENCE: &'static str = "MIT";
+            pub const NAME: &'static str = "Faust Interpolator Library";
+            pub const REMAP_AUTHOR: &'static str = "David Braun";
+            pub const VERSION: &'static str = "1.4.0";
+        }
+        pub mod maths {
+            pub const AUTHOR: &'static str = "GRAME";
+            pub const COPYRIGHT: &'static str = "GRAME";
+            pub const LICENSE: &'static str = "LGPL with exception";
+            pub const NAME: &'static str = "Faust Math Library";
+            pub const VERSION: &'static str = "2.9.0";
+        }
+        pub mod platform {
+            pub const NAME: &'static str = "Generic Platform Library";
+            pub const VERSION: &'static str = "1.3.0";
+        }
+        pub mod routes {
+            pub const NAME: &'static str = "Faust Signal Routing Library";
+            pub const VERSION: &'static str = "1.2.0";
+        }
+        pub mod signals {
+            pub const NAME: &'static str = "Faust Signal Routing Library";
+            pub const VERSION: &'static str = "1.6.0";
+        }
+    }
+}
+pub struct WidgetTree;
+impl faust_ui::UIGroups<LambRs> for WidgetTree {
+    fn widget_tree() -> Vec<faust_ui::GroupOrWidget<LambRs>> {
+        vec![
+            faust_ui::GroupOrWidget::VGroup(faust_ui::Group { name : "lamb-rs", items :
+            vec![faust_ui::GroupOrWidget::HGroup(faust_ui::Group { name : "0x00", items :
+            vec![faust_ui::GroupOrWidget::HActive(UIActive::Bypass),
+            faust_ui::GroupOrWidget::HActive(UIActive::FixedLatency)] }),
+            faust_ui::GroupOrWidget::HActive(UIActive::InputGain),
+            faust_ui::GroupOrWidget::HGroup(faust_ui::Group { name : "0x00", items :
+            vec![faust_ui::GroupOrWidget::VGroup(faust_ui::Group { name : "peak limiter",
+            items : vec![faust_ui::GroupOrWidget::HActive(UIActive::Strength),
+            faust_ui::GroupOrWidget::HActive(UIActive::Thresh),
+            faust_ui::GroupOrWidget::HActive(UIActive::Attack),
+            faust_ui::GroupOrWidget::HActive(UIActive::AttackShape),
+            faust_ui::GroupOrWidget::HActive(UIActive::Release),
+            faust_ui::GroupOrWidget::HActive(UIActive::ReleaseShape),
+            faust_ui::GroupOrWidget::HActive(UIActive::ReleaseHold),
+            faust_ui::GroupOrWidget::HActive(UIActive::Knee),
+            faust_ui::GroupOrWidget::HActive(UIActive::Link),
+            faust_ui::GroupOrWidget::HActive(UIActive::AdaptiveRelease),
+            faust_ui::GroupOrWidget::HActive(UIActive::Lookahead)] })] }),
+            faust_ui::GroupOrWidget::HActive(UIActive::OutputGain),
+            faust_ui::GroupOrWidget::HPassive(UIPassive::Latency)] })
+        ]
     }
 }
