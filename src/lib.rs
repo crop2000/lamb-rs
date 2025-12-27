@@ -9,7 +9,6 @@ mod dsp_96k;
 use buffer::*;
 // use cyma::utils::{HistogramBuffer, MinimaBuffer, PeakBuffer, VisualizerBuffer};
 use cyma::prelude::*;
-
 use default_boxed::DefaultBoxed;
 
 // this seems to be the number JUCE is using
@@ -20,22 +19,22 @@ mod editor;
 
 // Define an enum to hold the DSP's for different sample rates
 enum DspVariant {
-    Dsp48k(Box<dsp_48k::LambRs48k>),
-    Dsp96k(Box<dsp_96k::LambRs96k>),
-    Dsp192k(Box<dsp_192k::LambRs192k>),
+    Dsp48k(Box<dsp_48k::LambRs>),
+    Dsp96k(Box<dsp_96k::LambRs>),
+    Dsp192k(Box<dsp_192k::LambRs>),
 }
 impl Default for DspVariant {
     fn default() -> Self {
-        DspVariant::Dsp48k(dsp_48k::LambRs48k::default_boxed())
+        DspVariant::Dsp48k(dsp_48k::LambRs::default_boxed())
     }
 }
 
 impl DspVariant {
     fn init(&mut self, sample_rate: i32) {
         match sample_rate {
-            0..=48000 => *self = DspVariant::Dsp48k(dsp_48k::LambRs48k::default_boxed()),
-            48001..=96000 => *self = DspVariant::Dsp96k(dsp_96k::LambRs96k::default_boxed()),
-            _ => *self = DspVariant::Dsp192k(dsp_192k::LambRs192k::default_boxed()),
+            0..=48000 => *self = DspVariant::Dsp48k(dsp_48k::LambRs::default_boxed()),
+            48001..=96000 => *self = DspVariant::Dsp96k(dsp_96k::LambRs::default_boxed()),
+            _ => *self = DspVariant::Dsp192k(dsp_192k::LambRs::default_boxed()),
         }
         match self {
             DspVariant::Dsp48k(ref mut dsp) => dsp.init(sample_rate),
@@ -43,6 +42,7 @@ impl DspVariant {
             DspVariant::Dsp192k(ref mut dsp) => dsp.init(sample_rate),
         }
     }
+
     fn get_param(&mut self, param_id: ParamIndex) -> Option<f64> {
         match self {
             DspVariant::Dsp48k(ref dsp) => dsp.get_param(param_id),
@@ -50,6 +50,7 @@ impl DspVariant {
             DspVariant::Dsp192k(ref dsp) => dsp.get_param(param_id),
         }
     }
+
     fn set_param(&mut self, param_id: ParamIndex, val: f64) {
         match self {
             DspVariant::Dsp48k(ref mut dsp) => dsp.set_param(param_id, val),
@@ -57,6 +58,7 @@ impl DspVariant {
             DspVariant::Dsp192k(ref mut dsp) => dsp.set_param(param_id, val),
         }
     }
+
     fn compute(&mut self, count: i32, inputs: &[&[f64]], outputs: &mut [&mut [f64]]) {
         match self {
             DspVariant::Dsp48k(ref mut dsp) => {
@@ -118,12 +120,14 @@ impl Default for Lamb {
 include!("params.rs");
 
 impl Plugin for Lamb {
-    const NAME: &'static str = "lamb";
-    const VENDOR: &'static str = "magnetophon";
-    const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
-    const EMAIL: &'static str = "bart@magnetophon.nl";
-
-    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+    // More advanced plugins can use this to run expensive background tasks. See the field's
+    // documentation for more information. `()` means that the plugin does not have any background
+    // tasks.
+    type BackgroundTask = ();
+    // If the plugin can send or receive SysEx messages, it can define a type to wrap around those
+    // messages here. The type implements the `SysExMessage` trait, which allows conversion to and
+    // from plain byte buffers.
+    type SysExMessage = ();
 
     // The first audio IO layout is used as the default. The other layouts may be selected either
     // explicitly or automatically by the host or the user depending on the plugin API/backend.
@@ -139,20 +143,14 @@ impl Plugin for Lamb {
         // only one input and output channel would be called 'Mono'.
         names: PortNames::const_default(),
     }];
-
+    const EMAIL: &'static str = "bart@magnetophon.nl";
     const MIDI_INPUT: MidiConfig = MidiConfig::None;
     const MIDI_OUTPUT: MidiConfig = MidiConfig::None;
-
+    const NAME: &'static str = "lamb";
     const SAMPLE_ACCURATE_AUTOMATION: bool = true;
-
-    // If the plugin can send or receive SysEx messages, it can define a type to wrap around those
-    // messages here. The type implements the `SysExMessage` trait, which allows conversion to and
-    // from plain byte buffers.
-    type SysExMessage = ();
-    // More advanced plugins can use this to run expensive background tasks. See the field's
-    // documentation for more information. `()` means that the plugin does not have any background
-    // tasks.
-    type BackgroundTask = ();
+    const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
+    const VENDOR: &'static str = "magnetophon";
+    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
     fn params(&self) -> Arc<dyn Params> {
         self.params.clone()
@@ -310,12 +308,8 @@ impl Plugin for Lamb {
 }
 
 impl ClapPlugin for Lamb {
-    const CLAP_ID: &'static str = "magnetophon.nl lamb";
     const CLAP_DESCRIPTION: Option<&'static str> =
         Some("A lookahead compressor/limiter that's soft as a lamb");
-    const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
-    const CLAP_SUPPORT_URL: Option<&'static str> = None;
-
     const CLAP_FEATURES: &'static [ClapFeature] = &[
         ClapFeature::AudioEffect,
         ClapFeature::Stereo,
@@ -323,11 +317,13 @@ impl ClapPlugin for Lamb {
         ClapFeature::Limiter,
         ClapFeature::Mastering,
     ];
+    const CLAP_ID: &'static str = "magnetophon.nl lamb";
+    const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
+    const CLAP_SUPPORT_URL: Option<&'static str> = None;
 }
 
 impl Vst3Plugin for Lamb {
     const VST3_CLASS_ID: [u8; 16] = *b"magnetophon lamb";
-
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[
         Vst3SubCategory::Fx,
         Vst3SubCategory::Dynamics,
