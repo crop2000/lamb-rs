@@ -43,7 +43,7 @@ impl DspVariant {
         }
     }
 
-    fn get_param(&mut self, param_id: ParamIndex) -> Option<f64> {
+    fn get_param(&self, param_id: ParamIndex) -> Option<f64> {
         match self {
             Self::Dsp48k(ref dsp) => dsp.get_param(param_id),
             Self::Dsp96k(ref dsp) => dsp.get_param(param_id),
@@ -61,15 +61,9 @@ impl DspVariant {
 
     fn compute(&mut self, count: i32, inputs: &[&[f64]], outputs: &mut [&mut [f64]]) {
         match self {
-            Self::Dsp48k(ref mut dsp) => {
-                dsp.compute(count.try_into().unwrap(), inputs, outputs)
-            }
-            Self::Dsp96k(ref mut dsp) => {
-                dsp.compute(count.try_into().unwrap(), inputs, outputs)
-            }
-            Self::Dsp192k(ref mut dsp) => {
-                dsp.compute(count.try_into().unwrap(), inputs, outputs)
-            }
+            Self::Dsp48k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), inputs, outputs),
+            Self::Dsp96k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), inputs, outputs),
+            Self::Dsp192k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), inputs, outputs),
         }
     }
 }
@@ -263,10 +257,15 @@ impl Plugin for Lamb {
         context.set_latency_samples(latency_samples);
 
         let output = buffer.as_slice();
-        for i in 0..count as usize {
-            output[0][i] = self.temp_output_buffer_l[i] as f32;
-            output[1][i] = self.temp_output_buffer_r[i] as f32;
-        }
+
+        self.temp_output_buffer_l
+            .iter()
+            .zip(output[0].iter_mut())
+            .for_each(|(i, o)| *o = *i as f32);
+        self.temp_output_buffer_r
+            .iter()
+            .zip(output[1].iter_mut())
+            .for_each(|(i, o)| *o = *i as f32);
 
         if self.params.editor_state.is_open() {
             if self.params.in_out.value() {
