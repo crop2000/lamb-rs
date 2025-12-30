@@ -1,4 +1,5 @@
 #![warn(clippy::nursery)]
+use faust_ui::{UIGet, UISet};
 use nih_plug::prelude::*;
 use nih_plug_vizia::ViziaState;
 use std::sync::Arc;
@@ -6,6 +7,7 @@ mod buffer;
 mod dsp_192k;
 mod dsp_48k;
 mod dsp_96k;
+use crate::dsp_48k::{UIActive, UIPassive};
 use buffer::*;
 // use cyma::utils::{HistogramBuffer, MinimaBuffer, PeakBuffer, VisualizerBuffer};
 use cyma::prelude::*;
@@ -16,6 +18,31 @@ use default_boxed::DefaultBoxed;
 const MAX_SOUNDCARD_BUFFER_SIZE: usize = 32768;
 
 mod editor;
+
+//provide into for different parameters
+impl From<UIActive> for dsp_96k::UIActive {
+    fn from(value: UIActive) -> Self {
+        Self::from_repr(value as usize).expect("infallible")
+    }
+}
+
+impl From<UIActive> for dsp_192k::UIActive {
+    fn from(value: UIActive) -> Self {
+        Self::from_repr(value as usize).expect("infallible")
+    }
+}
+
+impl From<dsp_48k::UIPassive> for dsp_96k::UIPassive {
+    fn from(value: dsp_48k::UIPassive) -> Self {
+        Self::from_repr(value as usize).expect("infallible")
+    }
+}
+
+impl From<dsp_48k::UIPassive> for dsp_192k::UIPassive {
+    fn from(value: dsp_48k::UIPassive) -> Self {
+        Self::from_repr(value as usize).expect("infallible")
+    }
+}
 
 // Define an enum to hold the DSP's for different sample rates
 enum DspVariant {
@@ -43,19 +70,27 @@ impl DspVariant {
         }
     }
 
-    fn get_param(&self, param_id: ParamIndex) -> Option<f64> {
+    fn get_param(&mut self, param: dsp_48k::UIPassive) -> f64 {
         match self {
-            Self::Dsp48k(ref dsp) => dsp.get_param(param_id),
-            Self::Dsp96k(ref dsp) => dsp.get_param(param_id),
-            Self::Dsp192k(ref dsp) => dsp.get_param(param_id),
+            Self::Dsp48k(dsp) => param.get_value(dsp),
+            Self::Dsp96k(dsp) => {
+                std::convert::Into::<dsp_96k::UIPassive>::into(param).get_value(dsp)
+            }
+            Self::Dsp192k(dsp) => {
+                std::convert::Into::<dsp_192k::UIPassive>::into(param).get_value(dsp)
+            }
         }
     }
 
-    fn set_param(&mut self, param_id: ParamIndex, val: f64) {
+    fn set_param(&mut self, param: UIActive, value: f64) {
         match self {
-            Self::Dsp48k(ref mut dsp) => dsp.set_param(param_id, val),
-            Self::Dsp96k(ref mut dsp) => dsp.set_param(param_id, val),
-            Self::Dsp192k(ref mut dsp) => dsp.set_param(param_id, val),
+            Self::Dsp48k(dsp) => param.set(dsp, value),
+            Self::Dsp96k(dsp) => {
+                std::convert::Into::<dsp_96k::UIActive>::into(param).set(dsp, value)
+            }
+            Self::Dsp192k(dsp) => {
+                std::convert::Into::<dsp_192k::UIActive>::into(param).set(dsp, value)
+            }
         }
     }
 
@@ -204,41 +239,48 @@ impl Plugin for Lamb {
             true => 1.0,
             false => 0.0,
         };
-        self.dsp_variant.set_param(BYPASS_PI, bypass);
+        self.dsp_variant.set_param(UIActive::Bypass, bypass);
 
         let latency_mode: f64 = match self.params.latency_mode.value() {
             LatencyMode::Minimal => 0.0,
             LatencyMode::Fixed => 1.0,
         };
-        self.dsp_variant.set_param(LATENCY_MODE_PI, latency_mode);
         self.dsp_variant
-            .set_param(INPUT_GAIN_PI, self.params.input_gain.value() as f64);
+            .set_param(UIActive::FixedLatency, latency_mode);
         self.dsp_variant
-            .set_param(STRENGTH_PI, self.params.strength.value() as f64);
+            .set_param(UIActive::InputGain, self.params.input_gain.value() as f64);
         self.dsp_variant
-            .set_param(THRESH_PI, self.params.thresh.value() as f64);
+            .set_param(UIActive::Strength, self.params.strength.value() as f64);
         self.dsp_variant
-            .set_param(ATTACK_PI, self.params.attack.value() as f64);
+            .set_param(UIActive::Thresh, self.params.thresh.value() as f64);
         self.dsp_variant
-            .set_param(ATTACK_SHAPE_PI, self.params.attack_shape.value() as f64);
-        self.dsp_variant
-            .set_param(RELEASE_PI, self.params.release.value() as f64);
-        self.dsp_variant
-            .set_param(RELEASE_SHAPE_PI, self.params.release_shape.value() as f64);
-        self.dsp_variant
-            .set_param(RELEASE_HOLD_PI, self.params.release_hold.value() as f64);
-        self.dsp_variant
-            .set_param(KNEE_PI, self.params.knee.value() as f64);
-        self.dsp_variant
-            .set_param(LINK_PI, self.params.link.value() as f64);
+            .set_param(UIActive::Attack, self.params.attack.value() as f64);
         self.dsp_variant.set_param(
-            ADAPTIVE_RELEASE_PI,
+            UIActive::AttackShape,
+            self.params.attack_shape.value() as f64,
+        );
+        self.dsp_variant
+            .set_param(UIActive::Release, self.params.release.value() as f64);
+        self.dsp_variant.set_param(
+            UIActive::ReleaseShape,
+            self.params.release_shape.value() as f64,
+        );
+        self.dsp_variant.set_param(
+            UIActive::ReleaseHold,
+            self.params.release_hold.value() as f64,
+        );
+        self.dsp_variant
+            .set_param(UIActive::Knee, self.params.knee.value() as f64);
+        self.dsp_variant
+            .set_param(UIActive::Link, self.params.link.value() as f64);
+        self.dsp_variant.set_param(
+            UIActive::AdaptiveRelease,
             self.params.adaptive_release.value() as f64,
         );
         self.dsp_variant
-            .set_param(LOOKAHEAD_PI, self.params.lookahead.value() as f64);
+            .set_param(UIActive::Lookahead, self.params.lookahead.value() as f64);
         self.dsp_variant
-            .set_param(OUTPUT_GAIN_PI, self.params.output_gain.value() as f64);
+            .set_param(UIActive::OutputGain, self.params.output_gain.value() as f64);
 
         self.dsp_variant.compute(
             count,
@@ -250,10 +292,7 @@ impl Plugin for Lamb {
                 &mut self.temp_output_buffer_gr_r,
             ],
         );
-        let latency_samples = self
-            .dsp_variant
-            .get_param(LATENCY_PI)
-            .expect("no latency read") as u32;
+        let latency_samples = self.dsp_variant.get_param(UIPassive::Latency) as u32;
         context.set_latency_samples(latency_samples);
 
         let output = buffer.as_slice();

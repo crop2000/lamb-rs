@@ -7787,90 +7787,31 @@ impl LambRs {
         }
     }
 }
-impl FaustDsp for LambRs {
-    type T = FaustFloat;
-    fn new() -> Self
-    where
-        Self: Sized,
-    {
-        Self::new()
-    }
-    fn metadata(&self, m: &mut dyn Meta) {
-        self.metadata(m)
-    }
-    fn get_sample_rate(&self) -> i32 {
-        self.get_sample_rate()
-    }
-    fn get_num_inputs(&self) -> i32 {
-        FAUST_INPUTS as i32
-    }
-    fn get_num_outputs(&self) -> i32 {
-        FAUST_OUTPUTS as i32
-    }
-    fn class_init(sample_rate: i32)
-    where
-        Self: Sized,
-    {
-        Self::class_init(sample_rate);
-    }
-    fn instance_reset_params(&mut self) {
-        self.instance_reset_params()
-    }
-    fn instance_clear(&mut self) {
-        self.instance_clear()
-    }
-    fn instance_constants(&mut self, sample_rate: i32) {
-        self.instance_constants(sample_rate)
-    }
-    fn instance_init(&mut self, sample_rate: i32) {
-        self.instance_init(sample_rate)
-    }
-    fn init(&mut self, sample_rate: i32) {
-        self.init(sample_rate)
-    }
-    fn build_user_interface(&self, ui_interface: &mut dyn UI<Self::T>) {
-        self.build_user_interface(ui_interface)
-    }
-    fn build_user_interface_static(ui_interface: &mut dyn UI<Self::T>)
-    where
-        Self: Sized,
-    {
-        Self::build_user_interface_static(ui_interface);
-    }
-    fn get_param(&self, param: ParamIndex) -> Option<Self::T> {
-        self.get_param(param)
-    }
-    fn set_param(&mut self, param: ParamIndex, value: Self::T) {
-        self.set_param(param, value)
-    }
-    fn compute(
-        &mut self,
-        count: i32,
-        inputs: &[&[Self::T]],
-        outputs: &mut [&mut [Self::T]],
-    ) {
-        self.compute(count as usize, inputs, outputs)
-    }
-}
-use strum::{
-    Display, EnumIter, EnumCount, EnumDiscriminants, IntoStaticStr, VariantArray,
-    VariantNames,
-};
 #[derive(
     Debug,
     Clone,
     Copy,
     PartialEq,
-    Display,
-    EnumIter,
-    EnumCount,
-    EnumDiscriminants,
-    VariantNames
+    strum::Display,
+    strum::EnumIter,
+    strum::EnumCount,
+    strum::EnumDiscriminants,
+    strum::VariantNames
 )]
 #[strum_discriminants(
-    derive(Display, EnumIter, EnumCount, IntoStaticStr, VariantArray, VariantNames, Hash)
+    derive(
+        strum::Display,
+        strum::EnumIter,
+        strum::EnumCount,
+        strum::IntoStaticStr,
+        strum::VariantArray,
+        strum::VariantNames,
+        Hash,
+        strum::FromRepr,
+    )
 )]
 #[strum_discriminants(name(UIActive))]
+#[repr(usize)]
 pub enum UIActiveValue {
     Bypass(FaustFloat),
     FixedLatency(FaustFloat),
@@ -8082,7 +8023,7 @@ impl faust_ui::UIToValue for UIActive {
         }
     }
 }
-impl VariantArray for UIActiveValue {
+impl strum::VariantArray for UIActiveValue {
     const VARIANTS: &'static [UIActiveValue] = &[
         Self::Bypass(0.0),
         Self::FixedLatency(0.0),
@@ -8127,16 +8068,26 @@ impl faust_ui::UIVariantArrayIndex for UIActive {
     Clone,
     Copy,
     PartialEq,
-    Display,
-    EnumIter,
-    EnumCount,
-    EnumDiscriminants,
-    VariantNames
+    strum::Display,
+    strum::EnumIter,
+    strum::EnumCount,
+    strum::EnumDiscriminants,
+    strum::VariantNames
 )]
 #[strum_discriminants(
-    derive(Display, EnumIter, EnumCount, IntoStaticStr, VariantArray, VariantNames, Hash)
+    derive(
+        strum::Display,
+        strum::EnumIter,
+        strum::EnumCount,
+        strum::IntoStaticStr,
+        strum::VariantArray,
+        strum::VariantNames,
+        Hash,
+        strum::FromRepr,
+    )
 )]
 #[strum_discriminants(name(UIPassive))]
+#[repr(usize)]
 pub enum UIPassiveValue {
     Latency(FaustFloat),
 }
@@ -8208,7 +8159,7 @@ impl UIPassive {
         }
     }
 }
-impl VariantArray for UIPassiveValue {
+impl strum::VariantArray for UIPassiveValue {
     const VARIANTS: &'static [UIPassiveValue] = &[Self::Latency(0.0)];
 }
 impl faust_ui::UIVariantArrayIndex for UIPassive {
