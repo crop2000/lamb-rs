@@ -1368,11 +1368,13 @@ checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
 name = "faust-build"
 version = "0.3.0"
 dependencies = [
+ "faust-json",
  "heck",
  "itertools 0.14.0",
  "prettyplease",
  "proc-macro2",
  "quote",
+ "serde_json_path_to_error",
  "strum",
  "syn 2.0.106",
  "tempfile",
@@ -1427,7 +1429,6 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "serde_json_path_to_error",
  "syn 2.0.106",
 ]
 

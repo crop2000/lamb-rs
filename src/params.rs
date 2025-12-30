@@ -223,40 +223,40 @@ impl LambParams {
             latency_mode: EnumParam::new("latency_mode", LatencyMode::Fixed),
             input_gain: FloatParam::new(
                 "input_gain",
-                0.0,
+                dsp_48k::UIActive::InputGain.init(),
                 FloatRange::Linear {
-                    min: -24.0,
-                    max: 24.0,
+                    min: dsp_48k::UIActive::InputGain.min(),
+                    max: dsp_48k::UIActive::InputGain.max(),
                 },
             )
             .with_unit(" dB")
             .with_step_size(0.1),
             strength: FloatParam::new(
                 "ratio",
-                100.0,
+                dsp_48k::UIActive::Strength.init(),
                 FloatRange::Linear {
-                    min: 0.0,
-                    max: 100.0,
+                    min: dsp_48k::UIActive::Strength.min(),
+                    max: dsp_48k::UIActive::Strength.max(),
                 },
             )
             .with_value_to_string(strength_to_ratio())
             .with_string_to_value(ratio_to_strength()),
             thresh: FloatParam::new(
                 "thresh",
-                -1.0,
+                dsp_48k::UIActive::Thresh.init(),
                 FloatRange::Linear {
-                    min: -30.0,
-                    max: 0.0,
+                    min: dsp_48k::UIActive::Thresh.min(),
+                    max: dsp_48k::UIActive::Thresh.max(),
                 },
             )
             .with_unit(" dB")
             .with_step_size(0.1),
             attack: FloatParam::new(
                 "attack",
-                9.0,
+                dsp_48k::UIActive::Attack.init(),
                 FloatRange::Skewed {
-                    min: 0.0,
-                    max: 50.0,
+                    min: dsp_48k::UIActive::Attack.min(),
+                    max: dsp_48k::UIActive::Attack.max(),
                     factor: FloatRange::skew_factor(-1.0),
                 },
             )
@@ -265,16 +265,19 @@ impl LambParams {
             .non_automatable(),
             attack_shape: FloatParam::new(
                 "attack_shape",
-                0.0,
-                FloatRange::Linear { min: 0.0, max: 1.0 },
+                dsp_48k::UIActive::AttackShape.init(),
+                FloatRange::Linear {
+                    min: dsp_48k::UIActive::AttackShape.min(),
+                    max: dsp_48k::UIActive::AttackShape.max(),
+                },
             )
             .with_step_size(0.01),
             release: FloatParam::new(
                 "release",
-                60.0,
+                dsp_48k::UIActive::Release.init(),
                 FloatRange::Skewed {
-                    min: 1.0,
-                    max: 500.0,
+                    min: dsp_48k::UIActive::Release.min(),
+                    max: dsp_48k::UIActive::Release.max(),
                     factor: FloatRange::skew_factor(-1.0),
                 },
             )
@@ -282,16 +285,19 @@ impl LambParams {
             .with_step_size(0.01),
             release_shape: FloatParam::new(
                 "release_shape",
-                0.5,
-                FloatRange::Linear { min: 0.0, max: 1.0 },
+                dsp_48k::UIActive::ReleaseShape.init(),
+                FloatRange::Linear {
+                    min: dsp_48k::UIActive::ReleaseShape.min(),
+                    max: dsp_48k::UIActive::ReleaseShape.max(),
+                },
             )
             .with_step_size(0.01),
             release_hold: FloatParam::new(
                 "release_hold",
-                50.0,
+                dsp_48k::UIActive::ReleaseHold.init(),
                 FloatRange::Linear {
-                    min: 0.0,
-                    max: 50.0,
+                    min: dsp_48k::UIActive::ReleaseHold.min(),
+                    max: dsp_48k::UIActive::ReleaseHold.max(),
                 },
             )
             .with_unit(" ms")
@@ -299,10 +305,10 @@ impl LambParams {
             .non_automatable(),
             knee: FloatParam::new(
                 "knee",
-                1.0,
+                dsp_48k::UIActive::Knee.init(),
                 FloatRange::Skewed {
-                    min: 0.0,
-                    max: 72.0,
+                    min: dsp_48k::UIActive::Knee.min(),
+                    max: dsp_48k::UIActive::Knee.max(),
                     factor: FloatRange::skew_factor(-1.0),
                 },
             )
@@ -310,30 +316,30 @@ impl LambParams {
             .with_step_size(0.1),
             link: FloatParam::new(
                 "link",
-                0.0,
+                dsp_48k::UIActive::Link.init(),
                 FloatRange::Linear {
-                    min: 0.0,
-                    max: 100.0,
+                    min: dsp_48k::UIActive::Link.min(),
+                    max: dsp_48k::UIActive::Link.max(),
                 },
             )
             .with_unit(" %")
             .with_step_size(1.0),
             adaptive_release: FloatParam::new(
                 "adaptive_release",
-                50.0,
+                dsp_48k::UIActive::AdaptiveRelease.init(),
                 FloatRange::Linear {
-                    min: 0.0,
-                    max: 100.0,
+                    min: dsp_48k::UIActive::AdaptiveRelease.min(),
+                    max: dsp_48k::UIActive::AdaptiveRelease.max(),
                 },
             )
             .with_unit(" %")
             .with_step_size(1.0),
             lookahead: FloatParam::new(
                 "lookahead",
-                100.0,
+                dsp_48k::UIActive::Lookahead.init(),
                 FloatRange::Linear {
-                    min: 0.0,
-                    max: 100.0,
+                    min: dsp_48k::UIActive::Lookahead.min(),
+                    max: dsp_48k::UIActive::Lookahead.max(),
                 },
             )
             .with_unit(" %")
@@ -341,10 +347,10 @@ impl LambParams {
             .non_automatable(),
             output_gain: FloatParam::new(
                 "output_gain",
-                0.0,
+                dsp_48k::UIActive::OutputGain.init(),
                 FloatRange::Linear {
-                    min: -24.0,
-                    max: 24.0,
+                    min: dsp_48k::UIActive::OutputGain.min(),
+                    max: dsp_48k::UIActive::OutputGain.max(),
                 },
             )
             .with_unit(" dB")
