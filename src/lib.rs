@@ -1,13 +1,15 @@
 #![warn(clippy::nursery)]
 use faust_ui::{UIGet, UISet};
 use nih_plug::prelude::*;
-use nih_plug_vizia::ViziaState;
 use std::sync::Arc;
 mod buffer;
 mod dsp_192k;
 mod dsp_48k;
 mod dsp_96k;
-use crate::dsp_48k::{UIActive, UIPassive};
+use crate::{
+    dsp_48k::{UIActive, UIPassive},
+    params::{LambParams, LatencyMode},
+};
 use buffer::*;
 // use cyma::utils::{HistogramBuffer, MinimaBuffer, PeakBuffer, VisualizerBuffer};
 use cyma::prelude::*;
@@ -18,6 +20,7 @@ use default_boxed::DefaultBoxed;
 const MAX_SOUNDCARD_BUFFER_SIZE: usize = 32768;
 
 mod editor;
+mod params;
 
 //provide into for different parameters
 impl From<UIActive> for dsp_96k::UIActive {
@@ -141,8 +144,6 @@ impl Default for Lamb {
         }
     }
 }
-
-include!("params.rs");
 
 impl Plugin for Lamb {
     // More advanced plugins can use this to run expensive background tasks. See the field's

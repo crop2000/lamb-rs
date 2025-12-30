@@ -1,53 +1,56 @@
-use faust_types::ParamIndex;
+use crate::editor;
+use nih_plug::prelude::*;
+use nih_plug_vizia::ViziaState;
+use std::sync::Arc;
 
 #[derive(Params)]
-struct LambParams {
+pub(crate) struct LambParams {
     // nr of params: 12
     #[id = "bypass"]
-    bypass: BoolParam,
+    pub bypass: BoolParam,
     #[id = "latency_mode"]
-    latency_mode: EnumParam<LatencyMode>,
+    pub latency_mode: EnumParam<LatencyMode>,
     #[id = "input_gain"]
-    input_gain: FloatParam,
+    pub input_gain: FloatParam,
     #[id = "strength"]
-    strength: FloatParam,
+    pub strength: FloatParam,
     #[id = "thresh"]
-    thresh: FloatParam,
+    pub thresh: FloatParam,
     #[id = "attack"]
-    attack: FloatParam,
+    pub attack: FloatParam,
     #[id = "attack_shape"]
-    attack_shape: FloatParam,
+    pub attack_shape: FloatParam,
     #[id = "release"]
-    release: FloatParam,
+    pub release: FloatParam,
     #[id = "release_shape"]
-    release_shape: FloatParam,
+    pub release_shape: FloatParam,
     #[id = "release_hold"]
-    release_hold: FloatParam,
+    pub release_hold: FloatParam,
     #[id = "knee"]
-    knee: FloatParam,
+    pub knee: FloatParam,
     #[id = "link"]
-    link: FloatParam,
+    pub link: FloatParam,
     #[id = "adaptive_release"]
-    adaptive_release: FloatParam,
+    pub adaptive_release: FloatParam,
     #[id = "lookahead"]
-    lookahead: FloatParam,
+    pub lookahead: FloatParam,
     #[id = "output_gain"]
-    output_gain: FloatParam,
+    pub output_gain: FloatParam,
     #[id = "zoom_mode"]
-    zoom_mode: EnumParam<ZoomMode>,
+    pub zoom_mode: EnumParam<ZoomMode>,
     #[id = "time_scale"]
-    time_scale: EnumParam<TimeScale>,
+    pub time_scale: EnumParam<TimeScale>,
     #[id = "in_out"]
-    in_out: BoolParam,
+    pub in_out: BoolParam,
     #[id = "show_left"]
-    show_left: BoolParam,
+    pub show_left: BoolParam,
     #[id = "show_right"]
-    show_right: BoolParam,
+    pub show_right: BoolParam,
 
     /// The editor state, saved together with the parameter state so the custom scaling can be
     /// restored.
     #[persist = "editor-state"]
-    editor_state: Arc<ViziaState>,
+    pub editor_state: Arc<ViziaState>,
 }
 
 #[derive(Enum, Debug, PartialEq)]
@@ -102,7 +105,7 @@ impl TimeScale {
 }
 
 #[derive(Enum, Debug, PartialEq)]
-enum LatencyMode {
+pub enum LatencyMode {
     /// Minimal, but variable latency
     #[id = "minimal"]
     #[name = "minimal"]
@@ -365,20 +368,3 @@ impl LambParams {
         }
     }
 }
-
-pub const BYPASS_PI: ParamIndex = ParamIndex(0);
-pub const LATENCY_MODE_PI: ParamIndex = ParamIndex(1);
-pub const INPUT_GAIN_PI: ParamIndex = ParamIndex(2);
-pub const STRENGTH_PI: ParamIndex = ParamIndex(3);
-pub const THRESH_PI: ParamIndex = ParamIndex(4);
-pub const ATTACK_PI: ParamIndex = ParamIndex(5);
-pub const ATTACK_SHAPE_PI: ParamIndex = ParamIndex(6);
-pub const RELEASE_PI: ParamIndex = ParamIndex(7);
-pub const RELEASE_SHAPE_PI: ParamIndex = ParamIndex(8);
-pub const RELEASE_HOLD_PI: ParamIndex = ParamIndex(9);
-pub const KNEE_PI: ParamIndex = ParamIndex(10);
-pub const LINK_PI: ParamIndex = ParamIndex(11);
-pub const ADAPTIVE_RELEASE_PI: ParamIndex = ParamIndex(12);
-pub const LOOKAHEAD_PI: ParamIndex = ParamIndex(13);
-pub const OUTPUT_GAIN_PI: ParamIndex = ParamIndex(14);
-pub const LATENCY_PI: ParamIndex = ParamIndex(15);
