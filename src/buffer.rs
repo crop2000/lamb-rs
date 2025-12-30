@@ -36,6 +36,7 @@ impl TempBuffer {
     pub const fn channel_count(&self) -> usize {
         self.data.len()
     }
+
     pub fn resize(&mut self, channel_count: usize, max_frames: usize) {
         if self.data.len() < channel_count || (channel_count > 0 && self.data[0].len() < max_frames)
         {
@@ -45,6 +46,7 @@ impl TempBuffer {
             }
         }
     }
+
     pub const fn data(&self) -> &Vec<Vec<f64>> {
         &self.data
     }
@@ -58,6 +60,7 @@ impl TempBuffer {
             channel.fill(0.0);
         }
     }
+
     pub fn clear_frames(&mut self, frames: usize) {
         for channel in self.data.iter_mut() {
             channel[0..frames].fill(0.0);
@@ -71,6 +74,7 @@ impl TempBuffer {
             }
         }
     }
+
     pub fn add_to_temp_buffer_frames(&self, to_buffer: &mut Self, frames: usize) {
         for (self_channel, to_channel) in self.data.iter().zip(to_buffer.data_mut()) {
             for (to, from) in to_channel[0..frames].iter_mut().zip(self_channel) {
@@ -86,6 +90,7 @@ impl TempBuffer {
             }
         }
     }
+
     pub fn add_to_buffer_frames(&self, to_buffer: &mut [&mut [f64]], frames: usize) {
         for (self_channel, to_channel) in self.data.iter().zip(to_buffer.iter_mut()) {
             for (to, from) in to_channel[0..frames].iter_mut().zip(self_channel) {
@@ -99,6 +104,7 @@ impl TempBuffer {
             to_channel.copy_from_slice(&self_channel[..to_channel.len().min(self_channel.len())]);
         }
     }
+
     pub fn write_to_buffer_frames(&self, to_buffer: &mut [&mut [f64]], frames: usize) {
         for (self_channel, to_channel) in self.data.iter().zip(to_buffer.iter_mut()) {
             to_channel.copy_from_slice(
@@ -106,6 +112,7 @@ impl TempBuffer {
             );
         }
     }
+
     pub fn read_from_buffer(&mut self, from_buffer: &mut Buffer) {
         for (buffer_channel, self_channel) in from_buffer
             .as_slice_immutable()
@@ -118,6 +125,7 @@ impl TempBuffer {
             }
         }
     }
+
     /*
     pub fn read_from_buffer(&mut self, from_buffer: &mut Buffer) {
         for (buffer_channel, mut self_channel) in from_buffer.as_slice().iter().zip(self.data.iter_mut()) {
@@ -134,6 +142,7 @@ impl TempBuffer {
             self_channel.copy_from_slice(&from_channel[..self_len.min(from_channel.len())]);
         }
     }
+
     pub fn read_from_slice_frames(&mut self, from_buffer: &[&[f64]], frames: usize) {
         for (self_channel, from_channel) in self.data.iter_mut().zip(from_buffer.iter()) {
             let self_len = self_channel.len();
@@ -141,12 +150,14 @@ impl TempBuffer {
                 .copy_from_slice(&from_channel[..self_len.min(from_channel.len()).min(frames)]);
         }
     }
+
     pub fn read_from_mut_slice(&mut self, from_buffer: &mut [&mut [f64]]) {
         for (self_channel, from_channel) in self.data.iter_mut().zip(from_buffer.iter()) {
             let self_len = self_channel.len();
             self_channel.copy_from_slice(&from_channel[..self_len.min(from_channel.len())]);
         }
     }
+
     pub fn read_from_mut_slice_frames(&mut self, from_buffer: &mut [&mut [f64]], frames: usize) {
         for (self_channel, from_channel) in self.data.iter_mut().zip(from_buffer.iter()) {
             let self_len = self_channel.len();
@@ -154,6 +165,7 @@ impl TempBuffer {
                 .copy_from_slice(&from_channel[..self_len.min(from_channel.len()).min(frames)]);
         }
     }
+
     /*
     // Allocates a Vec on the heap, so not suitable for DSP...
     // Relevant Discussion: https://internals.rust-lang.org/t/collecting-iterators-into-arrays/10330
@@ -168,11 +180,13 @@ impl TempBuffer {
         let mut sliced = slice.iter().map(|ch| ch.as_slice());
         [sliced.next().unwrap()]
     }
-    pub fn slice2d(&self) -> [&[f64]; 2] {
-        let slice = self.data.as_slice();
-        let mut sliced = slice.iter().map(|ch| ch.as_slice());
+
+    pub fn slice2d(&mut self) -> [&mut [f64]; 2] {
+        let slice = self.data.as_mut_slice();
+        let mut sliced = slice.iter_mut().map(|ch| ch.as_mut_slice());
         [sliced.next().unwrap(), sliced.next().unwrap()]
     }
+
     pub fn slice3d(&self) -> [&[f64]; 3] {
         let slice = self.data.as_slice();
         let mut sliced = slice.iter().map(|ch| ch.as_slice());
@@ -182,6 +196,7 @@ impl TempBuffer {
             sliced.next().unwrap(),
         ]
     }
+
     pub fn slice4d(&self) -> [&[f64]; 4] {
         let slice = self.data.as_slice();
         let mut sliced = slice.iter().map(|ch| ch.as_slice());

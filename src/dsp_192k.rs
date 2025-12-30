@@ -30,7 +30,7 @@ use faust_types::*;
 #[derive(
     Debug,
     faust_traits::AssociatedFaustFloat,
-    faust_traits::ComputeDsp,
+    faust_traits::InPlaceDsp,
     faust_traits::InitDsp,
     faust_ui::SetDsp,
     faust_ui::UIEnumsDsp
@@ -38,9 +38,11 @@ use faust_types::*;
 #[cfg_attr(feature = "default-boxed", derive(default_boxed::DefaultBoxed))]
 #[repr(C)]
 pub struct LambRs {
-    fCheckbox0: F64,
     IOTA0: i32,
-    iVec0: [i32; 32768],
+    fVec0: [F64; 32768],
+    fVec1: [F64; 32768],
+    fCheckbox0: F64,
+    iVec2: [i32; 32768],
     fSampleRate: i32,
     fConst0: F64,
     fConst1: F64,
@@ -57,8 +59,6 @@ pub struct LambRs {
     fHslider4: F64,
     fHslider5: F64,
     fRec11: [F64; 2],
-    fVec1: [F64; 32768],
-    fVec2: [F64; 32768],
     fVec3: [F64; 32768],
     fVec4: [F64; 32768],
     fConst6: F64,
@@ -233,9 +233,11 @@ pub const FAUST_PASSIVES: usize = 1;
 impl LambRs {
     pub fn new() -> LambRs {
         LambRs {
-            fCheckbox0: 0.0,
             IOTA0: 0,
-            iVec0: [0; 32768],
+            fVec0: [0.0; 32768],
+            fVec1: [0.0; 32768],
+            fCheckbox0: 0.0,
+            iVec2: [0; 32768],
             fSampleRate: 0,
             fConst0: 0.0,
             fConst1: 0.0,
@@ -252,8 +254,6 @@ impl LambRs {
             fHslider4: 0.0,
             fHslider5: 0.0,
             fRec11: [0.0; 2],
-            fVec1: [0.0; 32768],
-            fVec2: [0.0; 32768],
             fVec3: [0.0; 32768],
             fVec4: [0.0; 32768],
             fConst6: 0.0,
@@ -372,7 +372,7 @@ impl LambRs {
         m.declare("basics.lib/version", r"1.22.0");
         m.declare(
             "compile_options",
-            r"-lang rust -ct 1 -cn LambRs -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0",
+            r"-lang rust -inpl -ct 1 -cn LambRs -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0",
         );
         m.declare("filename", r"lamb-rs-192k.dsp");
         m.declare("interpolators.lib/interpolate_linear:author", r"Stéphane Letz");
@@ -428,22 +428,22 @@ impl LambRs {
     pub fn instance_clear(&mut self) {
         self.IOTA0 = 0;
         for l0 in 0..32768 {
-            self.iVec0[l0 as usize] = 0;
+            self.fVec0[l0 as usize] = 0.0;
         }
-        for l1 in 0..2 {
-            self.fRec0[l1 as usize] = 0.0;
+        for l1 in 0..32768 {
+            self.fVec1[l1 as usize] = 0.0;
         }
-        for l2 in 0..2 {
-            self.fRec4[l2 as usize] = 0.0;
+        for l2 in 0..32768 {
+            self.iVec2[l2 as usize] = 0;
         }
         for l3 in 0..2 {
-            self.fRec11[l3 as usize] = 0.0;
+            self.fRec0[l3 as usize] = 0.0;
         }
-        for l4 in 0..32768 {
-            self.fVec1[l4 as usize] = 0.0;
+        for l4 in 0..2 {
+            self.fRec4[l4 as usize] = 0.0;
         }
-        for l5 in 0..32768 {
-            self.fVec2[l5 as usize] = 0.0;
+        for l5 in 0..2 {
+            self.fRec11[l5 as usize] = 0.0;
         }
         for l6 in 0..32768 {
             self.fVec3[l6 as usize] = 0.0;
@@ -824,25 +824,15 @@ impl LambRs {
             _ => {}
         }
     }
-    pub fn compute(
-        &mut self,
-        count: usize,
-        inputs: &[impl AsRef<[FaustFloat]>],
-        outputs: &mut [impl AsMut<[FaustFloat]>],
-    ) {
+    pub fn compute(&mut self, count: usize, mut ios: &mut [impl AsMut<[FaustFloat]>]) {
         let ftbl0LambRsSIG0_guard = ftbl0LambRsSIG0.read().unwrap();
-        let [inputs0, inputs1, ..] = inputs.as_ref() else {
-            panic!("wrong number of input buffers");
+        let [ios0, ios1, ios2, ios3, ..] = ios.as_mut() else {
+            panic!("wrong number of IO buffers");
         };
-        let inputs0 = inputs0.as_ref()[..count].iter();
-        let inputs1 = inputs1.as_ref()[..count].iter();
-        let [outputs0, outputs1, outputs2, outputs3, ..] = outputs.as_mut() else {
-            panic!("wrong number of output buffers");
-        };
-        let outputs0 = outputs0.as_mut()[..count].iter_mut();
-        let outputs1 = outputs1.as_mut()[..count].iter_mut();
-        let outputs2 = outputs2.as_mut()[..count].iter_mut();
-        let outputs3 = outputs3.as_mut()[..count].iter_mut();
+        let ios0 = ios0.as_mut()[..count].iter_mut();
+        let ios1 = ios1.as_mut()[..count].iter_mut();
+        let ios2 = ios2.as_mut()[..count].iter_mut();
+        let ios3 = ios3.as_mut()[..count].iter_mut();
         let mut fSlow0: F64 = self.fCheckbox0;
         let mut fSlow1: F64 = self.fHslider1;
         let mut fSlow2: F64 = fSlow1 * self.fHslider0;
@@ -979,49 +969,44 @@ impl LambRs {
         self.fHbargraph0 = (if (fSlow77) as i32 != 0 { 1.92e+04 } else { fSlow76 });
         let mut iSlow79: i32 = (self.fHbargraph0) as i32;
         let mut fSlow80: F64 = self.fConst3 * F64::powf(1e+01, 0.05 * self.fHslider12);
-        let zipped_iterators = inputs0
-            .zip(inputs1)
-            .zip(outputs0)
-            .zip(outputs1)
-            .zip(outputs2)
-            .zip(outputs3);
-        for (((((input0, input1), output0), output1), output2), output3) in zipped_iterators {
-            self.iVec0[(self.IOTA0 & 32767) as usize] = 1;
-            let mut fTemp0: F64 = self.fConst1 + self.fRec0[1];
-            let mut fTemp1: F64 = self.fRec0[1] - self.fConst1;
-            self.fRec0[0] = (if (fTemp0 < fSlow0) as i32 != 0 {
-                fTemp0
+        let zipped_iterators = ios0.zip(ios1).zip(ios2).zip(ios3);
+        for (((io0, io1), io2), io3) in zipped_iterators {
+            let mut fTemp0: F64 = *io0;
+            self.fVec0[(self.IOTA0 & 32767) as usize] = fTemp0;
+            let mut fTemp1: F64 = *io1;
+            self.fVec1[(self.IOTA0 & 32767) as usize] = fTemp1;
+            self.iVec2[(self.IOTA0 & 32767) as usize] = 1;
+            let mut fTemp2: F64 = self.fConst1 + self.fRec0[1];
+            let mut fTemp3: F64 = self.fRec0[1] - self.fConst1;
+            self.fRec0[0] = (if (fTemp2 < fSlow0) as i32 != 0 {
+                fTemp2
             } else {
-                (if (fTemp1 > fSlow0) as i32 != 0 { fTemp1 } else { fSlow0 })
+                (if (fTemp3 > fSlow0) as i32 != 0 { fTemp3 } else { fSlow0 })
             });
-            let mut fTemp2: F64 = F64::sin(
+            let mut fTemp4: F64 = F64::sin(
                 6.283185307179586 * (0.5 * self.fRec0[0] + 0.75),
             ) + 1.0;
-            let mut fTemp3: F64 = 0.5 * fTemp2;
-            let mut fTemp4: F64 = 1.0 - fTemp3;
+            let mut fTemp5: F64 = 0.5 * fTemp4;
+            let mut fTemp6: F64 = 1.0 - fTemp5;
             self.fRec4[0] = fSlow5 + self.fConst4 * self.fRec4[1];
-            let mut fTemp5: F64 = F64::max(0.5, self.fRec4[0]) + -0.5;
-            let mut fTemp6: F64 = 4.0 * fTemp5;
-            let mut fTemp7: F64 = 10.588235294117647
+            let mut fTemp7: F64 = F64::max(0.5, self.fRec4[0]) + -0.5;
+            let mut fTemp8: F64 = 4.0 * fTemp7;
+            let mut fTemp9: F64 = 10.588235294117647
                 * (F64::max(0.15, self.fRec4[0]) + -0.15);
-            let mut fTemp8: F64 = 15.0 - (fTemp7 + fTemp6);
-            let mut fTemp9: F64 = 12.0 - fTemp7;
-            let mut fTemp10: F64 = fTemp7 + -12.0;
-            let mut fTemp11: F64 = 3.0 - fTemp6;
+            let mut fTemp10: F64 = 15.0 - (fTemp9 + fTemp8);
+            let mut fTemp11: F64 = 12.0 - fTemp9;
+            let mut fTemp12: F64 = fTemp9 + -12.0;
+            let mut fTemp13: F64 = 3.0 - fTemp8;
             self.fRec11[0] = fSlow10 + self.fConst4 * self.fRec11[1];
-            let mut fTemp12: F64 = *input0;
-            self.fVec1[(self.IOTA0 & 32767) as usize] = fTemp12;
-            let mut fTemp13: F64 = fTemp12 * self.fRec11[0];
-            self.fVec2[(self.IOTA0 & 32767) as usize] = fTemp13;
-            let mut fTemp14: F64 = F64::abs(fTemp13);
-            let mut fTemp15: F64 = *input1;
-            self.fVec3[(self.IOTA0 & 32767) as usize] = fTemp15;
-            let mut fTemp16: F64 = fTemp15 * self.fRec11[0];
+            let mut fTemp14: F64 = fTemp0 * self.fRec11[0];
+            self.fVec3[(self.IOTA0 & 32767) as usize] = fTemp14;
+            let mut fTemp15: F64 = F64::abs(fTemp14);
+            let mut fTemp16: F64 = fTemp1 * self.fRec11[0];
             self.fVec4[(self.IOTA0 & 32767) as usize] = fTemp16;
             let mut fTemp17: F64 = F64::abs(fTemp16);
             let mut fTemp18: F64 = 2e+01
                 * F64::log10(
-                    F64::max(2.2250738585072014e-308, F64::max(fTemp14, fTemp17)),
+                    F64::max(2.2250738585072014e-308, F64::max(fTemp15, fTemp17)),
                 );
             let mut iTemp19: i32 = ((fTemp18 > fSlow11) as i32)
                 + ((fTemp18 > fSlow9) as i32);
@@ -1042,12 +1027,12 @@ impl LambRs {
                         }),
                     )),
             );
-            let mut fTemp22: F64 = 3.0 * fTemp5;
+            let mut fTemp22: F64 = 3.0 * fTemp7;
             let mut fTemp23: F64 = 4.0 * (F64::max(0.25, self.fRec4[0]) + -0.25);
             let mut fTemp24: F64 = 9.0 - fTemp23;
             let mut fTemp25: F64 = self.fRec5[1] - self.fRec6[1];
             let mut fTemp26: F64 = (self
-                .iVec0[((i32::wrapping_sub(self.IOTA0, 19200)) & 32767) as usize])
+                .iVec2[((i32::wrapping_sub(self.IOTA0, 19200)) & 32767) as usize])
                 as F64;
             let mut fTemp27: F64 = (if (fTemp21 > self.fRec10[1]) as i32 != 0 {
                 F64::exp(
@@ -1102,8 +1087,8 @@ impl LambRs {
                                 * F64::powf(
                                     4503599627370496.0,
                                     1.0
-                                        - (F64::max(fTemp10, F64::min(fTemp11, fTemp25)) + fTemp9)
-                                            / fTemp8,
+                                        - (F64::max(fTemp12, F64::min(fTemp13, fTemp25)) + fTemp11)
+                                            / fTemp10,
                                 ),
                         )),
                 )
@@ -1116,10 +1101,10 @@ impl LambRs {
             let mut fTemp33: F64 = self.fRec5[0] - self.fRec6[0];
             let mut fTemp34: F64 = fSlow16 * F64::min(0.25, self.fRec4[0])
                 * (self.fRec6[0]
-                    + fTemp33 * (F64::max(fTemp10, F64::min(fTemp11, fTemp33)) + fTemp9)
-                        / fTemp8);
+                    + fTemp33 * (F64::max(fTemp12, F64::min(fTemp13, fTemp33)) + fTemp11)
+                        / fTemp10);
             let mut fTemp35: F64 = 2e+01
-                * F64::log10(F64::max(2.2250738585072014e-308, fTemp14));
+                * F64::log10(F64::max(2.2250738585072014e-308, fTemp15));
             let mut fTemp36: F64 = 2e+01
                 * F64::log10(F64::max(2.2250738585072014e-308, fTemp17));
             let mut fTemp37: F64 = F64::max(fTemp35, fTemp36);
@@ -4558,13 +4543,13 @@ impl LambRs {
             let mut fTemp729: F64 = self
                 .fVec35[((i32::wrapping_sub(self.IOTA0, iSlow78)) & 32767) as usize];
             self.fRec14[0] = fSlow80 + self.fConst4 * self.fRec14[1];
-            *output0 = 0.5
-                * self.fVec1[((i32::wrapping_sub(self.IOTA0, iSlow79)) & 32767) as usize]
-                * fTemp2
+            *io0 = 0.5
+                * self.fVec0[((i32::wrapping_sub(self.IOTA0, iSlow79)) & 32767) as usize]
+                * fTemp4
                 + self.fRec14[0]
                     * self
-                        .fVec2[((i32::wrapping_sub(self.IOTA0, iSlow79)) & 32767)
-                        as usize] * fTemp729 * fTemp4;
+                        .fVec3[((i32::wrapping_sub(self.IOTA0, iSlow79)) & 32767)
+                        as usize] * fTemp729 * fTemp6;
             let mut fTemp730: F64 = fTemp36 + fSlow17 * (fTemp37 - fTemp36);
             let mut iTemp731: i32 = ((fTemp730 > fSlow11) as i32)
                 + ((fTemp730 > fSlow9) as i32);
@@ -8099,14 +8084,14 @@ impl LambRs {
             );
             let mut fTemp1417: F64 = self
                 .fVec66[((i32::wrapping_sub(self.IOTA0, iSlow78)) & 32767) as usize];
-            *output1 = 0.5 * fTemp2
-                * self.fVec3[((i32::wrapping_sub(self.IOTA0, iSlow79)) & 32767) as usize]
-                + self.fRec14[0] * fTemp4
+            *io1 = 0.5 * fTemp4
+                * self.fVec1[((i32::wrapping_sub(self.IOTA0, iSlow79)) & 32767) as usize]
+                + self.fRec14[0] * fTemp6
                     * self
                         .fVec4[((i32::wrapping_sub(self.IOTA0, iSlow79)) & 32767)
                         as usize] * fTemp1417;
-            *output2 = fTemp3 + fTemp729 * fTemp4;
-            *output3 = fTemp3 + fTemp4 * fTemp1417;
+            *io2 = fTemp5 + fTemp729 * fTemp6;
+            *io3 = fTemp5 + fTemp6 * fTemp1417;
             self.IOTA0 = i32::wrapping_add(self.IOTA0, 1);
             self.fRec0[1] = self.fRec0[0];
             self.fRec4[1] = self.fRec4[0];
@@ -8570,7 +8555,7 @@ impl faust_ui::DiscriminantOf for UIActive {
 }
 pub mod meta {
     pub const AUTHOR: &'static str = "Bart Brouns";
-    pub const COMPILE_OPTIONS: &'static str = "-lang rust -ct 1 -cn LambRs -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0";
+    pub const COMPILE_OPTIONS: &'static str = "-lang rust -inpl -ct 1 -cn LambRs -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0";
     pub const FILENAME: &'static str = "lamb-rs-192k.dsp";
     pub const LAMB_DSP_AUTHOR: &'static str = "Bart Brouns";
     pub const LAMB_DSP_LICENSE: &'static str = "AGPLv3";

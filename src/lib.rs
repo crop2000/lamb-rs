@@ -94,11 +94,11 @@ impl DspVariant {
         }
     }
 
-    fn compute(&mut self, count: i32, inputs: &[&[f64]], outputs: &mut [&mut [f64]]) {
+    fn compute(&mut self, count: i32, buffers: &mut [&mut [f64]]) {
         match self {
-            Self::Dsp48k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), inputs, outputs),
-            Self::Dsp96k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), inputs, outputs),
-            Self::Dsp192k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), inputs, outputs),
+            Self::Dsp48k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), buffers),
+            Self::Dsp96k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), buffers),
+            Self::Dsp192k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), buffers),
         }
     }
 }
@@ -109,10 +109,8 @@ pub struct Lamb {
     dsp_variant: DspVariant,
 
     accum_buffer: TempBuffer,
-    temp_output_buffer_l: Box<[f64]>,
-    temp_output_buffer_r: Box<[f64]>,
-    temp_output_buffer_gr_l: Box<[f64]>,
-    temp_output_buffer_gr_r: Box<[f64]>,
+    temp_output_buffer_gr_l: [f64; MAX_SOUNDCARD_BUFFER_SIZE],
+    temp_output_buffer_gr_r: [f64; MAX_SOUNDCARD_BUFFER_SIZE],
 
     /// sample rate
     sample_rate: f32,
@@ -132,10 +130,8 @@ impl Default for Lamb {
             dsp_variant: DspVariant::default(),
             accum_buffer: TempBuffer::default(),
 
-            temp_output_buffer_l: f64::default_boxed_array::<MAX_SOUNDCARD_BUFFER_SIZE>(),
-            temp_output_buffer_r: f64::default_boxed_array::<MAX_SOUNDCARD_BUFFER_SIZE>(),
-            temp_output_buffer_gr_l: f64::default_boxed_array::<MAX_SOUNDCARD_BUFFER_SIZE>(),
-            temp_output_buffer_gr_r: f64::default_boxed_array::<MAX_SOUNDCARD_BUFFER_SIZE>(),
+            temp_output_buffer_gr_l: [0.0; MAX_SOUNDCARD_BUFFER_SIZE],
+            temp_output_buffer_gr_r: [0.0; MAX_SOUNDCARD_BUFFER_SIZE],
             sample_rate: 48000.0,
             bus_l: Default::default(),
             bus_r: Default::default(),
@@ -282,35 +278,23 @@ impl Plugin for Lamb {
         self.dsp_variant
             .set_param(UIActive::OutputGain, self.params.output_gain.value() as f64);
 
-        self.dsp_variant.compute(
-            count,
-            &self.accum_buffer.slice2d(),
-            &mut [
-                &mut self.temp_output_buffer_l,
-                &mut self.temp_output_buffer_r,
-                &mut self.temp_output_buffer_gr_l,
-                &mut self.temp_output_buffer_gr_r,
-            ],
-        );
+        let [io_buffer_l, io_buffer_r] = &mut self.accum_buffer.slice2d();
+        let buffers = &mut [
+            io_buffer_l,
+            io_buffer_r,
+            self.temp_output_buffer_gr_l.as_mut_slice(),
+            self.temp_output_buffer_gr_r.as_mut_slice(),
+        ];
+
+        self.dsp_variant.compute(count, buffers);
         let latency_samples = self.dsp_variant.get_param(UIPassive::Latency) as u32;
         context.set_latency_samples(latency_samples);
-
-        let output = buffer.as_slice();
-
-        self.temp_output_buffer_l
-            .iter()
-            .zip(output[0].iter_mut())
-            .for_each(|(i, o)| *o = *i as f32);
-        self.temp_output_buffer_r
-            .iter()
-            .zip(output[1].iter_mut())
-            .for_each(|(i, o)| *o = *i as f32);
 
         if self.params.editor_state.is_open() {
             if self.params.in_out.value() {
                 for i in 0..count as usize {
-                    self.bus_l.send(self.temp_output_buffer_l[i] as f32);
-                    self.bus_r.send(self.temp_output_buffer_r[i] as f32);
+                    self.bus_l.send(io_buffer_l[i] as f32);
+                    self.bus_r.send(io_buffer_r[i] as f32);
                 }
             } else {
                 // TODO: document why this is done by reversing the effect of the dsp
@@ -323,14 +307,10 @@ impl Plugin for Lamb {
                     10f32.powf(gain_db / 20.0)
                 };
                 for i in 0..count as usize {
-                    self.bus_l.send(
-                        (self.temp_output_buffer_l[i] / self.temp_output_buffer_gr_l[i]) as f32
-                            * gain,
-                    );
-                    self.bus_r.send(
-                        (self.temp_output_buffer_r[i] / self.temp_output_buffer_gr_r[i]) as f32
-                            * gain,
-                    );
+                    self.bus_l
+                        .send((io_buffer_l[i] / self.temp_output_buffer_gr_l[i]) as f32 * gain);
+                    self.bus_r
+                        .send((io_buffer_r[i] / self.temp_output_buffer_gr_r[i]) as f32 * gain);
                 }
             };
             for i in 0..count as usize {
