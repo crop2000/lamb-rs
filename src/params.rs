@@ -230,7 +230,7 @@ impl LambParams {
                 },
             )
             .with_unit(" dB")
-            .with_step_size(0.1),
+            .with_step_size(dsp_48k::UIActive::InputGain.step()),
             strength: FloatParam::new(
                 "ratio",
                 dsp_48k::UIActive::Strength.init(),
@@ -261,7 +261,7 @@ impl LambParams {
                 },
             )
             .with_unit(" ms")
-            .with_step_size(0.01)
+            .with_step_size(dsp_48k::UIActive::Attack.step())
             .non_automatable(),
             attack_shape: FloatParam::new(
                 "attack_shape",
@@ -271,7 +271,7 @@ impl LambParams {
                     max: dsp_48k::UIActive::AttackShape.max(),
                 },
             )
-            .with_step_size(0.01),
+            .with_step_size(dsp_48k::UIActive::AttackShape.step()),
             release: FloatParam::new(
                 "release",
                 dsp_48k::UIActive::Release.init(),
@@ -282,7 +282,7 @@ impl LambParams {
                 },
             )
             .with_unit(" ms")
-            .with_step_size(0.01),
+            .with_step_size(dsp_48k::UIActive::Release.step()),
             release_shape: FloatParam::new(
                 "release_shape",
                 dsp_48k::UIActive::ReleaseShape.init(),
@@ -291,7 +291,7 @@ impl LambParams {
                     max: dsp_48k::UIActive::ReleaseShape.max(),
                 },
             )
-            .with_step_size(0.01),
+            .with_step_size(dsp_48k::UIActive::ReleaseShape.step()),
             release_hold: FloatParam::new(
                 "release_hold",
                 dsp_48k::UIActive::ReleaseHold.init(),
@@ -301,7 +301,7 @@ impl LambParams {
                 },
             )
             .with_unit(" ms")
-            .with_step_size(0.01)
+            .with_step_size(dsp_48k::UIActive::ReleaseHold.step())
             .non_automatable(),
             knee: FloatParam::new(
                 "knee",
@@ -313,7 +313,7 @@ impl LambParams {
                 },
             )
             .with_unit(" dB")
-            .with_step_size(0.1),
+            .with_step_size(dsp_48k::UIActive::Knee.step()),
             link: FloatParam::new(
                 "link",
                 dsp_48k::UIActive::Link.init(),
@@ -323,7 +323,7 @@ impl LambParams {
                 },
             )
             .with_unit(" %")
-            .with_step_size(1.0),
+            .with_step_size(dsp_48k::UIActive::Link.step()),
             adaptive_release: FloatParam::new(
                 "adaptive_release",
                 dsp_48k::UIActive::AdaptiveRelease.init(),
@@ -333,7 +333,7 @@ impl LambParams {
                 },
             )
             .with_unit(" %")
-            .with_step_size(1.0),
+            .with_step_size(dsp_48k::UIActive::AdaptiveRelease.step()),
             lookahead: FloatParam::new(
                 "lookahead",
                 dsp_48k::UIActive::Lookahead.init(),
@@ -343,7 +343,7 @@ impl LambParams {
                 },
             )
             .with_unit(" %")
-            .with_step_size(1.0)
+            .with_step_size(dsp_48k::UIActive::Lookahead.step())
             .non_automatable(),
             output_gain: FloatParam::new(
                 "output_gain",
@@ -354,7 +354,7 @@ impl LambParams {
                 },
             )
             .with_unit(" dB")
-            .with_step_size(0.1),
+            .with_step_size(dsp_48k::UIActive::OutputGain.step()),
             zoom_mode: EnumParam::new("zoom_mode", ZoomMode::Relative)
                 .hide()
                 .hide_in_generic_ui(),
