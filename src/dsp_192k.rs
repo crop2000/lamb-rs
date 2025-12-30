@@ -27,14 +27,7 @@
 #![allow(clippy::significant_drop_tightening)]
 #![allow(clippy::cast_lossless)]
 use faust_types::*;
-#[derive(
-    Debug,
-    faust_traits::AssociatedFaustFloat,
-    faust_traits::InPlaceDsp,
-    faust_traits::InitDsp,
-    faust_ui::SetDsp,
-    faust_ui::UIEnumsDsp
-)]
+#[derive(Debug)]
 #[cfg_attr(feature = "default-boxed", derive(default_boxed::DefaultBoxed))]
 #[repr(C)]
 pub struct LambRs {
@@ -8157,6 +8150,54 @@ impl LambRs {
             self.fRec15[1] = self.fRec15[0];
             self.fRec16[1] = self.fRec16[0];
         }
+    }
+}
+impl faust_ui::UIEnumsDsp for LambRs {
+    type DA = UIActive;
+    type EA = UIActiveValue;
+    type DP = UIPassive;
+    type EP = UIPassiveValue;
+    type G = WidgetTree;
+}
+impl faust_ui::SetDsp for LambRs {
+    type E = UIActiveValue;
+    fn set(&mut self, value: &Self::E) {
+        faust_ui::UISelfSet::set(value, self);
+    }
+}
+impl faust_traits::AssociatedFaustFloat for LambRs {
+    type F = FaustFloat;
+}
+impl faust_traits::InitDsp for LambRs {
+    fn instance_init(&mut self, sample_rate: usize) {
+        self.instance_init(sample_rate as i32)
+    }
+}
+pub const IOS: usize = [
+    FAUST_INPUTS,
+    FAUST_OUTPUTS,
+][(FAUST_INPUTS < FAUST_OUTPUTS) as usize];
+impl faust_traits::InPlaceDsp for LambRs
+where
+    Self: faust_traits::AssociatedFaustFloat<F = FaustFloat>,
+{
+    fn compute(&mut self, count: usize, ios: &mut [&mut [Self::F]]) {
+        self.compute(count, ios)
+    }
+    fn compute_vec(&mut self, count: usize, ios: &mut [Vec<Self::F>]) {
+        self.compute(count, ios)
+    }
+    fn compute_vec_ref(&mut self, count: usize, ios: &mut [&mut Vec<Self::F>]) {
+        self.compute(count, ios)
+    }
+}
+impl<'a> LambRs {
+    pub fn as_inplace_dsp(
+        &'a mut self,
+    ) -> &'a mut dyn faust_traits::InPlaceDsp<
+        F = <LambRs as faust_traits::AssociatedFaustFloat>::F,
+    > {
+        self
     }
 }
 #[derive(
