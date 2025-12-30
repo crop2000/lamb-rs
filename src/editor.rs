@@ -1,17 +1,16 @@
-use crate::LambParams;
-use crate::ZoomMode;
-use nih_plug::prelude::Editor;
-use nih_plug_vizia::vizia::prelude::*;
-use nih_plug_vizia::vizia::vg;
-use nih_plug_vizia::widgets::*;
-use nih_plug_vizia::{assets, create_vizia_editor, ViziaState, ViziaTheming};
-use std::sync::Arc;
-
+use crate::{LambParams, params::ZoomMode};
 use cyma::{
     prelude::*,
     // utils::{HistogramBuffer, MinimaBuffer, PeakBuffer},
     visualizers::{Graph, Grid, Histogram, Meter, UnitRuler},
 };
+use nih_plug::prelude::Editor;
+use nih_plug_vizia::{
+    ViziaState, ViziaTheming, assets, create_vizia_editor,
+    vizia::{prelude::*, vg},
+    widgets::*,
+};
+use std::sync::Arc;
 
 // to align the grid with the controls:
 const METER_MIN: f32 = -52.3;

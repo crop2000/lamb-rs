@@ -1,10 +1,11 @@
-use crate::editor;
+use crate::{dsp_48k, editor};
+use faust_ui::UIRange;
 use nih_plug::prelude::*;
 use nih_plug_vizia::ViziaState;
 use std::sync::Arc;
 
 #[derive(Params)]
-pub(crate) struct LambParams {
+pub struct LambParams {
     // nr of params: 12
     #[id = "bypass"]
     pub bypass: BoolParam,
@@ -53,8 +54,8 @@ pub(crate) struct LambParams {
     pub editor_state: Arc<ViziaState>,
 }
 
-#[derive(Enum, Debug, PartialEq)]
-enum ZoomMode {
+#[derive(Enum, Debug, PartialEq, Eq)]
+pub enum ZoomMode {
     /// Don't show the length of the envelope, just the shape
     #[id = "shape"]
     #[name = "shape"]
@@ -69,8 +70,8 @@ enum ZoomMode {
     Absolute,
 }
 
-#[derive(Enum, Debug, PartialEq)]
-enum TimeScale {
+#[derive(Enum, Debug, PartialEq, Eq)]
+pub enum TimeScale {
     #[id = "1s"]
     #[name = "1 second"]
     OneSec,
@@ -104,7 +105,7 @@ impl TimeScale {
     }
 }
 
-#[derive(Enum, Debug, PartialEq)]
+#[derive(Enum, Debug, PartialEq, Eq)]
 pub enum LatencyMode {
     /// Minimal, but variable latency
     #[id = "minimal"]
