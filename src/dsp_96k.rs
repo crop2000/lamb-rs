@@ -8026,6 +8026,7 @@ impl faust_ui::UIName for UIActive {
 }
 impl faust_ui::UIToActiveValue for UIActive {
     type D = LambRs;
+    #[inline]
     fn value(
         &self,
         value: <Self::D as faust_traits::AssociatedFaustFloat>::F,
@@ -8178,20 +8179,16 @@ impl faust_ui::UIName for UIPassive {
         }
     }
 }
-impl UIPassive {
-    pub fn value(&self, value: FaustFloat) -> UIPassiveValue {
-        match self {
-            Self::Latency => UIPassiveValue::Latency(value),
-        }
-    }
-}
 impl faust_ui::UIToPassiveValue for UIPassive {
     type D = LambRs;
+    #[inline]
     fn value(
         &self,
         value: <Self::D as faust_traits::AssociatedFaustFloat>::F,
     ) -> <Self::D as faust_ui::UIEnumsDsp>::EP {
-        unreachable!()
+        match self {
+            UIPassive::Latency => UIPassiveValue::Latency(value),
+        }
     }
 }
 impl strum::VariantArray for UIPassiveValue {
