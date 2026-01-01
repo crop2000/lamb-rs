@@ -1,8 +1,19 @@
-#![warn(clippy::nursery)]
+#![warn(
+    clippy::all,
+    // clippy::restriction,
+    clippy::pedantic,
+    clippy::nursery,
+    // clippy::cargo
+    unused_crate_dependencies,
+    clippy::unwrap_used
+)]
+#![allow(clippy::missing_panics_doc)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::cast_possible_truncation)]
+
 use faust_ui::{UIGet, UISet};
 use nih_plug::prelude::*;
 use std::sync::Arc;
-mod buffer;
 mod dsp_192k;
 mod dsp_48k;
 mod dsp_96k;
@@ -10,8 +21,6 @@ use crate::{
     dsp_48k::{UIActive, UIPassive},
     params::{LambParams, LatencyMode},
 };
-use buffer::*;
-// use cyma::utils::{HistogramBuffer, MinimaBuffer, PeakBuffer, VisualizerBuffer};
 use cyma::prelude::*;
 use default_boxed::DefaultBoxed;
 
@@ -89,19 +98,19 @@ impl DspVariant {
         match self {
             Self::Dsp48k(dsp) => param.set(dsp, value),
             Self::Dsp96k(dsp) => {
-                std::convert::Into::<dsp_96k::UIActive>::into(param).set(dsp, value)
+                std::convert::Into::<dsp_96k::UIActive>::into(param).set(dsp, value);
             }
             Self::Dsp192k(dsp) => {
-                std::convert::Into::<dsp_192k::UIActive>::into(param).set(dsp, value)
+                std::convert::Into::<dsp_192k::UIActive>::into(param).set(dsp, value);
             }
         }
     }
 
-    fn compute(&mut self, count: i32, buffers: &mut [&mut [f64]]) {
+    fn compute(&mut self, count: usize, buffers: &mut [&mut [f64]]) {
         match self {
-            Self::Dsp48k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), buffers),
-            Self::Dsp96k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), buffers),
-            Self::Dsp192k(ref mut dsp) => dsp.compute(count.try_into().unwrap(), buffers),
+            Self::Dsp48k(ref mut dsp) => dsp.compute(count, buffers),
+            Self::Dsp96k(ref mut dsp) => dsp.compute(count, buffers),
+            Self::Dsp192k(ref mut dsp) => dsp.compute(count, buffers),
         }
     }
 }
@@ -111,7 +120,7 @@ pub struct Lamb {
     // dsp_holder: DspHolder,
     dsp_variant: DspVariant,
 
-    accum_buffer: TempBuffer,
+    accum_buffer: [[f64; MAX_SOUNDCARD_BUFFER_SIZE]; 2],
     temp_output_buffer_gr_l: [f64; MAX_SOUNDCARD_BUFFER_SIZE],
     temp_output_buffer_gr_r: [f64; MAX_SOUNDCARD_BUFFER_SIZE],
 
@@ -126,21 +135,24 @@ pub struct Lamb {
     histogram_bus: Arc<MonoBus>,
 }
 impl Default for Lamb {
+    #[allow(clippy::large_stack_frames)]
     fn default() -> Self {
         Self {
             params: Arc::new(LambParams::new()),
 
             dsp_variant: DspVariant::default(),
-            accum_buffer: TempBuffer::default(),
-
+            #[allow(clippy::large_stack_arrays)]
+            accum_buffer: [[0.0; MAX_SOUNDCARD_BUFFER_SIZE]; 2],
+            #[allow(clippy::large_stack_arrays)]
             temp_output_buffer_gr_l: [0.0; MAX_SOUNDCARD_BUFFER_SIZE],
+            #[allow(clippy::large_stack_arrays)]
             temp_output_buffer_gr_r: [0.0; MAX_SOUNDCARD_BUFFER_SIZE],
             sample_rate: 48000.0,
-            bus_l: Default::default(),
-            bus_r: Default::default(),
-            gr_bus_l: Default::default(),
-            gr_bus_r: Default::default(),
-            histogram_bus: Default::default(),
+            bus_l: Arc::default(),
+            bus_r: Arc::default(),
+            gr_bus_l: Arc::default(),
+            gr_bus_r: Arc::default(),
+            histogram_bus: Arc::default(),
         }
     }
 }
@@ -188,7 +200,7 @@ impl Plugin for Lamb {
         buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
-        self.accum_buffer.resize(2, MAX_SOUNDCARD_BUFFER_SIZE);
+        // self.accum_buffer.resize(2, MAX_SOUNDCARD_BUFFER_SIZE);
         self.sample_rate = buffer_config.sample_rate;
         // TODO: make sample_rate a local variable to speed this up?
         self.bus_l.set_sample_rate(buffer_config.sample_rate);
@@ -229,13 +241,20 @@ impl Plugin for Lamb {
         _aux: &mut AuxiliaryBuffers,
         context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
-        let count = buffer.samples() as i32;
-        self.accum_buffer.read_from_buffer(buffer);
+        let count = buffer.samples();
+        // self.accum_buffer.read_from_buffer(buffer);
+        for (buffer_channel, self_channel) in buffer
+            .as_slice_immutable()
+            .iter()
+            .zip(self.accum_buffer.iter_mut())
+        {
+            for (buffer_sample, self_sample) in buffer_channel.iter().zip(self_channel) {
+                // TODO: Add f64 support to nih-plug
+                *self_sample = f64::from(*buffer_sample);
+            }
+        }
 
-        let bypass: f64 = match self.params.bypass.value() {
-            true => 1.0,
-            false => 0.0,
-        };
+        let bypass: f64 = if self.params.bypass.value() { 1.0 } else { 0.0 };
         self.dsp_variant.set_param(UIActive::Bypass, bypass);
 
         let latency_mode: f64 = match self.params.latency_mode.value() {
@@ -245,41 +264,41 @@ impl Plugin for Lamb {
         self.dsp_variant
             .set_param(UIActive::FixedLatency, latency_mode);
         self.dsp_variant
-            .set_param(UIActive::InputGain, self.params.input_gain.value() as f64);
+            .set_param(UIActive::InputGain, self.params.input_gain.value().into());
         self.dsp_variant
-            .set_param(UIActive::Strength, self.params.strength.value() as f64);
+            .set_param(UIActive::Strength, self.params.strength.value().into());
         self.dsp_variant
-            .set_param(UIActive::Thresh, self.params.thresh.value() as f64);
+            .set_param(UIActive::Thresh, self.params.thresh.value().into());
         self.dsp_variant
-            .set_param(UIActive::Attack, self.params.attack.value() as f64);
+            .set_param(UIActive::Attack, self.params.attack.value().into());
         self.dsp_variant.set_param(
             UIActive::AttackShape,
-            self.params.attack_shape.value() as f64,
+            self.params.attack_shape.value().into(),
         );
         self.dsp_variant
-            .set_param(UIActive::Release, self.params.release.value() as f64);
+            .set_param(UIActive::Release, self.params.release.value().into());
         self.dsp_variant.set_param(
             UIActive::ReleaseShape,
-            self.params.release_shape.value() as f64,
+            self.params.release_shape.value().into(),
         );
         self.dsp_variant.set_param(
             UIActive::ReleaseHold,
-            self.params.release_hold.value() as f64,
+            self.params.release_hold.value().into(),
         );
         self.dsp_variant
-            .set_param(UIActive::Knee, self.params.knee.value() as f64);
+            .set_param(UIActive::Knee, self.params.knee.value().into());
         self.dsp_variant
-            .set_param(UIActive::Link, self.params.link.value() as f64);
+            .set_param(UIActive::Link, self.params.link.value().into());
         self.dsp_variant.set_param(
             UIActive::AdaptiveRelease,
-            self.params.adaptive_release.value() as f64,
+            self.params.adaptive_release.value().into(),
         );
         self.dsp_variant
-            .set_param(UIActive::Lookahead, self.params.lookahead.value() as f64);
+            .set_param(UIActive::Lookahead, self.params.lookahead.value().into());
         self.dsp_variant
-            .set_param(UIActive::OutputGain, self.params.output_gain.value() as f64);
+            .set_param(UIActive::OutputGain, self.params.output_gain.value().into());
 
-        let [io_buffer_l, io_buffer_r] = &mut self.accum_buffer.slice2d();
+        let [io_buffer_l, io_buffer_r] = &mut self.accum_buffer;
         let buffers = &mut [
             io_buffer_l,
             io_buffer_r,
@@ -293,7 +312,7 @@ impl Plugin for Lamb {
 
         if self.params.editor_state.is_open() {
             if self.params.in_out.value() {
-                for i in 0..count as usize {
+                for i in 0..count {
                     self.bus_l.send(io_buffer_l[i] as f32);
                     self.bus_r.send(io_buffer_r[i] as f32);
                 }
@@ -307,14 +326,14 @@ impl Plugin for Lamb {
                 } else {
                     10f32.powf(gain_db / 20.0)
                 };
-                for i in 0..count as usize {
+                for i in 0..count {
                     self.bus_l
                         .send((io_buffer_l[i] / self.temp_output_buffer_gr_l[i]) as f32 * gain);
                     self.bus_r
                         .send((io_buffer_r[i] / self.temp_output_buffer_gr_r[i]) as f32 * gain);
                 }
-            };
-            for i in 0..count as usize {
+            }
+            for i in 0..count {
                 self.gr_bus_l.send(self.temp_output_buffer_gr_l[i] as f32);
                 self.gr_bus_r.send(self.temp_output_buffer_gr_r[i] as f32);
             }

@@ -1,3 +1,6 @@
+#![allow(clippy::expl_impl_clone_on_copy)]
+#![allow(clippy::cast_precision_loss)]
+
 use crate::{LambParams, params::ZoomMode};
 use cyma::{
     prelude::*,
@@ -8,7 +11,9 @@ use nih_plug::prelude::Editor;
 use nih_plug_vizia::{
     ViziaState, ViziaTheming, assets, create_vizia_editor,
     vizia::{prelude::*, vg},
-    widgets::*,
+    widgets::{
+        ParamButton, ParamButtonExt, ParamSlider, ParamSliderExt, ParamSliderStyle, ResizeHandle,
+    },
 };
 use std::sync::Arc;
 
@@ -44,6 +49,7 @@ pub fn default_state() -> Arc<ViziaState> {
     ViziaState::new(|| (1280, 720))
 }
 
+#[allow(clippy::too_many_lines)]
 pub fn create(
     params: Arc<LambParams>,
     editor_state: Arc<ViziaState>,
@@ -278,7 +284,34 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
         Some("attack-release-graph")
     }
 
+    #[allow(clippy::too_many_lines)]
     fn draw(&self, cx: &mut DrawContext, canvas: &mut Canvas) {
+        // Based on an algorithm by Dario Sanfilippo:
+        // https://www.desmos.com/calculator/2hxvf9q194
+        // Adapted by Bart Brouns:
+        // https://www.desmos.com/calculator/ubmqgogu2s
+        // simplified:
+        // https://www.desmos.com/calculator/yiwvcjiony
+        fn sine(x: f32) -> f32 {
+            let pi = std::f32::consts::PI;
+            let xpi = x.mul_add(pi, 1.5 * pi);
+            f32::midpoint(xpi.sin(), 1.0)
+        }
+        fn fxk(k: f32, x: f32) -> f32 {
+            match k {
+                0.0 => x,
+                _ => (1.0 - ((k * x).exp())) / (1.0 - k.exp()),
+            }
+        }
+        fn fm1m2(c: f32, x: f32) -> f32 {
+            fxk(2.42 * (c), x)
+        }
+        fn c2(c: f32, x: f32) -> f32 {
+            sine(fm1m2(c, x))
+        }
+        fn curve(c: f32, x: f32) -> f32 {
+            c2(c.powf(0.42f32.mul_add(c, 1.0)), x)
+        }
         // Get the bounding box of the current view.
         let bounds = cx.bounds();
         let attack = self.attack_release_data.get(cx).attack.value();
@@ -304,33 +337,6 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
 
         let max_attack = 50.0;
         let max_release = 500.0;
-
-        // Based on an algorithm by Dario Sanfilippo:
-        // https://www.desmos.com/calculator/2hxvf9q194
-        // Adapted by Bart Brouns:
-        // https://www.desmos.com/calculator/ubmqgogu2s
-        // simplified:
-        // https://www.desmos.com/calculator/yiwvcjiony
-        fn sine(x: f32) -> f32 {
-            let pi = std::f32::consts::PI;
-            let xpi = x.mul_add(pi, 1.5 * pi);
-            (xpi.sin() + 1.0) / 2.0
-        }
-        fn fxk(k: f32, x: f32) -> f32 {
-            match k {
-                0.0 => x,
-                _ => (1.0 - ((k * x).exp())) / (1.0 - k.exp()),
-            }
-        }
-        fn fm1m2(c: f32, x: f32) -> f32 {
-            fxk(2.42 * (c), x)
-        }
-        fn c2(c: f32, x: f32) -> f32 {
-            sine(fm1m2(c, x))
-        }
-        fn curve(c: f32, x: f32) -> f32 {
-            c2(c.powf(0.42f32.mul_add(c, 1.0)), x)
-        }
 
         // Fill with background color
         let mut path = vg::Path::new();
@@ -362,12 +368,13 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
                     ZoomMode::Absolute => w * max_attack / (max_attack + max_release),
                 };
 
-                let mut start = 0.0;
-                let mut end = w;
-                if zoom_mode == ZoomMode::Absolute {
-                    start = ((max_attack - attack) / max_attack) * center;
-                    end = (release / max_release).mul_add(w - center, center);
-                }
+                let (start, end) = if zoom_mode == ZoomMode::Absolute {
+                    let start = ((max_attack - attack) / max_attack) * center;
+                    let end = (release / max_release).mul_add(w - center, center);
+                    (start, end)
+                } else {
+                    (0.0, w)
+                };
 
                 let mut path = vg::Path::new();
                 // start of the graph
@@ -408,6 +415,7 @@ impl<AttackReleaseDataL: Lens<Target = Arc<LambParams>>> View
 }
 
 /// Draws a peak graph with a grid backdrop, unit ruler, and a peak meter to side.
+#[allow(clippy::too_many_lines)]
 fn peak_graph(
     cx: &mut Context,
     bus_l: Arc<MonoBus>,

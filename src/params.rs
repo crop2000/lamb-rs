@@ -74,33 +74,33 @@ pub enum ZoomMode {
 pub enum TimeScale {
     #[id = "1s"]
     #[name = "1 second"]
-    OneSec,
+    One,
     #[id = "2s"]
     #[name = "2 seconds"]
-    TwoSec,
+    Two,
     #[id = "4s"]
     #[name = "4 seconds"]
-    FourSec,
+    Four,
     #[id = "8s"]
     #[name = "8 seconds"]
-    EightSec,
+    Eight,
     #[id = "16s"]
     #[name = "16 seconds"]
-    SixteenSec,
+    Sixteen,
     #[id = "32s"]
     #[name = "32 seconds"]
-    ThirtytwoSec,
+    Thirtytwo,
 }
 
 impl TimeScale {
     pub const fn to_seconds(&self) -> f32 {
         match self {
-            Self::OneSec => 1.0,
-            Self::TwoSec => 2.0,
-            Self::FourSec => 4.0,
-            Self::EightSec => 8.0,
-            Self::SixteenSec => 16.0,
-            Self::ThirtytwoSec => 32.0,
+            Self::One => 1.0,
+            Self::Two => 2.0,
+            Self::Four => 4.0,
+            Self::Eight => 8.0,
+            Self::Sixteen => 16.0,
+            Self::Thirtytwo => 32.0,
         }
     }
 }
@@ -117,66 +117,62 @@ pub enum LatencyMode {
     Fixed,
 }
 
-/// Format a positive number as a compression ratio. A value of 4 will be formatted as `4.0:1` while
-/// 0.25 is formatted as `1:4.0`.
-pub fn v2s_compression_ratio(digits: usize) -> Arc<dyn Fn(f32) -> String + Send + Sync> {
-    Arc::new(move |value| {
-        if value >= 1.0 {
-            format!("{value:.digits$}:1")
-        } else {
-            format!("1:{:.digits$}", value.recip())
-        }
-    })
-}
+// /// Format a positive number as a compression ratio. A value of 4 will be formatted as `4.0:1` while
+// /// 0.25 is formatted as `1:4.0`.
+// pub fn v2s_compression_ratio(digits: usize) -> Arc<dyn Fn(f32) -> String + Send + Sync> {
+//     Arc::new(move |value| {
+//         if value >= 1.0 {
+//             format!("{value:.digits$}:1")
+//         } else {
+//             format!("1:{:.digits$}", value.recip())
+//         }
+//     })
+// }
 
 /// take an f32 compression strength value and turn it into a ratio string
-pub fn strength_to_ratio() -> Arc<dyn Fn(f32) -> String + Send + Sync> {
-    Arc::new(move |value| {
-        if value < 100.0 {
-            // value is in %, to make it look ok in the faust version
-            let strength = value * 0.01;
-            let ratio = 1.0 / (1.0 - strength);
-            if ratio <= 10.0 {
-                format!("{ratio:.2}:1")
-            } else if ratio <= 100.0 {
-                format!("{ratio:.1}:1")
-            } else {
-                "100:1".to_string()
-            }
+pub fn strength_to_ratio(value: f32) -> String {
+    if value < 100.0 {
+        // value is in %, to make it look ok in the faust version
+        let strength = value * 0.01;
+        let ratio = 1.0 / (1.0 - strength);
+        if ratio <= 10.0 {
+            format!("{ratio:.2}:1")
+        } else if ratio <= 100.0 {
+            format!("{ratio:.1}:1")
         } else {
-            "inf:1".to_string()
+            "100:1".to_string()
         }
-    })
+    } else {
+        "inf:1".to_string()
+    }
 }
 
 /// take a ratio string and turn it into an f32 compression strength value
-pub fn ratio_to_strength() -> Arc<dyn Fn(&str) -> Option<f32> + Send + Sync> {
-    Arc::new(|string| {
-        let string = string.trim();
-        string
-            .trim()
-            .split_once(':')
-            .and_then(|(numerator, denominator)| {
-                let numerator: f32 = numerator.trim().parse().ok()?;
-                let denominator: f32 = denominator.trim().parse().ok()?;
-                let ratio = (numerator / denominator).max(1.0);
-                let strength = 1.0 - (1.0 / ratio);
-                let percentage = strength * 100.0;
-                Some(percentage)
-            })
-            // Just parse the value directly if it doesn't contain a colon
-            .or_else(|| {
-                string
-                    .parse::<f32>()
-                    .ok()
-                    .map(|value| {
-                        let strength = 1.0 - (1.0 / value.max(1.0));
-                        strength * 100.0
-                        // if parsing fails, we assume inf:1 was meant
-                    })
-                    .or(Some(100.0))
-            })
-    })
+pub fn ratio_to_strength(string: &str) -> Option<f32> {
+    let string = string.trim();
+    string
+        .trim()
+        .split_once(':')
+        .and_then(|(numerator, denominator)| {
+            let numerator: f32 = numerator.trim().parse().ok()?;
+            let denominator: f32 = denominator.trim().parse().ok()?;
+            let ratio = (numerator / denominator).max(1.0);
+            let strength = 1.0 - (1.0 / ratio);
+            let percentage = strength * 100.0;
+            Some(percentage)
+        })
+        // Just parse the value directly if it doesn't contain a colon
+        .or_else(|| {
+            string
+                .parse::<f32>()
+                .ok()
+                .map(|value| {
+                    let strength = 1.0 - (1.0 / value.max(1.0));
+                    strength * 100.0
+                    // if parsing fails, we assume inf:1 was meant
+                })
+                .or(Some(100.0))
+        })
 }
 
 // .with_value_to_string(bool_to_in_out())
@@ -184,33 +180,27 @@ pub fn ratio_to_strength() -> Arc<dyn Fn(&str) -> Option<f32> + Send + Sync> {
 // pub fn bool_to_in_out()
 
 /// Display 'post' or 'pre' depending on whether the parameter is true or false.
-pub fn v2s_bool_in_out() -> Arc<dyn Fn(bool) -> String + Send + Sync> {
-    Arc::new(move |value| {
-        if value {
-            String::from("post")
-        } else {
-            String::from("pre")
-        }
-    })
+pub fn v2s_bool_in_out(value: bool) -> String {
+    if value {
+        String::from("post")
+    } else {
+        String::from("pre")
+    }
 }
 
 /// Parse a string in the same format as [`v2s_bool_in_out()`].
-pub fn s2v_bool_in_out() -> Arc<dyn Fn(&str) -> Option<bool> + Send + Sync> {
-    Arc::new(|string| {
-        let string = string.trim();
-        if string.eq_ignore_ascii_case("post") {
-            Some(true)
-        } else if string.eq_ignore_ascii_case("pre") {
-            Some(false)
-        } else {
-            None
-        }
-    })
+pub fn s2v_bool_in_out(string: &str) -> Option<bool> {
+    let string = string.trim();
+    if string.eq_ignore_ascii_case("post") {
+        Some(true)
+    } else if string.eq_ignore_ascii_case("pre") {
+        Some(false)
+    } else {
+        None
+    }
 }
 
-// impl LambParams {
-// impl Default for LambParams {
-// fn default() -> Self {
+#[allow(clippy::too_many_lines)]
 impl LambParams {
     pub fn new() -> Self {
         Self {
@@ -239,8 +229,8 @@ impl LambParams {
                     max: dsp_48k::UIActive::Strength.max(),
                 },
             )
-            .with_value_to_string(strength_to_ratio())
-            .with_string_to_value(ratio_to_strength()),
+            .with_value_to_string(Arc::new(strength_to_ratio))
+            .with_string_to_value(Arc::new(ratio_to_strength)),
             thresh: FloatParam::new(
                 "thresh",
                 dsp_48k::UIActive::Thresh.init(),
@@ -358,12 +348,12 @@ impl LambParams {
             zoom_mode: EnumParam::new("zoom_mode", ZoomMode::Relative)
                 .hide()
                 .hide_in_generic_ui(),
-            time_scale: EnumParam::new("time_scale", TimeScale::FourSec)
+            time_scale: EnumParam::new("time_scale", TimeScale::Four)
                 .hide()
                 .hide_in_generic_ui(),
             in_out: BoolParam::new("in_out", true)
-                .with_value_to_string(v2s_bool_in_out())
-                .with_string_to_value(s2v_bool_in_out())
+                .with_value_to_string(Arc::new(v2s_bool_in_out))
+                .with_string_to_value(Arc::new(s2v_bool_in_out))
                 .hide()
                 .hide_in_generic_ui(),
             show_left: BoolParam::new("show_left", true)
