@@ -1,3 +1,13 @@
+#![warn(
+    clippy::all,
+    // clippy::restriction,
+    clippy::pedantic,
+    clippy::nursery,
+    // clippy::cargo
+    unused_crate_dependencies,
+    clippy::unwrap_used
+)]
+
 #[cfg(feature = "faust-rebuild")]
 use faust_build::code_option::CodeOption;
 

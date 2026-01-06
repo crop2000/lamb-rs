@@ -7623,6 +7623,27 @@ impl faust_ui::UIName for UIActive {
         }
     }
 }
+impl faust_ui::UIShapeTrait for UIActive {
+    fn shape(&self) -> faust_ui::UIShape {
+        match self {
+            UIActive::Bypass => faust_ui::UIShape::CheckBox,
+            UIActive::FixedLatency => faust_ui::UIShape::CheckBox,
+            UIActive::InputGain => faust_ui::UIShape::HSlider,
+            UIActive::Strength => faust_ui::UIShape::HSlider,
+            UIActive::Thresh => faust_ui::UIShape::HSlider,
+            UIActive::Attack => faust_ui::UIShape::HSlider,
+            UIActive::AttackShape => faust_ui::UIShape::HSlider,
+            UIActive::Release => faust_ui::UIShape::HSlider,
+            UIActive::ReleaseShape => faust_ui::UIShape::HSlider,
+            UIActive::ReleaseHold => faust_ui::UIShape::HSlider,
+            UIActive::Knee => faust_ui::UIShape::HSlider,
+            UIActive::Link => faust_ui::UIShape::HSlider,
+            UIActive::AdaptiveRelease => faust_ui::UIShape::HSlider,
+            UIActive::Lookahead => faust_ui::UIShape::HSlider,
+            UIActive::OutputGain => faust_ui::UIShape::HSlider,
+        }
+    }
+}
 impl faust_ui::UIToActiveValue for UIActive {
     type D = LambRs;
     #[inline]
@@ -7775,6 +7796,13 @@ impl faust_ui::UIName for UIPassive {
     fn name(&self) -> String {
         match self {
             UIPassive::Latency => "Latency".to_owned(),
+        }
+    }
+}
+impl faust_ui::UIShapeTrait for UIPassive {
+    fn shape(&self) -> faust_ui::UIShape {
+        match self {
+            UIPassive::Latency => faust_ui::UIShape::HBarGraph,
         }
     }
 }
