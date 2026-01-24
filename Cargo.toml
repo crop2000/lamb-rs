@@ -9,8 +9,9 @@ version     = "2.1.1"
 
 [features]
 # default       = ["default-boxed", "faust-rebuild"]
-default       = ["default-boxed"]
-default-boxed = ["dep:default-boxed"]
+# default = ["default-boxed"]
+default = []
+# default-boxed = ["dep:default-boxed"]
 faust-rebuild = ["dep:faust-build", "dep:faust-ui-build"]
 
 # [workspace]
@@ -28,12 +29,11 @@ nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 
 
 faust-traits = { path = "../../../faust-traits" }
-faust-types  = { path = "../../../faust-types" }
 faust-ui     = { path = "../../../faust-ui" }
 
-default-boxed      = { workspace = true, optional = true }
-nih_plug.workspace = true
-strum.workspace    = true
+default-boxed.workspace = true
+nih_plug.workspace      = true
+strum.workspace         = true
 
 # [profile.release]
 # lto   = "thin"
@@ -48,5 +48,6 @@ strum.workspace    = true
 # opt-level = 3
 
 [build-dependencies]
-faust-build    = { path = "../../../faust-build", optional = true }
-faust-ui-build = { path = "../../../faust-ui-build", optional = true }
+faust-build     = { path = "../../../faust-build", optional = true }
+faust-ui-build  = { path = "../../../faust-ui-build", optional = true }
+quote.workspace = true
