@@ -48,6 +48,5 @@ strum.workspace         = true
 # opt-level = 3
 
 [build-dependencies]
-faust-build     = { path = "../../../faust-build", optional = true }
-faust-ui-build  = { path = "../../../faust-ui-build", optional = true }
-quote.workspace = true
+faust-build    = { path = "../../../faust-build", optional = true }
+faust-ui-build = { path = "../../../faust-ui-build", optional = true }
