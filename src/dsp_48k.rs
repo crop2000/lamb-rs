@@ -11,6 +11,8 @@
 #![allow(clippy::nursery)]
 #![allow(clippy::unwrap_used)]
 #![allow(clippy::too_many_lines)]
+#[allow(unused)]
+use libm::{remainder, rint, remainderf, rintf};
 use faust_traits::*;
 #[derive(Debug, default_boxed::DefaultBoxed)]
 #[repr(C)]
@@ -142,33 +144,30 @@ impl LambRsSIG0 {
         for i1 in 0..count {
             self.iRec13[0] = i32::wrapping_add(self.iRec13[1], 1);
             let mut fTemp64: F64 = (self.iRec13[1] % 7) as F64 as i32 as F64;
-            let mut fTemp65: F64 = (0.16666666666666666 as F64) * fTemp64;
+            let mut fTemp65: F64 = 0.16666666666666666 * fTemp64;
             let mut fTemp66: F64 = F64::powf(
                 fTemp65,
-                (0.06999999999999999 as F64) * fTemp64 + (1.0 as F64),
+                0.06999999999999999 * fTemp64 + 1.0,
             );
-            let mut fTemp67: F64 = ((0.14285714285714285 as F64)
+            let mut fTemp67: F64 = (0.14285714285714285
                 * (self.iRec13[1] % 917504) as F64) as i32 as F64;
             table[i1 as usize] = F64::min(
-                (1.0 as F64),
+                1.0,
                 F64::max(
-                    (0.0 as F64),
-                    (if (fTemp65 == (0.0 as F64)) as i32 != 0 {
-                        (0.5 as F64)
+                    0.0,
+                    (if (fTemp65 == 0.0) as i32 != 0 {
+                        0.5
                             * (F64::sin(
-                                (2.396863267686821e-05 as F64) * fTemp67
-                                    + (4.71238898038469 as F64),
-                            ) + (1.0 as F64))
+                                2.396863267686821e-05 * fTemp67 + 4.71238898038469,
+                            ) + 1.0)
                     } else {
-                        (0.5 as F64)
+                        0.5
                             * (F64::sin(
-                                (3.141592653589793 as F64)
-                                    * (((1.0 as F64)
-                                        - F64::exp(
-                                            -((1.8463275629239114e-05 as F64) * fTemp66 * fTemp67),
-                                        )) / ((1.0 as F64) - F64::exp(-((2.42 as F64) * fTemp66))))
-                                    + (4.71238898038469 as F64),
-                            ) + (1.0 as F64))
+                                3.141592653589793
+                                    * ((1.0
+                                        - F64::exp(-(1.8463275629239114e-05 * fTemp66 * fTemp67)))
+                                        / (1.0 - F64::exp(-(2.42 * fTemp66)))) + 4.71238898038469,
+                            ) + 1.0)
                     }),
                 ),
             );
@@ -188,23 +187,6 @@ fn LambRs_faustpower2_f(value: F64) -> F64 {
 static ftbl0LambRsSIG0: std::sync::RwLock<[F64; 917504]> = std::sync::RwLock::new(
     [0.0; 917504],
 );
-#[cfg(not(target_arch = "wasm32"))]
-mod ffi {
-    use std::os::raw::c_double;
-    #[cfg_attr(not(target_os = "windows"), link(name = "m"))]
-    unsafe extern "C" {
-        pub fn remainder(from: c_double, to: c_double) -> c_double;
-        pub fn rint(val: c_double) -> c_double;
-    }
-}
-fn remainder_f64(from: f64, to: f64) -> f64 {
-    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::remainder(from, to) }
-    #[cfg(target_arch = "wasm32")] libm::remainder(from, to)
-}
-fn rint_f64(val: f64) -> f64 {
-    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::rint(val) }
-    #[cfg(target_arch = "wasm32")] libm::rint(val)
-}
 pub const FAUST_INPUTS: usize = 2;
 pub const FAUST_OUTPUTS: usize = 4;
 pub const FAUST_ACTIVES: usize = 15;
@@ -380,270 +362,267 @@ impl LambRs {
         sig0.fillLambRsSIG0(917504, ftbl0LambRsSIG0_guard.as_mut());
     }
     pub fn instance_reset_params(&mut self) {
-        self.fCheckbox0 = ((0.0 as F64)) as FaustFloat;
-        self.fHslider0 = ((1e+02 as F64)) as FaustFloat;
-        self.fHslider1 = ((9.0 as F64)) as FaustFloat;
-        self.fHslider2 = ((5e+01 as F64)) as FaustFloat;
-        self.fHslider3 = ((1.0 as F64)) as FaustFloat;
-        self.fHslider4 = ((-1.0 as F64)) as FaustFloat;
-        self.fHslider5 = ((0.0 as F64)) as FaustFloat;
-        self.fHslider6 = ((6e+01 as F64)) as FaustFloat;
-        self.fHslider7 = ((1e+02 as F64)) as FaustFloat;
-        self.fHslider8 = ((0.0 as F64)) as FaustFloat;
-        self.fHslider9 = ((5e+01 as F64)) as FaustFloat;
-        self.fHslider10 = ((0.0 as F64)) as FaustFloat;
-        self.fHslider11 = ((0.5 as F64)) as FaustFloat;
-        self.fCheckbox1 = ((0.0 as F64)) as FaustFloat;
-        self.fHslider12 = ((0.0 as F64)) as FaustFloat;
+        self.fCheckbox0 = (0.0) as FaustFloat;
+        self.fHslider0 = (1e+02) as FaustFloat;
+        self.fHslider1 = (9.0) as FaustFloat;
+        self.fHslider2 = (5e+01) as FaustFloat;
+        self.fHslider3 = (1.0) as FaustFloat;
+        self.fHslider4 = (-1.0) as FaustFloat;
+        self.fHslider5 = (0.0) as FaustFloat;
+        self.fHslider6 = (6e+01) as FaustFloat;
+        self.fHslider7 = (1e+02) as FaustFloat;
+        self.fHslider8 = (0.0) as FaustFloat;
+        self.fHslider9 = (5e+01) as FaustFloat;
+        self.fHslider10 = (0.0) as FaustFloat;
+        self.fHslider11 = (0.5) as FaustFloat;
+        self.fCheckbox1 = (0.0) as FaustFloat;
+        self.fHslider12 = (0.0) as FaustFloat;
     }
     pub fn instance_clear(&mut self) {
         self.IOTA0 = 0;
         for l0 in 0..32768 {
-            self.fVec0[l0 as usize] = (0.0 as F64);
+            self.fVec0[l0 as usize] = 0.0;
         }
         for l1 in 0..32768 {
-            self.fVec1[l1 as usize] = (0.0 as F64);
+            self.fVec1[l1 as usize] = 0.0;
         }
         for l2 in 0..8192 {
             self.iVec2[l2 as usize] = 0;
         }
         for l3 in 0..2 {
-            self.fRec0[l3 as usize] = (0.0 as F64);
+            self.fRec0[l3 as usize] = 0.0;
         }
         for l4 in 0..2 {
-            self.fRec4[l4 as usize] = (0.0 as F64);
+            self.fRec4[l4 as usize] = 0.0;
         }
         for l5 in 0..2 {
-            self.fRec11[l5 as usize] = (0.0 as F64);
+            self.fRec11[l5 as usize] = 0.0;
         }
         for l6 in 0..32768 {
-            self.fVec3[l6 as usize] = (0.0 as F64);
+            self.fVec3[l6 as usize] = 0.0;
         }
         for l7 in 0..32768 {
-            self.fVec4[l7 as usize] = (0.0 as F64);
+            self.fVec4[l7 as usize] = 0.0;
         }
         for l8 in 0..2 {
-            self.fRec10[l8 as usize] = (0.0 as F64);
+            self.fRec10[l8 as usize] = 0.0;
         }
         for l9 in 0..2 {
-            self.fRec9[l9 as usize] = (0.0 as F64);
+            self.fRec9[l9 as usize] = 0.0;
         }
         for l10 in 0..2 {
-            self.fRec8[l10 as usize] = (0.0 as F64);
+            self.fRec8[l10 as usize] = 0.0;
         }
         for l11 in 0..2 {
-            self.fRec7[l11 as usize] = (0.0 as F64);
+            self.fRec7[l11 as usize] = 0.0;
         }
         for l12 in 0..2 {
-            self.fRec5[l12 as usize] = (0.0 as F64);
+            self.fRec5[l12 as usize] = 0.0;
         }
         for l13 in 0..2 {
-            self.fRec12[l13 as usize] = (0.0 as F64);
+            self.fRec12[l13 as usize] = 0.0;
         }
         for l14 in 0..2 {
-            self.fRec6[l14 as usize] = (0.0 as F64);
+            self.fRec6[l14 as usize] = 0.0;
         }
         for l15 in 0..16384 {
-            self.fVec5[l15 as usize] = (0.0 as F64);
+            self.fVec5[l15 as usize] = 0.0;
         }
         for l16 in 0..3 {
-            self.fVec6[l16 as usize] = (0.0 as F64);
+            self.fVec6[l16 as usize] = 0.0;
         }
         for l17 in 0..5 {
-            self.fVec7[l17 as usize] = (0.0 as F64);
+            self.fVec7[l17 as usize] = 0.0;
         }
         for l18 in 0..12 {
-            self.fVec8[l18 as usize] = (0.0 as F64);
+            self.fVec8[l18 as usize] = 0.0;
         }
         for l19 in 0..32 {
-            self.fVec9[l19 as usize] = (0.0 as F64);
+            self.fVec9[l19 as usize] = 0.0;
         }
         for l20 in 0..64 {
-            self.fVec10[l20 as usize] = (0.0 as F64);
+            self.fVec10[l20 as usize] = 0.0;
         }
         for l21 in 0..128 {
-            self.fVec11[l21 as usize] = (0.0 as F64);
+            self.fVec11[l21 as usize] = 0.0;
         }
         for l22 in 0..256 {
-            self.fVec12[l22 as usize] = (0.0 as F64);
+            self.fVec12[l22 as usize] = 0.0;
         }
         for l23 in 0..512 {
-            self.fVec13[l23 as usize] = (0.0 as F64);
+            self.fVec13[l23 as usize] = 0.0;
         }
         for l24 in 0..1024 {
-            self.fVec14[l24 as usize] = (0.0 as F64);
+            self.fVec14[l24 as usize] = 0.0;
         }
         for l25 in 0..2048 {
-            self.fVec15[l25 as usize] = (0.0 as F64);
+            self.fVec15[l25 as usize] = 0.0;
         }
         for l26 in 0..4096 {
-            self.fVec16[l26 as usize] = (0.0 as F64);
+            self.fVec16[l26 as usize] = 0.0;
         }
         for l27 in 0..2 {
-            self.fRec3[l27 as usize] = (0.0 as F64);
+            self.fRec3[l27 as usize] = 0.0;
         }
         for l28 in 0..3 {
-            self.fVec17[l28 as usize] = (0.0 as F64);
+            self.fVec17[l28 as usize] = 0.0;
         }
         for l29 in 0..5 {
-            self.fVec18[l29 as usize] = (0.0 as F64);
+            self.fVec18[l29 as usize] = 0.0;
         }
         for l30 in 0..12 {
-            self.fVec19[l30 as usize] = (0.0 as F64);
+            self.fVec19[l30 as usize] = 0.0;
         }
         for l31 in 0..32 {
-            self.fVec20[l31 as usize] = (0.0 as F64);
+            self.fVec20[l31 as usize] = 0.0;
         }
         for l32 in 0..64 {
-            self.fVec21[l32 as usize] = (0.0 as F64);
+            self.fVec21[l32 as usize] = 0.0;
         }
         for l33 in 0..128 {
-            self.fVec22[l33 as usize] = (0.0 as F64);
+            self.fVec22[l33 as usize] = 0.0;
         }
         for l34 in 0..256 {
-            self.fVec23[l34 as usize] = (0.0 as F64);
+            self.fVec23[l34 as usize] = 0.0;
         }
         for l35 in 0..512 {
-            self.fVec24[l35 as usize] = (0.0 as F64);
+            self.fVec24[l35 as usize] = 0.0;
         }
         for l36 in 0..1024 {
-            self.fVec25[l36 as usize] = (0.0 as F64);
+            self.fVec25[l36 as usize] = 0.0;
         }
         for l37 in 0..2048 {
-            self.fVec26[l37 as usize] = (0.0 as F64);
+            self.fVec26[l37 as usize] = 0.0;
         }
         for l38 in 0..4096 {
-            self.fVec27[l38 as usize] = (0.0 as F64);
+            self.fVec27[l38 as usize] = 0.0;
         }
         for l39 in 0..2 {
-            self.fVec28[l39 as usize] = (0.0 as F64);
+            self.fVec28[l39 as usize] = 0.0;
         }
         for l41 in 0..2 {
-            self.fVec29[l41 as usize] = (0.0 as F64);
+            self.fVec29[l41 as usize] = 0.0;
         }
         for l42 in 0..2 {
-            self.fVec30[l42 as usize] = (0.0 as F64);
+            self.fVec30[l42 as usize] = 0.0;
         }
         for l43 in 0..2 {
-            self.fRec1[l43 as usize] = (0.0 as F64);
+            self.fRec1[l43 as usize] = 0.0;
         }
         for l44 in 0..2 {
-            self.fRec2[l44 as usize] = (0.0 as F64);
+            self.fRec2[l44 as usize] = 0.0;
         }
         for l45 in 0..8192 {
-            self.fVec31[l45 as usize] = (0.0 as F64);
+            self.fVec31[l45 as usize] = 0.0;
         }
         for l46 in 0..2 {
-            self.fRec14[l46 as usize] = (0.0 as F64);
+            self.fRec14[l46 as usize] = 0.0;
         }
         for l47 in 0..16384 {
-            self.fVec32[l47 as usize] = (0.0 as F64);
+            self.fVec32[l47 as usize] = 0.0;
         }
         for l48 in 0..3 {
-            self.fVec33[l48 as usize] = (0.0 as F64);
+            self.fVec33[l48 as usize] = 0.0;
         }
         for l49 in 0..5 {
-            self.fVec34[l49 as usize] = (0.0 as F64);
+            self.fVec34[l49 as usize] = 0.0;
         }
         for l50 in 0..12 {
-            self.fVec35[l50 as usize] = (0.0 as F64);
+            self.fVec35[l50 as usize] = 0.0;
         }
         for l51 in 0..32 {
-            self.fVec36[l51 as usize] = (0.0 as F64);
+            self.fVec36[l51 as usize] = 0.0;
         }
         for l52 in 0..64 {
-            self.fVec37[l52 as usize] = (0.0 as F64);
+            self.fVec37[l52 as usize] = 0.0;
         }
         for l53 in 0..128 {
-            self.fVec38[l53 as usize] = (0.0 as F64);
+            self.fVec38[l53 as usize] = 0.0;
         }
         for l54 in 0..256 {
-            self.fVec39[l54 as usize] = (0.0 as F64);
+            self.fVec39[l54 as usize] = 0.0;
         }
         for l55 in 0..512 {
-            self.fVec40[l55 as usize] = (0.0 as F64);
+            self.fVec40[l55 as usize] = 0.0;
         }
         for l56 in 0..1024 {
-            self.fVec41[l56 as usize] = (0.0 as F64);
+            self.fVec41[l56 as usize] = 0.0;
         }
         for l57 in 0..2048 {
-            self.fVec42[l57 as usize] = (0.0 as F64);
+            self.fVec42[l57 as usize] = 0.0;
         }
         for l58 in 0..4096 {
-            self.fVec43[l58 as usize] = (0.0 as F64);
+            self.fVec43[l58 as usize] = 0.0;
         }
         for l59 in 0..2 {
-            self.fRec17[l59 as usize] = (0.0 as F64);
+            self.fRec17[l59 as usize] = 0.0;
         }
         for l60 in 0..3 {
-            self.fVec44[l60 as usize] = (0.0 as F64);
+            self.fVec44[l60 as usize] = 0.0;
         }
         for l61 in 0..5 {
-            self.fVec45[l61 as usize] = (0.0 as F64);
+            self.fVec45[l61 as usize] = 0.0;
         }
         for l62 in 0..12 {
-            self.fVec46[l62 as usize] = (0.0 as F64);
+            self.fVec46[l62 as usize] = 0.0;
         }
         for l63 in 0..32 {
-            self.fVec47[l63 as usize] = (0.0 as F64);
+            self.fVec47[l63 as usize] = 0.0;
         }
         for l64 in 0..64 {
-            self.fVec48[l64 as usize] = (0.0 as F64);
+            self.fVec48[l64 as usize] = 0.0;
         }
         for l65 in 0..128 {
-            self.fVec49[l65 as usize] = (0.0 as F64);
+            self.fVec49[l65 as usize] = 0.0;
         }
         for l66 in 0..256 {
-            self.fVec50[l66 as usize] = (0.0 as F64);
+            self.fVec50[l66 as usize] = 0.0;
         }
         for l67 in 0..512 {
-            self.fVec51[l67 as usize] = (0.0 as F64);
+            self.fVec51[l67 as usize] = 0.0;
         }
         for l68 in 0..1024 {
-            self.fVec52[l68 as usize] = (0.0 as F64);
+            self.fVec52[l68 as usize] = 0.0;
         }
         for l69 in 0..2048 {
-            self.fVec53[l69 as usize] = (0.0 as F64);
+            self.fVec53[l69 as usize] = 0.0;
         }
         for l70 in 0..4096 {
-            self.fVec54[l70 as usize] = (0.0 as F64);
+            self.fVec54[l70 as usize] = 0.0;
         }
         for l71 in 0..2 {
-            self.fVec55[l71 as usize] = (0.0 as F64);
+            self.fVec55[l71 as usize] = 0.0;
         }
         for l72 in 0..2 {
-            self.fVec56[l72 as usize] = (0.0 as F64);
+            self.fVec56[l72 as usize] = 0.0;
         }
         for l73 in 0..2 {
-            self.fVec57[l73 as usize] = (0.0 as F64);
+            self.fVec57[l73 as usize] = 0.0;
         }
         for l74 in 0..2 {
-            self.fRec15[l74 as usize] = (0.0 as F64);
+            self.fRec15[l74 as usize] = 0.0;
         }
         for l75 in 0..2 {
-            self.fRec16[l75 as usize] = (0.0 as F64);
+            self.fRec16[l75 as usize] = 0.0;
         }
         for l76 in 0..8192 {
-            self.fVec58[l76 as usize] = (0.0 as F64);
+            self.fVec58[l76 as usize] = 0.0;
         }
     }
     pub fn instance_constants(&mut self, sample_rate: i32) {
         let ftbl0LambRsSIG0_guard = ftbl0LambRsSIG0.read().unwrap();
         self.fSampleRate = sample_rate;
-        self.fConst0 = F64::min(
-            (1.92e+05 as F64),
-            F64::max((1.0 as F64), (self.fSampleRate) as F64),
-        );
-        self.fConst1 = (1e+02 as F64) / self.fConst0;
-        self.fConst2 = (1e-05 as F64) * self.fConst0;
-        self.fConst3 = (44.1 as F64) / self.fConst0;
-        self.fConst4 = (1.0 as F64) - self.fConst3;
-        self.fConst5 = (0.441 as F64) / self.fConst0;
-        self.fConst6 = F64::exp(-((6.505353649590627e+16 as F64) / self.fConst0));
-        self.fConst7 = (6.283185307179586 as F64) / self.fConst0;
-        self.fConst8 = F64::exp(-((2.829695100811376e+16 as F64) / self.fConst0));
-        self.fConst9 = (0.001 as F64) * self.fConst0;
-        self.fConst10 = (1e+03 as F64) / self.fConst0;
+        self.fConst0 = F64::min(1.92e+05, F64::max(1.0, (self.fSampleRate) as F64));
+        self.fConst1 = 1e+02 / self.fConst0;
+        self.fConst2 = 1e-05 * self.fConst0;
+        self.fConst3 = 44.1 / self.fConst0;
+        self.fConst4 = 1.0 - self.fConst3;
+        self.fConst5 = 0.441 / self.fConst0;
+        self.fConst6 = F64::exp(-(6.505353649590627e+16 / self.fConst0));
+        self.fConst7 = 6.283185307179586 / self.fConst0;
+        self.fConst8 = F64::exp(-(2.829695100811376e+16 / self.fConst0));
+        self.fConst9 = 0.001 * self.fConst0;
+        self.fConst10 = 1e+03 / self.fConst0;
     }
     pub fn instance_init(&mut self, sample_rate: i32) {
         self.instance_constants(sample_rate);
@@ -786,130 +765,122 @@ impl LambRs {
         let mut fSlow0: F64 = (self.fCheckbox0) as F64;
         let mut fSlow1: F64 = (self.fHslider1) as F64;
         let mut fSlow2: F64 = fSlow1 * (self.fHslider0) as F64;
-        let mut fSlow3: F64 = self.fConst2 * fSlow2 + (1.0 as F64);
+        let mut fSlow3: F64 = self.fConst2 * fSlow2 + 1.0;
         let mut iSlow4: i32 = (F64::floor(fSlow3)) as i32 % 2;
         let mut fSlow5: F64 = self.fConst5 * (self.fHslider2) as F64;
         let mut fSlow6: F64 = (self.fHslider3) as F64;
-        let mut fSlow7: F64 = (0.5 as F64) * fSlow6;
+        let mut fSlow7: F64 = 0.5 * fSlow6;
         let mut fSlow8: F64 = (self.fHslider4) as F64;
         let mut fSlow9: F64 = fSlow8 + fSlow7;
         let mut fSlow10: F64 = self.fConst3
-            * F64::powf((1e+01 as F64), (0.05 as F64) * (self.fHslider5) as F64);
+            * F64::powf(1e+01, 0.05 * (self.fHslider5) as F64);
         let mut fSlow11: F64 = fSlow8 - fSlow7;
-        let mut fSlow12: F64 = (0.5 as F64)
-            / F64::max((2.220446049250313e-16 as F64), fSlow6);
+        let mut fSlow12: F64 = 0.5 / F64::max(2.220446049250313e-16, fSlow6);
         let mut fSlow13: F64 = (self.fHslider6) as F64;
-        let mut fSlow14: F64 = (0.001 as F64) * fSlow13;
+        let mut fSlow14: F64 = 0.001 * fSlow13;
         let mut fSlow15: F64 = (self.fHslider7) as F64;
-        let mut fSlow16: F64 = (0.04 as F64) * fSlow15;
-        let mut fSlow17: F64 = (0.01 as F64) * (self.fHslider8) as F64;
-        let mut fSlow18: F64 = (0.01 as F64) * fSlow15;
+        let mut fSlow16: F64 = 0.04 * fSlow15;
+        let mut fSlow17: F64 = 0.01 * (self.fHslider8) as F64;
+        let mut fSlow18: F64 = 0.01 * fSlow15;
         let mut fSlow19: F64 = (self.fHslider9) as F64;
         let mut fSlow20: F64 = self.fConst9 * fSlow19;
         let mut iSlow21: i32 = (fSlow20) as i32;
-        let mut fSlow22: F64 = fSlow20 + (1.0 as F64);
+        let mut fSlow22: F64 = fSlow20 + 1.0;
         let mut iSlow23: i32 = (F64::floor(fSlow22)) as i32 % 2;
-        let mut iSlow24: i32 = (F64::floor((0.5 as F64) * fSlow22)) as i32 % 2;
-        let mut iSlow25: i32 = (F64::floor((0.25 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow24: i32 = (F64::floor(0.5 * fSlow22)) as i32 % 2;
+        let mut iSlow25: i32 = (F64::floor(0.25 * fSlow22)) as i32 % 2;
         let mut iSlow26: i32 = i32::wrapping_add(iSlow23, i32::wrapping_mul(2, iSlow24));
-        let mut iSlow27: i32 = (F64::floor((0.125 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow27: i32 = (F64::floor(0.125 * fSlow22)) as i32 % 2;
         let mut iSlow28: i32 = i32::wrapping_add(iSlow26, i32::wrapping_mul(4, iSlow25));
-        let mut iSlow29: i32 = (F64::floor((0.0625 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow29: i32 = (F64::floor(0.0625 * fSlow22)) as i32 % 2;
         let mut iSlow30: i32 = i32::wrapping_add(iSlow28, i32::wrapping_mul(8, iSlow27));
-        let mut iSlow31: i32 = (F64::floor((0.03125 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow31: i32 = (F64::floor(0.03125 * fSlow22)) as i32 % 2;
         let mut iSlow32: i32 = i32::wrapping_add(
             iSlow30,
             i32::wrapping_mul(16, iSlow29),
         );
-        let mut iSlow33: i32 = (F64::floor((0.015625 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow33: i32 = (F64::floor(0.015625 * fSlow22)) as i32 % 2;
         let mut iSlow34: i32 = i32::wrapping_add(
             iSlow32,
             i32::wrapping_mul(32, iSlow31),
         );
-        let mut iSlow35: i32 = (F64::floor((0.0078125 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow35: i32 = (F64::floor(0.0078125 * fSlow22)) as i32 % 2;
         let mut iSlow36: i32 = i32::wrapping_add(
             iSlow34,
             i32::wrapping_mul(64, iSlow33),
         );
-        let mut iSlow37: i32 = (F64::floor((0.00390625 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow37: i32 = (F64::floor(0.00390625 * fSlow22)) as i32 % 2;
         let mut iSlow38: i32 = i32::wrapping_add(
             iSlow36,
             i32::wrapping_mul(128, iSlow35),
         );
-        let mut iSlow39: i32 = (F64::floor((0.001953125 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow39: i32 = (F64::floor(0.001953125 * fSlow22)) as i32 % 2;
         let mut iSlow40: i32 = i32::wrapping_add(
             iSlow38,
             i32::wrapping_mul(256, iSlow37),
         );
-        let mut iSlow41: i32 = (F64::floor((0.0009765625 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow41: i32 = (F64::floor(0.0009765625 * fSlow22)) as i32 % 2;
         let mut iSlow42: i32 = i32::wrapping_add(
             iSlow40,
             i32::wrapping_mul(512, iSlow39),
         );
-        let mut iSlow43: i32 = (F64::floor((0.00048828125 as F64) * fSlow22)) as i32 % 2;
+        let mut iSlow43: i32 = (F64::floor(0.00048828125 * fSlow22)) as i32 % 2;
         let mut iSlow44: i32 = i32::wrapping_add(
             iSlow42,
             i32::wrapping_mul(1024, iSlow41),
         );
-        let mut iSlow45: i32 = (F64::floor((0.5 as F64) * fSlow3)) as i32 % 2;
-        let mut iSlow46: i32 = (F64::floor((0.25 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow45: i32 = (F64::floor(0.5 * fSlow3)) as i32 % 2;
+        let mut iSlow46: i32 = (F64::floor(0.25 * fSlow3)) as i32 % 2;
         let mut iSlow47: i32 = i32::wrapping_add(iSlow4, i32::wrapping_mul(2, iSlow45));
-        let mut iSlow48: i32 = (F64::floor((0.125 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow48: i32 = (F64::floor(0.125 * fSlow3)) as i32 % 2;
         let mut iSlow49: i32 = i32::wrapping_add(iSlow47, i32::wrapping_mul(4, iSlow46));
-        let mut iSlow50: i32 = (F64::floor((0.0625 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow50: i32 = (F64::floor(0.0625 * fSlow3)) as i32 % 2;
         let mut iSlow51: i32 = i32::wrapping_add(iSlow49, i32::wrapping_mul(8, iSlow48));
-        let mut iSlow52: i32 = (F64::floor((0.03125 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow52: i32 = (F64::floor(0.03125 * fSlow3)) as i32 % 2;
         let mut iSlow53: i32 = i32::wrapping_add(
             iSlow51,
             i32::wrapping_mul(16, iSlow50),
         );
-        let mut iSlow54: i32 = (F64::floor((0.015625 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow54: i32 = (F64::floor(0.015625 * fSlow3)) as i32 % 2;
         let mut iSlow55: i32 = i32::wrapping_add(
             iSlow53,
             i32::wrapping_mul(32, iSlow52),
         );
-        let mut iSlow56: i32 = (F64::floor((0.0078125 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow56: i32 = (F64::floor(0.0078125 * fSlow3)) as i32 % 2;
         let mut iSlow57: i32 = i32::wrapping_add(
             iSlow55,
             i32::wrapping_mul(64, iSlow54),
         );
-        let mut iSlow58: i32 = (F64::floor((0.00390625 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow58: i32 = (F64::floor(0.00390625 * fSlow3)) as i32 % 2;
         let mut iSlow59: i32 = i32::wrapping_add(
             iSlow57,
             i32::wrapping_mul(128, iSlow56),
         );
-        let mut iSlow60: i32 = (F64::floor((0.001953125 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow60: i32 = (F64::floor(0.001953125 * fSlow3)) as i32 % 2;
         let mut iSlow61: i32 = i32::wrapping_add(
             iSlow59,
             i32::wrapping_mul(256, iSlow58),
         );
-        let mut iSlow62: i32 = (F64::floor((0.0009765625 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow62: i32 = (F64::floor(0.0009765625 * fSlow3)) as i32 % 2;
         let mut iSlow63: i32 = i32::wrapping_add(
             iSlow61,
             i32::wrapping_mul(512, iSlow60),
         );
-        let mut iSlow64: i32 = (F64::floor((0.00048828125 as F64) * fSlow3)) as i32 % 2;
+        let mut iSlow64: i32 = (F64::floor(0.00048828125 * fSlow3)) as i32 % 2;
         let mut iSlow65: i32 = i32::wrapping_add(
             iSlow63,
             i32::wrapping_mul(1024, iSlow62),
         );
         let mut fSlow66: F64 = (self.fHslider10) as F64;
         let mut fSlow67: F64 = (self.fHslider11) as F64;
-        let mut fSlow68: F64 = self.fConst0
-            * ((0.001 as F64) * fSlow19 + (1e-05 as F64) * fSlow2);
+        let mut fSlow68: F64 = self.fConst0 * (0.001 * fSlow19 + 1e-05 * fSlow2);
         let mut fSlow69: F64 = (self.fCheckbox1) as F64;
-        let mut iSlow70: i32 = (F64::max(
-            (0.0 as F64),
-            fSlow69 * ((4.8e+03 as F64) - fSlow68),
-        )) as i32;
-        self.fHbargraph0 = ((if (fSlow69) as i32 != 0 {
-            (4.8e+03 as F64)
-        } else {
-            fSlow68
-        })) as FaustFloat;
+        let mut iSlow70: i32 = (F64::max(0.0, fSlow69 * (4.8e+03 - fSlow68))) as i32;
+        self.fHbargraph0 = ((if (fSlow69) as i32 != 0 { 4.8e+03 } else { fSlow68 }))
+            as FaustFloat;
         let mut iSlow71: i32 = (self.fHbargraph0) as F64 as i32;
         let mut fSlow72: F64 = self.fConst3
-            * F64::powf((1e+01 as F64), (0.05 as F64) * (self.fHslider12) as F64);
+            * F64::powf(1e+01, 0.05 * (self.fHslider12) as F64);
         let zipped_iterators = ios0.zip(ios1).zip(ios2).zip(ios3);
         for (((io0, io1), io2), io3) in zipped_iterators {
             let mut fTemp0: F64 = (*io0) as F64;
@@ -925,20 +896,19 @@ impl LambRs {
                 (if (fTemp3 > fSlow0) as i32 != 0 { fTemp3 } else { fSlow0 })
             });
             let mut fTemp4: F64 = F64::sin(
-                (6.283185307179586 as F64)
-                    * ((0.5 as F64) * self.fRec0[0] + (0.75 as F64)),
-            ) + (1.0 as F64);
-            let mut fTemp5: F64 = (0.5 as F64) * fTemp4;
-            let mut fTemp6: F64 = (1.0 as F64) - fTemp5;
+                6.283185307179586 * (0.5 * self.fRec0[0] + 0.75),
+            ) + 1.0;
+            let mut fTemp5: F64 = 0.5 * fTemp4;
+            let mut fTemp6: F64 = 1.0 - fTemp5;
             self.fRec4[0] = fSlow5 + self.fConst4 * self.fRec4[1];
-            let mut fTemp7: F64 = F64::max((0.5 as F64), self.fRec4[0]) + (-0.5 as F64);
-            let mut fTemp8: F64 = (4.0 as F64) * fTemp7;
-            let mut fTemp9: F64 = (10.588235294117647 as F64)
-                * (F64::max((0.15 as F64), self.fRec4[0]) + (-0.15 as F64));
-            let mut fTemp10: F64 = (15.0 as F64) - (fTemp9 + fTemp8);
-            let mut fTemp11: F64 = (12.0 as F64) - fTemp9;
-            let mut fTemp12: F64 = fTemp9 + (-12.0 as F64);
-            let mut fTemp13: F64 = (3.0 as F64) - fTemp8;
+            let mut fTemp7: F64 = F64::max(0.5, self.fRec4[0]) + -0.5;
+            let mut fTemp8: F64 = 4.0 * fTemp7;
+            let mut fTemp9: F64 = 10.588235294117647
+                * (F64::max(0.15, self.fRec4[0]) + -0.15);
+            let mut fTemp10: F64 = 15.0 - (fTemp9 + fTemp8);
+            let mut fTemp11: F64 = 12.0 - fTemp9;
+            let mut fTemp12: F64 = fTemp9 + -12.0;
+            let mut fTemp13: F64 = 3.0 - fTemp8;
             self.fRec11[0] = fSlow10 + self.fConst4 * self.fRec11[1];
             let mut fTemp14: F64 = fTemp0 * self.fRec11[0];
             self.fVec3[(self.IOTA0 & 32767) as usize] = fTemp14;
@@ -946,23 +916,20 @@ impl LambRs {
             let mut fTemp16: F64 = fTemp1 * self.fRec11[0];
             self.fVec4[(self.IOTA0 & 32767) as usize] = fTemp16;
             let mut fTemp17: F64 = F64::abs(fTemp16);
-            let mut fTemp18: F64 = (2e+01 as F64)
+            let mut fTemp18: F64 = 2e+01
                 * F64::log10(
-                    F64::max(
-                        (2.2250738585072014e-308 as F64),
-                        F64::max(fTemp15, fTemp17),
-                    ),
+                    F64::max(2.2250738585072014e-308, F64::max(fTemp15, fTemp17)),
                 );
             let mut iTemp19: i32 = ((fTemp18 > fSlow11) as i32)
                 + ((fTemp18 > fSlow9) as i32);
             let mut fTemp20: F64 = fTemp18 - fSlow8;
             let mut fTemp21: F64 = F64::powf(
-                (1e+01 as F64),
-                -((0.05 as F64)
+                1e+01,
+                -(0.05
                     * F64::max(
-                        (0.0 as F64),
+                        0.0,
                         (if (iTemp19 == 0) as i32 != 0 {
-                            (0.0 as F64)
+                            0.0
                         } else {
                             (if (iTemp19 == 1) as i32 != 0 {
                                 fSlow12 * LambRs_faustpower2_f(fSlow7 + fTemp20)
@@ -972,10 +939,9 @@ impl LambRs {
                         }),
                     )),
             );
-            let mut fTemp22: F64 = (3.0 as F64) * fTemp7;
-            let mut fTemp23: F64 = (4.0 as F64)
-                * (F64::max((0.25 as F64), self.fRec4[0]) + (-0.25 as F64));
-            let mut fTemp24: F64 = (9.0 as F64) - fTemp23;
+            let mut fTemp22: F64 = 3.0 * fTemp7;
+            let mut fTemp23: F64 = 4.0 * (F64::max(0.25, self.fRec4[0]) + -0.25);
+            let mut fTemp24: F64 = 9.0 - fTemp23;
             let mut fTemp25: F64 = self.fRec5[1] - self.fRec6[1];
             let mut fTemp26: F64 = (self
                 .iVec2[((i32::wrapping_sub(self.IOTA0, 4800)) & 8191) as usize]) as F64;
@@ -983,63 +949,55 @@ impl LambRs {
                 F64::exp(
                     -(self.fConst7
                         / F64::max(
-                            (2.220446049250313e-16 as F64),
+                            2.220446049250313e-16,
                             fSlow14
                                 * (fTemp26
                                     / F64::max(
-                                        (1.0 as F64)
+                                        1.0
                                             - (F64::max(
-                                                fTemp23 + (-9.0 as F64),
-                                                F64::min((2.0 as F64) - fTemp22, fTemp25),
-                                            ) + fTemp24) / ((11.0 as F64) - (fTemp23 + fTemp22)),
-                                        (2.220446049250313e-16 as F64),
+                                                fTemp23 + -9.0,
+                                                F64::min(2.0 - fTemp22, fTemp25),
+                                            ) + fTemp24) / (11.0 - (fTemp23 + fTemp22)),
+                                        2.220446049250313e-16,
                                     )),
                         )),
                 )
             } else {
                 self.fConst6
             });
-            self.fRec10[0] = self.fRec10[1] * fTemp27
-                + fTemp21 * ((1.0 as F64) - fTemp27);
+            self.fRec10[0] = self.fRec10[1] * fTemp27 + fTemp21 * (1.0 - fTemp27);
             let mut fTemp28: F64 = (if (self.fRec10[0] > self.fRec9[1]) as i32 != 0 {
-                (0.0 as F64)
+                0.0
             } else {
                 self.fConst6
             });
-            self.fRec9[0] = self.fRec9[1] * fTemp28
-                + self.fRec10[0] * ((1.0 as F64) - fTemp28);
+            self.fRec9[0] = self.fRec9[1] * fTemp28 + self.fRec10[0] * (1.0 - fTemp28);
             let mut fTemp29: F64 = (if (self.fRec9[0] > self.fRec8[1]) as i32 != 0 {
-                (0.0 as F64)
+                0.0
             } else {
                 self.fConst6
             });
-            self.fRec8[0] = self.fRec8[1] * fTemp29
-                + self.fRec9[0] * ((1.0 as F64) - fTemp29);
+            self.fRec8[0] = self.fRec8[1] * fTemp29 + self.fRec9[0] * (1.0 - fTemp29);
             let mut fTemp30: F64 = (if (self.fRec8[0] > self.fRec7[1]) as i32 != 0 {
-                (0.0 as F64)
+                0.0
             } else {
                 self.fConst6
             });
-            self.fRec7[0] = self.fRec7[1] * fTemp30
-                + self.fRec8[0] * ((1.0 as F64) - fTemp30);
-            self.fRec5[0] = (2e+01 as F64)
-                * F64::log10(F64::max((2.2250738585072014e-308 as F64), self.fRec7[0]));
-            let mut fTemp31: F64 = F64::powf(
-                (1e+01 as F64),
-                (0.05 as F64) * (self.fRec5[1] + fTemp24),
-            );
+            self.fRec7[0] = self.fRec7[1] * fTemp30 + self.fRec8[0] * (1.0 - fTemp30);
+            self.fRec5[0] = 2e+01
+                * F64::log10(F64::max(2.2250738585072014e-308, self.fRec7[0]));
+            let mut fTemp31: F64 = F64::powf(1e+01, 0.05 * (self.fRec5[1] + fTemp24));
             let mut fTemp32: F64 = (if (fTemp31 > self.fRec12[1]) as i32 != 0 {
                 F64::exp(
                     -(self.fConst7
                         / F64::max(
-                            (2.220446049250313e-16 as F64),
+                            2.220446049250313e-16,
                             fTemp26
-                                * ((0.8161290322580644 as F64)
-                                    * (F64::max((0.69 as F64), self.fRec4[0]) + (-0.69 as F64))
-                                    + (0.05 as F64))
+                                * (0.8161290322580644
+                                    * (F64::max(0.69, self.fRec4[0]) + -0.69) + 0.05)
                                 * F64::powf(
-                                    (4503599627370496.0 as F64),
-                                    (1.0 as F64)
+                                    4503599627370496.0,
+                                    1.0
                                         - (F64::max(fTemp12, F64::min(fTemp13, fTemp25)) + fTemp11)
                                             / fTemp10,
                                 ),
@@ -1048,19 +1006,18 @@ impl LambRs {
             } else {
                 self.fConst8
             });
-            self.fRec12[0] = self.fRec12[1] * fTemp32
-                + fTemp31 * ((1.0 as F64) - fTemp32);
-            self.fRec6[0] = (2e+01 as F64)
-                * F64::log10(F64::max((2.2250738585072014e-308 as F64), self.fRec12[0]));
+            self.fRec12[0] = self.fRec12[1] * fTemp32 + fTemp31 * (1.0 - fTemp32);
+            self.fRec6[0] = 2e+01
+                * F64::log10(F64::max(2.2250738585072014e-308, self.fRec12[0]));
             let mut fTemp33: F64 = self.fRec5[0] - self.fRec6[0];
-            let mut fTemp34: F64 = fSlow16 * F64::min((0.25 as F64), self.fRec4[0])
+            let mut fTemp34: F64 = fSlow16 * F64::min(0.25, self.fRec4[0])
                 * (self.fRec6[0]
                     + fTemp33 * (F64::max(fTemp12, F64::min(fTemp13, fTemp33)) + fTemp11)
                         / fTemp10);
-            let mut fTemp35: F64 = (2e+01 as F64)
-                * F64::log10(F64::max((2.2250738585072014e-308 as F64), fTemp15));
-            let mut fTemp36: F64 = (2e+01 as F64)
-                * F64::log10(F64::max((2.2250738585072014e-308 as F64), fTemp17));
+            let mut fTemp35: F64 = 2e+01
+                * F64::log10(F64::max(2.2250738585072014e-308, fTemp15));
+            let mut fTemp36: F64 = 2e+01
+                * F64::log10(F64::max(2.2250738585072014e-308, fTemp17));
             let mut fTemp37: F64 = F64::max(fTemp35, fTemp36);
             let mut fTemp38: F64 = fTemp35 + fSlow17 * (fTemp37 - fTemp35);
             let mut iTemp39: i32 = ((fTemp38 > fSlow11) as i32)
@@ -1070,9 +1027,9 @@ impl LambRs {
                 fTemp34,
                 -(fSlow18
                     * F64::max(
-                        (0.0 as F64),
+                        0.0,
                         (if (iTemp39 == 0) as i32 != 0 {
-                            (0.0 as F64)
+                            0.0
                         } else {
                             (if (iTemp39 == 1) as i32 != 0 {
                                 fSlow12 * LambRs_faustpower2_f(fSlow7 + fTemp40)
@@ -1149,80 +1106,80 @@ impl LambRs {
                                                             (if iSlow23 != 0 {
                                                                 fTemp41
                                                             } else {
-                                                                (1.7976931348623157e+308 as F64)
+                                                                1.7976931348623157e+308
                                                             }),
                                                             (if iSlow24 != 0 {
                                                                 self.fVec6[iSlow23 as usize]
                                                             } else {
-                                                                (1.7976931348623157e+308 as F64)
+                                                                1.7976931348623157e+308
                                                             }),
                                                         ),
                                                         (if iSlow25 != 0 {
                                                             self.fVec7[iSlow26 as usize]
                                                         } else {
-                                                            (1.7976931348623157e+308 as F64)
+                                                            1.7976931348623157e+308
                                                         }),
                                                     ),
                                                     (if iSlow27 != 0 {
                                                         self.fVec8[iSlow28 as usize]
                                                     } else {
-                                                        (1.7976931348623157e+308 as F64)
+                                                        1.7976931348623157e+308
                                                     }),
                                                 ),
                                                 (if iSlow29 != 0 {
                                                     self.fVec9[((i32::wrapping_sub(self.IOTA0, iSlow30)) & 31)
                                                         as usize]
                                                 } else {
-                                                    (1.7976931348623157e+308 as F64)
+                                                    1.7976931348623157e+308
                                                 }),
                                             ),
                                             (if iSlow31 != 0 {
                                                 self.fVec10[((i32::wrapping_sub(self.IOTA0, iSlow32)) & 63)
                                                     as usize]
                                             } else {
-                                                (1.7976931348623157e+308 as F64)
+                                                1.7976931348623157e+308
                                             }),
                                         ),
                                         (if iSlow33 != 0 {
                                             self.fVec11[((i32::wrapping_sub(self.IOTA0, iSlow34)) & 127)
                                                 as usize]
                                         } else {
-                                            (1.7976931348623157e+308 as F64)
+                                            1.7976931348623157e+308
                                         }),
                                     ),
                                     (if iSlow35 != 0 {
                                         self.fVec12[((i32::wrapping_sub(self.IOTA0, iSlow36)) & 255)
                                             as usize]
                                     } else {
-                                        (1.7976931348623157e+308 as F64)
+                                        1.7976931348623157e+308
                                     }),
                                 ),
                                 (if iSlow37 != 0 {
                                     self.fVec13[((i32::wrapping_sub(self.IOTA0, iSlow38)) & 511)
                                         as usize]
                                 } else {
-                                    (1.7976931348623157e+308 as F64)
+                                    1.7976931348623157e+308
                                 }),
                             ),
                             (if iSlow39 != 0 {
                                 self.fVec14[((i32::wrapping_sub(self.IOTA0, iSlow40))
                                     & 1023) as usize]
                             } else {
-                                (1.7976931348623157e+308 as F64)
+                                1.7976931348623157e+308
                             }),
                         ),
                         (if iSlow41 != 0 {
                             self.fVec15[((i32::wrapping_sub(self.IOTA0, iSlow42)) & 2047)
                                 as usize]
                         } else {
-                            (1.7976931348623157e+308 as F64)
+                            1.7976931348623157e+308
                         }),
                     ),
                     (if iSlow43 != 0 {
                         self.fVec16[((i32::wrapping_sub(self.IOTA0, iSlow44)) & 4095)
                             as usize]
                     } else {
-                        (1.7976931348623157e+308 as F64)
+                        1.7976931348623157e+308
                     }),
                 ),
             );
@@ -1282,87 +1239,87 @@ impl LambRs {
                                                         (if iSlow4 != 0 {
                                                             self.fRec3[0]
                                                         } else {
-                                                            (1.7976931348623157e+308 as F64)
+                                                            1.7976931348623157e+308
                                                         }),
                                                         (if iSlow45 != 0 {
                                                             self.fVec17[iSlow4 as usize]
                                                         } else {
-                                                            (1.7976931348623157e+308 as F64)
+                                                            1.7976931348623157e+308
                                                         }),
                                                     ),
                                                     (if iSlow46 != 0 {
                                                         self.fVec18[iSlow47 as usize]
                                                     } else {
-                                                        (1.7976931348623157e+308 as F64)
+                                                        1.7976931348623157e+308
                                                     }),
                                                 ),
                                                 (if iSlow48 != 0 {
                                                     self.fVec19[iSlow49 as usize]
                                                 } else {
-                                                    (1.7976931348623157e+308 as F64)
+                                                    1.7976931348623157e+308
                                                 }),
                                             ),
                                             (if iSlow50 != 0 {
                                                 self.fVec20[((i32::wrapping_sub(self.IOTA0, iSlow51)) & 31)
                                                     as usize]
                                             } else {
-                                                (1.7976931348623157e+308 as F64)
+                                                1.7976931348623157e+308
                                             }),
                                         ),
                                         (if iSlow52 != 0 {
                                             self.fVec21[((i32::wrapping_sub(self.IOTA0, iSlow53)) & 63)
                                                 as usize]
                                         } else {
-                                            (1.7976931348623157e+308 as F64)
+                                            1.7976931348623157e+308
                                         }),
                                     ),
                                     (if iSlow54 != 0 {
                                         self.fVec22[((i32::wrapping_sub(self.IOTA0, iSlow55)) & 127)
                                             as usize]
                                     } else {
-                                        (1.7976931348623157e+308 as F64)
+                                        1.7976931348623157e+308
                                     }),
                                 ),
                                 (if iSlow56 != 0 {
                                     self.fVec23[((i32::wrapping_sub(self.IOTA0, iSlow57)) & 255)
                                         as usize]
                                 } else {
-                                    (1.7976931348623157e+308 as F64)
+                                    1.7976931348623157e+308
                                 }),
                             ),
                             (if iSlow58 != 0 {
                                 self.fVec24[((i32::wrapping_sub(self.IOTA0, iSlow59)) & 511)
                                     as usize]
                             } else {
-                                (1.7976931348623157e+308 as F64)
+                                1.7976931348623157e+308
                             }),
                         ),
                         (if iSlow60 != 0 {
                             self.fVec25[((i32::wrapping_sub(self.IOTA0, iSlow61)) & 1023)
                                 as usize]
                         } else {
-                            (1.7976931348623157e+308 as F64)
+                            1.7976931348623157e+308
                         }),
                     ),
                     (if iSlow62 != 0 {
                         self.fVec26[((i32::wrapping_sub(self.IOTA0, iSlow63)) & 2047)
                             as usize]
                     } else {
-                        (1.7976931348623157e+308 as F64)
+                        1.7976931348623157e+308
                     }),
                 ),
                 (if iSlow64 != 0 {
                     self.fVec27[((i32::wrapping_sub(self.IOTA0, iSlow65)) & 4095)
                         as usize]
                 } else {
-                    (1.7976931348623157e+308 as F64)
+                    1.7976931348623157e+308
                 }),
             ) - self.fRec2[1];
             self.fVec28[0] = fTemp62;
-            let mut iTemp63: i32 = (fTemp62 > (0.0 as F64)) as i32;
+            let mut iTemp63: i32 = (fTemp62 > 0.0) as i32;
             let mut fTemp68: F64 = (if iTemp63 != 0 { fSlow67 } else { fSlow66 });
             self.fVec29[0] = fTemp68;
-            let mut fTemp69: F64 = (6.0 as F64) * fTemp68;
+            let mut fTemp69: F64 = 6.0 * fTemp68;
             let mut iTemp70: i32 = (fTemp69) as i32;
             let mut iTemp71: i32 = std::cmp::max(0, std::cmp::min(iTemp70, 6));
             let mut iTemp72: i32 = std::cmp::max(
@@ -1376,25 +1333,21 @@ impl LambRs {
                 as usize] - fTemp74;
             let mut fTemp76: F64 = fTemp69 - (iTemp70) as F64;
             let mut fTemp77: F64 = fTemp74 + fTemp76 * fTemp75
-                + (0.5 as F64)
+                + 0.5
                     * (fTemp73
                         - (fTemp74
                             + fTemp76
                                 * (fTemp75
                                     - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp72, 8))
                                         as usize] - fTemp73))));
-            let mut fTemp78: F64 = (if iTemp63 != 0 {
-                fTemp77
-            } else {
-                (1.0 as F64) - fTemp77
-            });
-            let mut iTemp79: i32 = (fTemp62 < (0.0 as F64)) as i32;
+            let mut fTemp78: F64 = (if iTemp63 != 0 { fTemp77 } else { 1.0 - fTemp77 });
+            let mut iTemp79: i32 = (fTemp62 < 0.0) as i32;
             let mut fTemp80: F64 = fSlow1 * (iTemp79) as F64
                 + fSlow13 * (iTemp63) as F64;
             self.fVec30[0] = fTemp80;
             let mut fTemp81: F64 = self.fConst10 / fTemp80;
-            let mut fTemp82: F64 = fTemp81 + (0.5 as F64);
-            let mut fTemp83: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp82);
+            let mut fTemp82: F64 = fTemp81 + 0.5;
+            let mut fTemp83: F64 = 131071.0 * (1.0 - fTemp82);
             let mut iTemp84: i32 = (fTemp83) as i32;
             let mut iTemp85: i32 = std::cmp::max(
                 0,
@@ -1414,7 +1367,7 @@ impl LambRs {
             let mut fTemp87: F64 = ftbl0LambRsSIG0_guard[iTemp85 as usize];
             let mut fTemp88: F64 = ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp85, 1))
                 as usize] - fTemp87;
-            let mut fTemp89: F64 = (131071.0 as F64) * fTemp82;
+            let mut fTemp89: F64 = 131071.0 * fTemp82;
             let mut iTemp90: i32 = (fTemp89) as i32;
             let mut iTemp91: i32 = std::cmp::max(
                 0,
@@ -1438,10 +1391,10 @@ impl LambRs {
                 0,
                 std::cmp::min(i32::wrapping_add(iTemp91, 1), 917503),
             )) as usize] - fTemp93;
-            let mut fTemp95: F64 = (6.0 as F64) * self.fVec29[1];
+            let mut fTemp95: F64 = 6.0 * self.fVec29[1];
             let mut iTemp96: i32 = (fTemp95) as i32;
             let mut iTemp97: i32 = std::cmp::max(0, std::cmp::min(iTemp96, 6));
-            let mut fTemp98: F64 = (131071.0 as F64) * ((1.0 as F64) - self.fRec1[1]);
+            let mut fTemp98: F64 = 131071.0 * (1.0 - self.fRec1[1]);
             let mut iTemp99: i32 = (fTemp98) as i32;
             let mut iTemp100: i32 = std::cmp::max(
                 0,
@@ -1466,7 +1419,7 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp100, 1), 917503),
             )) as usize] - fTemp102;
             let mut fTemp104: F64 = fTemp95 - (iTemp96) as F64;
-            let mut fTemp105: F64 = (131071.0 as F64) * self.fRec1[1];
+            let mut fTemp105: F64 = 131071.0 * self.fRec1[1];
             let mut iTemp106: i32 = (fTemp105) as i32;
             let mut iTemp107: i32 = std::cmp::max(
                 0,
@@ -1491,7 +1444,7 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp107, 1), 917503),
             )) as usize] - fTemp109;
             let mut fTemp111: F64 = self.fRec1[1] + fTemp81;
-            let mut fTemp112: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp111);
+            let mut fTemp112: F64 = 131071.0 * (1.0 - fTemp111);
             let mut iTemp113: i32 = (fTemp112) as i32;
             let mut iTemp114: i32 = std::cmp::max(
                 0,
@@ -1515,7 +1468,7 @@ impl LambRs {
                 iTemp114,
                 1,
             )) as usize] - fTemp116;
-            let mut fTemp118: F64 = (131071.0 as F64) * fTemp111;
+            let mut fTemp118: F64 = 131071.0 * fTemp111;
             let mut iTemp119: i32 = (fTemp118) as i32;
             let mut iTemp120: i32 = std::cmp::max(
                 0,
@@ -1540,9 +1493,8 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp120, 1), 917503),
             )) as usize] - fTemp122;
             let mut fTemp124: F64 = self.fRec1[1]
-                + self.fConst10
-                    * ((1.0 as F64) / fTemp80 + (1.0 as F64) / self.fVec30[1]);
-            let mut fTemp125: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp124);
+                + self.fConst10 * (1.0 / fTemp80 + 1.0 / self.fVec30[1]);
+            let mut fTemp125: F64 = 131071.0 * (1.0 - fTemp124);
             let mut iTemp126: i32 = (fTemp125) as i32;
             let mut iTemp127: i32 = std::cmp::max(
                 0,
@@ -1566,7 +1518,7 @@ impl LambRs {
                 iTemp127,
                 1,
             )) as usize] - fTemp129;
-            let mut fTemp131: F64 = (131071.0 as F64) * fTemp124;
+            let mut fTemp131: F64 = 131071.0 * fTemp124;
             let mut iTemp132: i32 = (fTemp131) as i32;
             let mut iTemp133: i32 = std::cmp::max(
                 0,
@@ -1602,7 +1554,7 @@ impl LambRs {
                                             std::cmp::min(i32::wrapping_add(iTemp133, 8), 917503),
                                         )) as usize] - fTemp134))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp129 + fTemp76 * fTemp130
                         + (fTemp125 - (iTemp126) as F64)
                             * (fTemp128
@@ -1624,7 +1576,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp120, 8), 917503),
                                             )) as usize] - fTemp121))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp116 + fTemp76 * fTemp117
                             + (fTemp112 - (iTemp113) as F64)
                                 * (fTemp115
@@ -1635,7 +1587,7 @@ impl LambRs {
                                                     as usize] - fTemp115)))))
                 })) * self.fVec28[1]
                 / (fTemp62
-                    * ((1.0 as F64)
+                    * (1.0
                         - (if iTemp63 != 0 {
                             fTemp109 + fTemp104 * fTemp110
                                 + (fTemp105 - (iTemp106) as F64)
@@ -1648,7 +1600,7 @@ impl LambRs {
                                                         std::cmp::min(i32::wrapping_add(iTemp107, 8), 917503),
                                                     )) as usize] - fTemp108))))
                         } else {
-                            (1.0 as F64)
+                            1.0
                                 - (fTemp102 + fTemp104 * fTemp103
                                     + (fTemp98 - (iTemp99) as F64)
                                         * (fTemp101
@@ -1673,7 +1625,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp91, 8), 917503),
                                             )) as usize] - fTemp92))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp87 + fTemp76 * fTemp88
                             + (fTemp83 - (iTemp84) as F64)
                                 * (fTemp86
@@ -1682,20 +1634,12 @@ impl LambRs {
                                             * (fTemp88
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp85, 8))
                                                     as usize] - fTemp86)))))
-                }) - fTemp78) / ((1.0 as F64) - fTemp78))) as i32;
-            let mut fTemp139: F64 = (if iTemp138 != 0 {
-                (1.0 as F64)
-            } else {
-                (0.5 as F64)
-            });
-            let mut fTemp140: F64 = (if iTemp138 != 0 {
-                (0.5 as F64)
-            } else {
-                (0.0 as F64)
-            });
+                }) - fTemp78) / (1.0 - fTemp78))) as i32;
+            let mut fTemp139: F64 = (if iTemp138 != 0 { 1.0 } else { 0.5 });
+            let mut fTemp140: F64 = (if iTemp138 != 0 { 0.5 } else { 0.0 });
             let mut fTemp141: F64 = fTemp140 + fTemp139;
-            let mut fTemp142: F64 = (0.5 as F64) * fTemp141;
-            let mut fTemp143: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp142);
+            let mut fTemp142: F64 = 0.5 * fTemp141;
+            let mut fTemp143: F64 = 131071.0 * (1.0 - fTemp142);
             let mut iTemp144: i32 = (fTemp143) as i32;
             let mut iTemp145: i32 = std::cmp::max(
                 0,
@@ -1719,7 +1663,7 @@ impl LambRs {
                 iTemp145,
                 1,
             )) as usize] - fTemp147;
-            let mut fTemp149: F64 = (65535.5 as F64) * fTemp141;
+            let mut fTemp149: F64 = 65535.5 * fTemp141;
             let mut iTemp150: i32 = (fTemp149) as i32;
             let mut iTemp151: i32 = std::cmp::max(
                 0,
@@ -1753,7 +1697,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp151, 8))
                                             as usize] - fTemp152))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp147 + fTemp76 * fTemp148
                         + (fTemp143 - (iTemp144) as F64)
                             * (fTemp146
@@ -1764,7 +1708,7 @@ impl LambRs {
                                                 as usize] - fTemp146)))))
             });
             let mut fTemp156: F64 = fTemp81 + fTemp142;
-            let mut fTemp157: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp156);
+            let mut fTemp157: F64 = 131071.0 * (1.0 - fTemp156);
             let mut iTemp158: i32 = (fTemp157) as i32;
             let mut iTemp159: i32 = std::cmp::max(
                 0,
@@ -1788,7 +1732,7 @@ impl LambRs {
                 iTemp159,
                 1,
             )) as usize] - fTemp161;
-            let mut fTemp163: F64 = (131071.0 as F64) * fTemp156;
+            let mut fTemp163: F64 = 131071.0 * fTemp156;
             let mut iTemp164: i32 = (fTemp163) as i32;
             let mut iTemp165: i32 = std::cmp::max(
                 0,
@@ -1825,7 +1769,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp165, 8), 917503),
                                             )) as usize] - fTemp166))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp161 + fTemp76 * fTemp162
                             + (fTemp157 - (iTemp158) as F64)
                                 * (fTemp160
@@ -1834,12 +1778,12 @@ impl LambRs {
                                             * (fTemp162
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp159, 8))
                                                     as usize] - fTemp160)))))
-                }) - fTemp155) / ((1.0 as F64) - fTemp155))) as i32;
+                }) - fTemp155) / (1.0 - fTemp155))) as i32;
             let mut fTemp170: F64 = (if iTemp169 != 0 { fTemp139 } else { fTemp142 });
             let mut fTemp171: F64 = (if iTemp169 != 0 { fTemp142 } else { fTemp140 });
             let mut fTemp172: F64 = fTemp171 + fTemp170;
-            let mut fTemp173: F64 = (0.5 as F64) * fTemp172;
-            let mut fTemp174: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp173);
+            let mut fTemp173: F64 = 0.5 * fTemp172;
+            let mut fTemp174: F64 = 131071.0 * (1.0 - fTemp173);
             let mut iTemp175: i32 = (fTemp174) as i32;
             let mut iTemp176: i32 = std::cmp::max(
                 0,
@@ -1863,7 +1807,7 @@ impl LambRs {
                 iTemp176,
                 1,
             )) as usize] - fTemp178;
-            let mut fTemp180: F64 = (65535.5 as F64) * fTemp172;
+            let mut fTemp180: F64 = 65535.5 * fTemp172;
             let mut iTemp181: i32 = (fTemp180) as i32;
             let mut iTemp182: i32 = std::cmp::max(
                 0,
@@ -1897,7 +1841,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp182, 8))
                                             as usize] - fTemp183))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp178 + fTemp76 * fTemp179
                         + (fTemp174 - (iTemp175) as F64)
                             * (fTemp177
@@ -1908,7 +1852,7 @@ impl LambRs {
                                                 as usize] - fTemp177)))))
             });
             let mut fTemp187: F64 = fTemp81 + fTemp173;
-            let mut fTemp188: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp187);
+            let mut fTemp188: F64 = 131071.0 * (1.0 - fTemp187);
             let mut iTemp189: i32 = (fTemp188) as i32;
             let mut iTemp190: i32 = std::cmp::max(
                 0,
@@ -1932,7 +1876,7 @@ impl LambRs {
                 iTemp190,
                 1,
             )) as usize] - fTemp192;
-            let mut fTemp194: F64 = (131071.0 as F64) * fTemp187;
+            let mut fTemp194: F64 = 131071.0 * fTemp187;
             let mut iTemp195: i32 = (fTemp194) as i32;
             let mut iTemp196: i32 = std::cmp::max(
                 0,
@@ -1969,7 +1913,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp196, 8), 917503),
                                             )) as usize] - fTemp197))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp192 + fTemp76 * fTemp193
                             + (fTemp188 - (iTemp189) as F64)
                                 * (fTemp191
@@ -1978,12 +1922,12 @@ impl LambRs {
                                             * (fTemp193
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp190, 8))
                                                     as usize] - fTemp191)))))
-                }) - fTemp186) / ((1.0 as F64) - fTemp186))) as i32;
+                }) - fTemp186) / (1.0 - fTemp186))) as i32;
             let mut fTemp201: F64 = (if iTemp200 != 0 { fTemp170 } else { fTemp173 });
             let mut fTemp202: F64 = (if iTemp200 != 0 { fTemp173 } else { fTemp171 });
             let mut fTemp203: F64 = fTemp202 + fTemp201;
-            let mut fTemp204: F64 = (0.5 as F64) * fTemp203;
-            let mut fTemp205: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp204);
+            let mut fTemp204: F64 = 0.5 * fTemp203;
+            let mut fTemp205: F64 = 131071.0 * (1.0 - fTemp204);
             let mut iTemp206: i32 = (fTemp205) as i32;
             let mut iTemp207: i32 = std::cmp::max(
                 0,
@@ -2007,7 +1951,7 @@ impl LambRs {
                 iTemp207,
                 1,
             )) as usize] - fTemp209;
-            let mut fTemp211: F64 = (65535.5 as F64) * fTemp203;
+            let mut fTemp211: F64 = 65535.5 * fTemp203;
             let mut iTemp212: i32 = (fTemp211) as i32;
             let mut iTemp213: i32 = std::cmp::max(
                 0,
@@ -2041,7 +1985,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp213, 8))
                                             as usize] - fTemp214))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp209 + fTemp76 * fTemp210
                         + (fTemp205 - (iTemp206) as F64)
                             * (fTemp208
@@ -2052,7 +1996,7 @@ impl LambRs {
                                                 as usize] - fTemp208)))))
             });
             let mut fTemp218: F64 = fTemp81 + fTemp204;
-            let mut fTemp219: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp218);
+            let mut fTemp219: F64 = 131071.0 * (1.0 - fTemp218);
             let mut iTemp220: i32 = (fTemp219) as i32;
             let mut iTemp221: i32 = std::cmp::max(
                 0,
@@ -2076,7 +2020,7 @@ impl LambRs {
                 iTemp221,
                 1,
             )) as usize] - fTemp223;
-            let mut fTemp225: F64 = (131071.0 as F64) * fTemp218;
+            let mut fTemp225: F64 = 131071.0 * fTemp218;
             let mut iTemp226: i32 = (fTemp225) as i32;
             let mut iTemp227: i32 = std::cmp::max(
                 0,
@@ -2113,7 +2057,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp227, 8), 917503),
                                             )) as usize] - fTemp228))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp223 + fTemp76 * fTemp224
                             + (fTemp219 - (iTemp220) as F64)
                                 * (fTemp222
@@ -2122,12 +2066,12 @@ impl LambRs {
                                             * (fTemp224
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp221, 8))
                                                     as usize] - fTemp222)))))
-                }) - fTemp217) / ((1.0 as F64) - fTemp217))) as i32;
+                }) - fTemp217) / (1.0 - fTemp217))) as i32;
             let mut fTemp232: F64 = (if iTemp231 != 0 { fTemp201 } else { fTemp204 });
             let mut fTemp233: F64 = (if iTemp231 != 0 { fTemp204 } else { fTemp202 });
             let mut fTemp234: F64 = fTemp233 + fTemp232;
-            let mut fTemp235: F64 = (0.5 as F64) * fTemp234;
-            let mut fTemp236: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp235);
+            let mut fTemp235: F64 = 0.5 * fTemp234;
+            let mut fTemp236: F64 = 131071.0 * (1.0 - fTemp235);
             let mut iTemp237: i32 = (fTemp236) as i32;
             let mut iTemp238: i32 = std::cmp::max(
                 0,
@@ -2151,7 +2095,7 @@ impl LambRs {
                 iTemp238,
                 1,
             )) as usize] - fTemp240;
-            let mut fTemp242: F64 = (65535.5 as F64) * fTemp234;
+            let mut fTemp242: F64 = 65535.5 * fTemp234;
             let mut iTemp243: i32 = (fTemp242) as i32;
             let mut iTemp244: i32 = std::cmp::max(
                 0,
@@ -2185,7 +2129,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp244, 8))
                                             as usize] - fTemp245))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp240 + fTemp76 * fTemp241
                         + (fTemp236 - (iTemp237) as F64)
                             * (fTemp239
@@ -2196,7 +2140,7 @@ impl LambRs {
                                                 as usize] - fTemp239)))))
             });
             let mut fTemp249: F64 = fTemp81 + fTemp235;
-            let mut fTemp250: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp249);
+            let mut fTemp250: F64 = 131071.0 * (1.0 - fTemp249);
             let mut iTemp251: i32 = (fTemp250) as i32;
             let mut iTemp252: i32 = std::cmp::max(
                 0,
@@ -2220,7 +2164,7 @@ impl LambRs {
                 iTemp252,
                 1,
             )) as usize] - fTemp254;
-            let mut fTemp256: F64 = (131071.0 as F64) * fTemp249;
+            let mut fTemp256: F64 = 131071.0 * fTemp249;
             let mut iTemp257: i32 = (fTemp256) as i32;
             let mut iTemp258: i32 = std::cmp::max(
                 0,
@@ -2257,7 +2201,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp258, 8), 917503),
                                             )) as usize] - fTemp259))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp254 + fTemp76 * fTemp255
                             + (fTemp250 - (iTemp251) as F64)
                                 * (fTemp253
@@ -2266,12 +2210,12 @@ impl LambRs {
                                             * (fTemp255
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp252, 8))
                                                     as usize] - fTemp253)))))
-                }) - fTemp248) / ((1.0 as F64) - fTemp248))) as i32;
+                }) - fTemp248) / (1.0 - fTemp248))) as i32;
             let mut fTemp263: F64 = (if iTemp262 != 0 { fTemp232 } else { fTemp235 });
             let mut fTemp264: F64 = (if iTemp262 != 0 { fTemp235 } else { fTemp233 });
             let mut fTemp265: F64 = fTemp264 + fTemp263;
-            let mut fTemp266: F64 = (0.5 as F64) * fTemp265;
-            let mut fTemp267: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp266);
+            let mut fTemp266: F64 = 0.5 * fTemp265;
+            let mut fTemp267: F64 = 131071.0 * (1.0 - fTemp266);
             let mut iTemp268: i32 = (fTemp267) as i32;
             let mut iTemp269: i32 = std::cmp::max(
                 0,
@@ -2295,7 +2239,7 @@ impl LambRs {
                 iTemp269,
                 1,
             )) as usize] - fTemp271;
-            let mut fTemp273: F64 = (65535.5 as F64) * fTemp265;
+            let mut fTemp273: F64 = 65535.5 * fTemp265;
             let mut iTemp274: i32 = (fTemp273) as i32;
             let mut iTemp275: i32 = std::cmp::max(
                 0,
@@ -2329,7 +2273,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp275, 8))
                                             as usize] - fTemp276))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp271 + fTemp76 * fTemp272
                         + (fTemp267 - (iTemp268) as F64)
                             * (fTemp270
@@ -2340,7 +2284,7 @@ impl LambRs {
                                                 as usize] - fTemp270)))))
             });
             let mut fTemp280: F64 = fTemp81 + fTemp266;
-            let mut fTemp281: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp280);
+            let mut fTemp281: F64 = 131071.0 * (1.0 - fTemp280);
             let mut iTemp282: i32 = (fTemp281) as i32;
             let mut iTemp283: i32 = std::cmp::max(
                 0,
@@ -2364,7 +2308,7 @@ impl LambRs {
                 iTemp283,
                 1,
             )) as usize] - fTemp285;
-            let mut fTemp287: F64 = (131071.0 as F64) * fTemp280;
+            let mut fTemp287: F64 = 131071.0 * fTemp280;
             let mut iTemp288: i32 = (fTemp287) as i32;
             let mut iTemp289: i32 = std::cmp::max(
                 0,
@@ -2401,7 +2345,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp289, 8), 917503),
                                             )) as usize] - fTemp290))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp285 + fTemp76 * fTemp286
                             + (fTemp281 - (iTemp282) as F64)
                                 * (fTemp284
@@ -2410,12 +2354,12 @@ impl LambRs {
                                             * (fTemp286
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp283, 8))
                                                     as usize] - fTemp284)))))
-                }) - fTemp279) / ((1.0 as F64) - fTemp279))) as i32;
+                }) - fTemp279) / (1.0 - fTemp279))) as i32;
             let mut fTemp294: F64 = (if iTemp293 != 0 { fTemp263 } else { fTemp266 });
             let mut fTemp295: F64 = (if iTemp293 != 0 { fTemp266 } else { fTemp264 });
             let mut fTemp296: F64 = fTemp295 + fTemp294;
-            let mut fTemp297: F64 = (0.5 as F64) * fTemp296;
-            let mut fTemp298: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp297);
+            let mut fTemp297: F64 = 0.5 * fTemp296;
+            let mut fTemp298: F64 = 131071.0 * (1.0 - fTemp297);
             let mut iTemp299: i32 = (fTemp298) as i32;
             let mut iTemp300: i32 = std::cmp::max(
                 0,
@@ -2439,7 +2383,7 @@ impl LambRs {
                 iTemp300,
                 1,
             )) as usize] - fTemp302;
-            let mut fTemp304: F64 = (65535.5 as F64) * fTemp296;
+            let mut fTemp304: F64 = 65535.5 * fTemp296;
             let mut iTemp305: i32 = (fTemp304) as i32;
             let mut iTemp306: i32 = std::cmp::max(
                 0,
@@ -2473,7 +2417,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp306, 8))
                                             as usize] - fTemp307))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp302 + fTemp76 * fTemp303
                         + (fTemp298 - (iTemp299) as F64)
                             * (fTemp301
@@ -2484,7 +2428,7 @@ impl LambRs {
                                                 as usize] - fTemp301)))))
             });
             let mut fTemp311: F64 = fTemp81 + fTemp297;
-            let mut fTemp312: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp311);
+            let mut fTemp312: F64 = 131071.0 * (1.0 - fTemp311);
             let mut iTemp313: i32 = (fTemp312) as i32;
             let mut iTemp314: i32 = std::cmp::max(
                 0,
@@ -2508,7 +2452,7 @@ impl LambRs {
                 iTemp314,
                 1,
             )) as usize] - fTemp316;
-            let mut fTemp318: F64 = (131071.0 as F64) * fTemp311;
+            let mut fTemp318: F64 = 131071.0 * fTemp311;
             let mut iTemp319: i32 = (fTemp318) as i32;
             let mut iTemp320: i32 = std::cmp::max(
                 0,
@@ -2545,7 +2489,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp320, 8), 917503),
                                             )) as usize] - fTemp321))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp316 + fTemp76 * fTemp317
                             + (fTemp312 - (iTemp313) as F64)
                                 * (fTemp315
@@ -2554,12 +2498,12 @@ impl LambRs {
                                             * (fTemp317
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp314, 8))
                                                     as usize] - fTemp315)))))
-                }) - fTemp310) / ((1.0 as F64) - fTemp310))) as i32;
+                }) - fTemp310) / (1.0 - fTemp310))) as i32;
             let mut fTemp325: F64 = (if iTemp324 != 0 { fTemp294 } else { fTemp297 });
             let mut fTemp326: F64 = (if iTemp324 != 0 { fTemp297 } else { fTemp295 });
             let mut fTemp327: F64 = fTemp326 + fTemp325;
-            let mut fTemp328: F64 = (0.5 as F64) * fTemp327;
-            let mut fTemp329: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp328);
+            let mut fTemp328: F64 = 0.5 * fTemp327;
+            let mut fTemp329: F64 = 131071.0 * (1.0 - fTemp328);
             let mut iTemp330: i32 = (fTemp329) as i32;
             let mut iTemp331: i32 = std::cmp::max(
                 0,
@@ -2583,7 +2527,7 @@ impl LambRs {
                 iTemp331,
                 1,
             )) as usize] - fTemp333;
-            let mut fTemp335: F64 = (65535.5 as F64) * fTemp327;
+            let mut fTemp335: F64 = 65535.5 * fTemp327;
             let mut iTemp336: i32 = (fTemp335) as i32;
             let mut iTemp337: i32 = std::cmp::max(
                 0,
@@ -2617,7 +2561,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp337, 8))
                                             as usize] - fTemp338))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp333 + fTemp76 * fTemp334
                         + (fTemp329 - (iTemp330) as F64)
                             * (fTemp332
@@ -2628,7 +2572,7 @@ impl LambRs {
                                                 as usize] - fTemp332)))))
             });
             let mut fTemp342: F64 = fTemp81 + fTemp328;
-            let mut fTemp343: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp342);
+            let mut fTemp343: F64 = 131071.0 * (1.0 - fTemp342);
             let mut iTemp344: i32 = (fTemp343) as i32;
             let mut iTemp345: i32 = std::cmp::max(
                 0,
@@ -2652,7 +2596,7 @@ impl LambRs {
                 iTemp345,
                 1,
             )) as usize] - fTemp347;
-            let mut fTemp349: F64 = (131071.0 as F64) * fTemp342;
+            let mut fTemp349: F64 = 131071.0 * fTemp342;
             let mut iTemp350: i32 = (fTemp349) as i32;
             let mut iTemp351: i32 = std::cmp::max(
                 0,
@@ -2689,7 +2633,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp351, 8), 917503),
                                             )) as usize] - fTemp352))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp347 + fTemp76 * fTemp348
                             + (fTemp343 - (iTemp344) as F64)
                                 * (fTemp346
@@ -2698,12 +2642,12 @@ impl LambRs {
                                             * (fTemp348
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp345, 8))
                                                     as usize] - fTemp346)))))
-                }) - fTemp341) / ((1.0 as F64) - fTemp341))) as i32;
+                }) - fTemp341) / (1.0 - fTemp341))) as i32;
             let mut fTemp356: F64 = (if iTemp355 != 0 { fTemp325 } else { fTemp328 });
             let mut fTemp357: F64 = (if iTemp355 != 0 { fTemp328 } else { fTemp326 });
             let mut fTemp358: F64 = fTemp357 + fTemp356;
-            let mut fTemp359: F64 = (0.5 as F64) * fTemp358;
-            let mut fTemp360: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp359);
+            let mut fTemp359: F64 = 0.5 * fTemp358;
+            let mut fTemp360: F64 = 131071.0 * (1.0 - fTemp359);
             let mut iTemp361: i32 = (fTemp360) as i32;
             let mut iTemp362: i32 = std::cmp::max(
                 0,
@@ -2727,7 +2671,7 @@ impl LambRs {
                 iTemp362,
                 1,
             )) as usize] - fTemp364;
-            let mut fTemp366: F64 = (65535.5 as F64) * fTemp358;
+            let mut fTemp366: F64 = 65535.5 * fTemp358;
             let mut iTemp367: i32 = (fTemp366) as i32;
             let mut iTemp368: i32 = std::cmp::max(
                 0,
@@ -2761,7 +2705,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp368, 8))
                                             as usize] - fTemp369))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp364 + fTemp76 * fTemp365
                         + (fTemp360 - (iTemp361) as F64)
                             * (fTemp363
@@ -2772,7 +2716,7 @@ impl LambRs {
                                                 as usize] - fTemp363)))))
             });
             let mut fTemp373: F64 = fTemp81 + fTemp359;
-            let mut fTemp374: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp373);
+            let mut fTemp374: F64 = 131071.0 * (1.0 - fTemp373);
             let mut iTemp375: i32 = (fTemp374) as i32;
             let mut iTemp376: i32 = std::cmp::max(
                 0,
@@ -2796,7 +2740,7 @@ impl LambRs {
                 iTemp376,
                 1,
             )) as usize] - fTemp378;
-            let mut fTemp380: F64 = (131071.0 as F64) * fTemp373;
+            let mut fTemp380: F64 = 131071.0 * fTemp373;
             let mut iTemp381: i32 = (fTemp380) as i32;
             let mut iTemp382: i32 = std::cmp::max(
                 0,
@@ -2833,7 +2777,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp382, 8), 917503),
                                             )) as usize] - fTemp383))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp378 + fTemp76 * fTemp379
                             + (fTemp374 - (iTemp375) as F64)
                                 * (fTemp377
@@ -2842,12 +2786,12 @@ impl LambRs {
                                             * (fTemp379
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp376, 8))
                                                     as usize] - fTemp377)))))
-                }) - fTemp372) / ((1.0 as F64) - fTemp372))) as i32;
+                }) - fTemp372) / (1.0 - fTemp372))) as i32;
             let mut fTemp387: F64 = (if iTemp386 != 0 { fTemp356 } else { fTemp359 });
             let mut fTemp388: F64 = (if iTemp386 != 0 { fTemp359 } else { fTemp357 });
             let mut fTemp389: F64 = fTemp388 + fTemp387;
-            let mut fTemp390: F64 = (0.5 as F64) * fTemp389;
-            let mut fTemp391: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp390);
+            let mut fTemp390: F64 = 0.5 * fTemp389;
+            let mut fTemp391: F64 = 131071.0 * (1.0 - fTemp390);
             let mut iTemp392: i32 = (fTemp391) as i32;
             let mut iTemp393: i32 = std::cmp::max(
                 0,
@@ -2871,7 +2815,7 @@ impl LambRs {
                 iTemp393,
                 1,
             )) as usize] - fTemp395;
-            let mut fTemp397: F64 = (65535.5 as F64) * fTemp389;
+            let mut fTemp397: F64 = 65535.5 * fTemp389;
             let mut iTemp398: i32 = (fTemp397) as i32;
             let mut iTemp399: i32 = std::cmp::max(
                 0,
@@ -2905,7 +2849,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp399, 8))
                                             as usize] - fTemp400))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp395 + fTemp76 * fTemp396
                         + (fTemp391 - (iTemp392) as F64)
                             * (fTemp394
@@ -2916,7 +2860,7 @@ impl LambRs {
                                                 as usize] - fTemp394)))))
             });
             let mut fTemp404: F64 = fTemp81 + fTemp390;
-            let mut fTemp405: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp404);
+            let mut fTemp405: F64 = 131071.0 * (1.0 - fTemp404);
             let mut iTemp406: i32 = (fTemp405) as i32;
             let mut iTemp407: i32 = std::cmp::max(
                 0,
@@ -2940,7 +2884,7 @@ impl LambRs {
                 iTemp407,
                 1,
             )) as usize] - fTemp409;
-            let mut fTemp411: F64 = (131071.0 as F64) * fTemp404;
+            let mut fTemp411: F64 = 131071.0 * fTemp404;
             let mut iTemp412: i32 = (fTemp411) as i32;
             let mut iTemp413: i32 = std::cmp::max(
                 0,
@@ -2977,7 +2921,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp413, 8), 917503),
                                             )) as usize] - fTemp414))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp409 + fTemp76 * fTemp410
                             + (fTemp405 - (iTemp406) as F64)
                                 * (fTemp408
@@ -2986,12 +2930,12 @@ impl LambRs {
                                             * (fTemp410
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp407, 8))
                                                     as usize] - fTemp408)))))
-                }) - fTemp403) / ((1.0 as F64) - fTemp403))) as i32;
+                }) - fTemp403) / (1.0 - fTemp403))) as i32;
             let mut fTemp418: F64 = (if iTemp417 != 0 { fTemp387 } else { fTemp390 });
             let mut fTemp419: F64 = (if iTemp417 != 0 { fTemp390 } else { fTemp388 });
             let mut fTemp420: F64 = fTemp419 + fTemp418;
-            let mut fTemp421: F64 = (0.5 as F64) * fTemp420;
-            let mut fTemp422: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp421);
+            let mut fTemp421: F64 = 0.5 * fTemp420;
+            let mut fTemp422: F64 = 131071.0 * (1.0 - fTemp421);
             let mut iTemp423: i32 = (fTemp422) as i32;
             let mut iTemp424: i32 = std::cmp::max(
                 0,
@@ -3015,7 +2959,7 @@ impl LambRs {
                 iTemp424,
                 1,
             )) as usize] - fTemp426;
-            let mut fTemp428: F64 = (65535.5 as F64) * fTemp420;
+            let mut fTemp428: F64 = 65535.5 * fTemp420;
             let mut iTemp429: i32 = (fTemp428) as i32;
             let mut iTemp430: i32 = std::cmp::max(
                 0,
@@ -3049,7 +2993,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp430, 8))
                                             as usize] - fTemp431))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp426 + fTemp76 * fTemp427
                         + (fTemp422 - (iTemp423) as F64)
                             * (fTemp425
@@ -3060,7 +3004,7 @@ impl LambRs {
                                                 as usize] - fTemp425)))))
             });
             let mut fTemp435: F64 = fTemp81 + fTemp421;
-            let mut fTemp436: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp435);
+            let mut fTemp436: F64 = 131071.0 * (1.0 - fTemp435);
             let mut iTemp437: i32 = (fTemp436) as i32;
             let mut iTemp438: i32 = std::cmp::max(
                 0,
@@ -3084,7 +3028,7 @@ impl LambRs {
                 iTemp438,
                 1,
             )) as usize] - fTemp440;
-            let mut fTemp442: F64 = (131071.0 as F64) * fTemp435;
+            let mut fTemp442: F64 = 131071.0 * fTemp435;
             let mut iTemp443: i32 = (fTemp442) as i32;
             let mut iTemp444: i32 = std::cmp::max(
                 0,
@@ -3121,7 +3065,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp444, 8), 917503),
                                             )) as usize] - fTemp445))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp440 + fTemp76 * fTemp441
                             + (fTemp436 - (iTemp437) as F64)
                                 * (fTemp439
@@ -3130,12 +3074,12 @@ impl LambRs {
                                             * (fTemp441
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp438, 8))
                                                     as usize] - fTemp439)))))
-                }) - fTemp434) / ((1.0 as F64) - fTemp434))) as i32;
+                }) - fTemp434) / (1.0 - fTemp434))) as i32;
             let mut fTemp449: F64 = (if iTemp448 != 0 { fTemp418 } else { fTemp421 });
             let mut fTemp450: F64 = (if iTemp448 != 0 { fTemp421 } else { fTemp419 });
             let mut fTemp451: F64 = fTemp450 + fTemp449;
-            let mut fTemp452: F64 = (0.5 as F64) * fTemp451;
-            let mut fTemp453: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp452);
+            let mut fTemp452: F64 = 0.5 * fTemp451;
+            let mut fTemp453: F64 = 131071.0 * (1.0 - fTemp452);
             let mut iTemp454: i32 = (fTemp453) as i32;
             let mut iTemp455: i32 = std::cmp::max(
                 0,
@@ -3159,7 +3103,7 @@ impl LambRs {
                 iTemp455,
                 1,
             )) as usize] - fTemp457;
-            let mut fTemp459: F64 = (65535.5 as F64) * fTemp451;
+            let mut fTemp459: F64 = 65535.5 * fTemp451;
             let mut iTemp460: i32 = (fTemp459) as i32;
             let mut iTemp461: i32 = std::cmp::max(
                 0,
@@ -3193,7 +3137,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp461, 8))
                                             as usize] - fTemp462))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp457 + fTemp76 * fTemp458
                         + (fTemp453 - (iTemp454) as F64)
                             * (fTemp456
@@ -3204,7 +3148,7 @@ impl LambRs {
                                                 as usize] - fTemp456)))))
             });
             let mut fTemp466: F64 = fTemp81 + fTemp452;
-            let mut fTemp467: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp466);
+            let mut fTemp467: F64 = 131071.0 * (1.0 - fTemp466);
             let mut iTemp468: i32 = (fTemp467) as i32;
             let mut iTemp469: i32 = std::cmp::max(
                 0,
@@ -3228,7 +3172,7 @@ impl LambRs {
                 iTemp469,
                 1,
             )) as usize] - fTemp471;
-            let mut fTemp473: F64 = (131071.0 as F64) * fTemp466;
+            let mut fTemp473: F64 = 131071.0 * fTemp466;
             let mut iTemp474: i32 = (fTemp473) as i32;
             let mut iTemp475: i32 = std::cmp::max(
                 0,
@@ -3265,7 +3209,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp475, 8), 917503),
                                             )) as usize] - fTemp476))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp471 + fTemp76 * fTemp472
                             + (fTemp467 - (iTemp468) as F64)
                                 * (fTemp470
@@ -3274,12 +3218,12 @@ impl LambRs {
                                             * (fTemp472
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp469, 8))
                                                     as usize] - fTemp470)))))
-                }) - fTemp465) / ((1.0 as F64) - fTemp465))) as i32;
+                }) - fTemp465) / (1.0 - fTemp465))) as i32;
             let mut fTemp480: F64 = (if iTemp479 != 0 { fTemp449 } else { fTemp452 });
             let mut fTemp481: F64 = (if iTemp479 != 0 { fTemp452 } else { fTemp450 });
             let mut fTemp482: F64 = fTemp481 + fTemp480;
-            let mut fTemp483: F64 = (0.5 as F64) * fTemp482;
-            let mut fTemp484: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp483);
+            let mut fTemp483: F64 = 0.5 * fTemp482;
+            let mut fTemp484: F64 = 131071.0 * (1.0 - fTemp483);
             let mut iTemp485: i32 = (fTemp484) as i32;
             let mut iTemp486: i32 = std::cmp::max(
                 0,
@@ -3303,7 +3247,7 @@ impl LambRs {
                 iTemp486,
                 1,
             )) as usize] - fTemp488;
-            let mut fTemp490: F64 = (65535.5 as F64) * fTemp482;
+            let mut fTemp490: F64 = 65535.5 * fTemp482;
             let mut iTemp491: i32 = (fTemp490) as i32;
             let mut iTemp492: i32 = std::cmp::max(
                 0,
@@ -3337,7 +3281,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp492, 8))
                                             as usize] - fTemp493))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp488 + fTemp76 * fTemp489
                         + (fTemp484 - (iTemp485) as F64)
                             * (fTemp487
@@ -3348,7 +3292,7 @@ impl LambRs {
                                                 as usize] - fTemp487)))))
             });
             let mut fTemp497: F64 = fTemp81 + fTemp483;
-            let mut fTemp498: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp497);
+            let mut fTemp498: F64 = 131071.0 * (1.0 - fTemp497);
             let mut iTemp499: i32 = (fTemp498) as i32;
             let mut iTemp500: i32 = std::cmp::max(
                 0,
@@ -3372,7 +3316,7 @@ impl LambRs {
                 iTemp500,
                 1,
             )) as usize] - fTemp502;
-            let mut fTemp504: F64 = (131071.0 as F64) * fTemp497;
+            let mut fTemp504: F64 = 131071.0 * fTemp497;
             let mut iTemp505: i32 = (fTemp504) as i32;
             let mut iTemp506: i32 = std::cmp::max(
                 0,
@@ -3409,7 +3353,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp506, 8), 917503),
                                             )) as usize] - fTemp507))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp502 + fTemp76 * fTemp503
                             + (fTemp498 - (iTemp499) as F64)
                                 * (fTemp501
@@ -3418,12 +3362,12 @@ impl LambRs {
                                             * (fTemp503
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp500, 8))
                                                     as usize] - fTemp501)))))
-                }) - fTemp496) / ((1.0 as F64) - fTemp496))) as i32;
+                }) - fTemp496) / (1.0 - fTemp496))) as i32;
             let mut fTemp511: F64 = (if iTemp510 != 0 { fTemp480 } else { fTemp483 });
             let mut fTemp512: F64 = (if iTemp510 != 0 { fTemp483 } else { fTemp481 });
             let mut fTemp513: F64 = fTemp512 + fTemp511;
-            let mut fTemp514: F64 = (0.5 as F64) * fTemp513;
-            let mut fTemp515: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp514);
+            let mut fTemp514: F64 = 0.5 * fTemp513;
+            let mut fTemp515: F64 = 131071.0 * (1.0 - fTemp514);
             let mut iTemp516: i32 = (fTemp515) as i32;
             let mut iTemp517: i32 = std::cmp::max(
                 0,
@@ -3447,7 +3391,7 @@ impl LambRs {
                 iTemp517,
                 1,
             )) as usize] - fTemp519;
-            let mut fTemp521: F64 = (65535.5 as F64) * fTemp513;
+            let mut fTemp521: F64 = 65535.5 * fTemp513;
             let mut iTemp522: i32 = (fTemp521) as i32;
             let mut iTemp523: i32 = std::cmp::max(
                 0,
@@ -3481,7 +3425,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp523, 8))
                                             as usize] - fTemp524))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp519 + fTemp76 * fTemp520
                         + (fTemp515 - (iTemp516) as F64)
                             * (fTemp518
@@ -3492,7 +3436,7 @@ impl LambRs {
                                                 as usize] - fTemp518)))))
             });
             let mut fTemp528: F64 = fTemp81 + fTemp514;
-            let mut fTemp529: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp528);
+            let mut fTemp529: F64 = 131071.0 * (1.0 - fTemp528);
             let mut iTemp530: i32 = (fTemp529) as i32;
             let mut iTemp531: i32 = std::cmp::max(
                 0,
@@ -3516,7 +3460,7 @@ impl LambRs {
                 iTemp531,
                 1,
             )) as usize] - fTemp533;
-            let mut fTemp535: F64 = (131071.0 as F64) * fTemp528;
+            let mut fTemp535: F64 = 131071.0 * fTemp528;
             let mut iTemp536: i32 = (fTemp535) as i32;
             let mut iTemp537: i32 = std::cmp::max(
                 0,
@@ -3553,7 +3497,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp537, 8), 917503),
                                             )) as usize] - fTemp538))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp533 + fTemp76 * fTemp534
                             + (fTemp529 - (iTemp530) as F64)
                                 * (fTemp532
@@ -3562,12 +3506,12 @@ impl LambRs {
                                             * (fTemp534
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp531, 8))
                                                     as usize] - fTemp532)))))
-                }) - fTemp527) / ((1.0 as F64) - fTemp527))) as i32;
+                }) - fTemp527) / (1.0 - fTemp527))) as i32;
             let mut fTemp542: F64 = (if iTemp541 != 0 { fTemp511 } else { fTemp514 });
             let mut fTemp543: F64 = (if iTemp541 != 0 { fTemp514 } else { fTemp512 });
             let mut fTemp544: F64 = fTemp543 + fTemp542;
-            let mut fTemp545: F64 = (0.5 as F64) * fTemp544;
-            let mut fTemp546: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp545);
+            let mut fTemp545: F64 = 0.5 * fTemp544;
+            let mut fTemp546: F64 = 131071.0 * (1.0 - fTemp545);
             let mut iTemp547: i32 = (fTemp546) as i32;
             let mut iTemp548: i32 = std::cmp::max(
                 0,
@@ -3591,7 +3535,7 @@ impl LambRs {
                 iTemp548,
                 1,
             )) as usize] - fTemp550;
-            let mut fTemp552: F64 = (65535.5 as F64) * fTemp544;
+            let mut fTemp552: F64 = 65535.5 * fTemp544;
             let mut iTemp553: i32 = (fTemp552) as i32;
             let mut iTemp554: i32 = std::cmp::max(
                 0,
@@ -3625,7 +3569,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp554, 8))
                                             as usize] - fTemp555))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp550 + fTemp76 * fTemp551
                         + (fTemp546 - (iTemp547) as F64)
                             * (fTemp549
@@ -3636,7 +3580,7 @@ impl LambRs {
                                                 as usize] - fTemp549)))))
             });
             let mut fTemp559: F64 = fTemp81 + fTemp545;
-            let mut fTemp560: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp559);
+            let mut fTemp560: F64 = 131071.0 * (1.0 - fTemp559);
             let mut iTemp561: i32 = (fTemp560) as i32;
             let mut iTemp562: i32 = std::cmp::max(
                 0,
@@ -3660,7 +3604,7 @@ impl LambRs {
                 iTemp562,
                 1,
             )) as usize] - fTemp564;
-            let mut fTemp566: F64 = (131071.0 as F64) * fTemp559;
+            let mut fTemp566: F64 = 131071.0 * fTemp559;
             let mut iTemp567: i32 = (fTemp566) as i32;
             let mut iTemp568: i32 = std::cmp::max(
                 0,
@@ -3697,7 +3641,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp568, 8), 917503),
                                             )) as usize] - fTemp569))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp564 + fTemp76 * fTemp565
                             + (fTemp560 - (iTemp561) as F64)
                                 * (fTemp563
@@ -3706,12 +3650,12 @@ impl LambRs {
                                             * (fTemp565
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp562, 8))
                                                     as usize] - fTemp563)))))
-                }) - fTemp558) / ((1.0 as F64) - fTemp558))) as i32;
+                }) - fTemp558) / (1.0 - fTemp558))) as i32;
             let mut fTemp573: F64 = (if iTemp572 != 0 { fTemp542 } else { fTemp545 });
             let mut fTemp574: F64 = (if iTemp572 != 0 { fTemp545 } else { fTemp543 });
             let mut fTemp575: F64 = fTemp574 + fTemp573;
-            let mut fTemp576: F64 = (0.5 as F64) * fTemp575;
-            let mut fTemp577: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp576);
+            let mut fTemp576: F64 = 0.5 * fTemp575;
+            let mut fTemp577: F64 = 131071.0 * (1.0 - fTemp576);
             let mut iTemp578: i32 = (fTemp577) as i32;
             let mut iTemp579: i32 = std::cmp::max(
                 0,
@@ -3735,7 +3679,7 @@ impl LambRs {
                 iTemp579,
                 1,
             )) as usize] - fTemp581;
-            let mut fTemp583: F64 = (65535.5 as F64) * fTemp575;
+            let mut fTemp583: F64 = 65535.5 * fTemp575;
             let mut iTemp584: i32 = (fTemp583) as i32;
             let mut iTemp585: i32 = std::cmp::max(
                 0,
@@ -3769,7 +3713,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp585, 8))
                                             as usize] - fTemp586))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp581 + fTemp76 * fTemp582
                         + (fTemp577 - (iTemp578) as F64)
                             * (fTemp580
@@ -3780,7 +3724,7 @@ impl LambRs {
                                                 as usize] - fTemp580)))))
             });
             let mut fTemp590: F64 = fTemp81 + fTemp576;
-            let mut fTemp591: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp590);
+            let mut fTemp591: F64 = 131071.0 * (1.0 - fTemp590);
             let mut iTemp592: i32 = (fTemp591) as i32;
             let mut iTemp593: i32 = std::cmp::max(
                 0,
@@ -3804,7 +3748,7 @@ impl LambRs {
                 iTemp593,
                 1,
             )) as usize] - fTemp595;
-            let mut fTemp597: F64 = (131071.0 as F64) * fTemp590;
+            let mut fTemp597: F64 = 131071.0 * fTemp590;
             let mut iTemp598: i32 = (fTemp597) as i32;
             let mut iTemp599: i32 = std::cmp::max(
                 0,
@@ -3841,7 +3785,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp599, 8), 917503),
                                             )) as usize] - fTemp600))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp595 + fTemp76 * fTemp596
                             + (fTemp591 - (iTemp592) as F64)
                                 * (fTemp594
@@ -3850,12 +3794,12 @@ impl LambRs {
                                             * (fTemp596
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp593, 8))
                                                     as usize] - fTemp594)))))
-                }) - fTemp589) / ((1.0 as F64) - fTemp589))) as i32;
+                }) - fTemp589) / (1.0 - fTemp589))) as i32;
             let mut fTemp604: F64 = (if iTemp603 != 0 { fTemp573 } else { fTemp576 });
             let mut fTemp605: F64 = (if iTemp603 != 0 { fTemp576 } else { fTemp574 });
             let mut fTemp606: F64 = fTemp605 + fTemp604;
-            let mut fTemp607: F64 = (0.5 as F64) * fTemp606;
-            let mut fTemp608: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp607);
+            let mut fTemp607: F64 = 0.5 * fTemp606;
+            let mut fTemp608: F64 = 131071.0 * (1.0 - fTemp607);
             let mut iTemp609: i32 = (fTemp608) as i32;
             let mut iTemp610: i32 = std::cmp::max(
                 0,
@@ -3879,7 +3823,7 @@ impl LambRs {
                 iTemp610,
                 1,
             )) as usize] - fTemp612;
-            let mut fTemp614: F64 = (65535.5 as F64) * fTemp606;
+            let mut fTemp614: F64 = 65535.5 * fTemp606;
             let mut iTemp615: i32 = (fTemp614) as i32;
             let mut iTemp616: i32 = std::cmp::max(
                 0,
@@ -3915,7 +3859,7 @@ impl LambRs {
                                             std::cmp::min(i32::wrapping_add(iTemp616, 8), 917503),
                                         )) as usize] - fTemp617))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp612 + fTemp76 * fTemp613
                         + (fTemp608 - (iTemp609) as F64)
                             * (fTemp611
@@ -3928,7 +3872,7 @@ impl LambRs {
                                             )) as usize] - fTemp611)))))
             });
             let mut fTemp621: F64 = fTemp81 + fTemp607;
-            let mut fTemp622: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp621);
+            let mut fTemp622: F64 = 131071.0 * (1.0 - fTemp621);
             let mut iTemp623: i32 = (fTemp622) as i32;
             let mut iTemp624: i32 = std::cmp::max(
                 0,
@@ -3952,7 +3896,7 @@ impl LambRs {
                 iTemp624,
                 1,
             )) as usize] - fTemp626;
-            let mut fTemp628: F64 = (131071.0 as F64) * fTemp621;
+            let mut fTemp628: F64 = 131071.0 * fTemp621;
             let mut iTemp629: i32 = (fTemp628) as i32;
             let mut iTemp630: i32 = std::cmp::max(
                 0,
@@ -3989,7 +3933,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp630, 8), 917503),
                                             )) as usize] - fTemp631))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp626 + fTemp76 * fTemp627
                             + (fTemp622 - (iTemp623) as F64)
                                 * (fTemp625
@@ -3998,18 +3942,18 @@ impl LambRs {
                                             * (fTemp627
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp624, 8))
                                                     as usize] - fTemp625)))))
-                }) - fTemp620) / ((1.0 as F64) - fTemp620))) as i32;
+                }) - fTemp620) / (1.0 - fTemp620))) as i32;
             let mut fTemp635: F64 = F64::min(
-                (1.0 as F64),
+                1.0,
                 F64::max(
-                    (0.0 as F64),
-                    (0.5 as F64)
+                    0.0,
+                    0.5
                         * ((if iTemp634 != 0 { fTemp607 } else { fTemp605 })
                             + (if iTemp634 != 0 { fTemp604 } else { fTemp607 })),
                 ),
             );
             self.fRec1[0] = fTemp635;
-            let mut fTemp636: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp635);
+            let mut fTemp636: F64 = 131071.0 * (1.0 - fTemp635);
             let mut iTemp637: i32 = (fTemp636) as i32;
             let mut iTemp638: i32 = std::cmp::max(
                 0,
@@ -4033,7 +3977,7 @@ impl LambRs {
                 iTemp638,
                 1,
             )) as usize] - fTemp640;
-            let mut fTemp642: F64 = (131071.0 as F64) * fTemp635;
+            let mut fTemp642: F64 = 131071.0 * fTemp635;
             let mut iTemp643: i32 = (fTemp642) as i32;
             let mut iTemp644: i32 = std::cmp::max(
                 0,
@@ -4069,7 +4013,7 @@ impl LambRs {
                                             std::cmp::min(i32::wrapping_add(iTemp644, 8), 917503),
                                         )) as usize] - fTemp645))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp640 + fTemp76 * fTemp641
                         + (fTemp636 - (iTemp637) as F64)
                             * (fTemp639
@@ -4082,7 +4026,7 @@ impl LambRs {
                                             )) as usize] - fTemp639)))))
             });
             let mut fTemp649: F64 = fTemp81 + fTemp635;
-            let mut fTemp650: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp649);
+            let mut fTemp650: F64 = 131071.0 * (1.0 - fTemp649);
             let mut iTemp651: i32 = (fTemp650) as i32;
             let mut iTemp652: i32 = std::cmp::max(
                 0,
@@ -4106,7 +4050,7 @@ impl LambRs {
                 iTemp652,
                 1,
             )) as usize] - fTemp654;
-            let mut fTemp656: F64 = (131071.0 as F64) * fTemp649;
+            let mut fTemp656: F64 = 131071.0 * fTemp649;
             let mut iTemp657: i32 = (fTemp656) as i32;
             let mut iTemp658: i32 = std::cmp::max(
                 0,
@@ -4131,7 +4075,7 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp658, 1), 917503),
             )) as usize] - fTemp660;
             let mut fTemp662: F64 = self.fRec2[1]
-                + (if (((0.001 as F64) * fTemp80) == (0.0 as F64)) as i32 != 0 {
+                + (if ((0.001 * fTemp80) == 0.0) as i32 != 0 {
                     fTemp62
                 } else {
                     fTemp62
@@ -4147,7 +4091,7 @@ impl LambRs {
                                                         std::cmp::min(i32::wrapping_add(iTemp658, 8), 917503),
                                                     )) as usize] - fTemp659))))
                         } else {
-                            (1.0 as F64)
+                            1.0
                                 - (fTemp654 + fTemp76 * fTemp655
                                     + (fTemp650 - (iTemp651) as F64)
                                         * (fTemp653
@@ -4156,7 +4100,7 @@ impl LambRs {
                                                     * (fTemp655
                                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp652, 8))
                                                             as usize] - fTemp653)))))
-                        }) - fTemp648) / ((1.0 as F64) - fTemp648)
+                        }) - fTemp648) / (1.0 - fTemp648)
                 });
             self.fRec2[0] = (if iTemp79 != 0 {
                 F64::min(fTemp662, self.fRec2[1])
@@ -4164,13 +4108,13 @@ impl LambRs {
                 F64::max(fTemp662, self.fRec2[1])
             });
             self.fVec31[(self.IOTA0 & 8191) as usize] = F64::powf(
-                (1e+01 as F64),
-                (0.05 as F64) * self.fRec2[0],
+                1e+01,
+                0.05 * self.fRec2[0],
             );
             let mut fTemp663: F64 = self
                 .fVec31[((i32::wrapping_sub(self.IOTA0, iSlow70)) & 8191) as usize];
             self.fRec14[0] = fSlow72 + self.fConst4 * self.fRec14[1];
-            *io0 = ((0.5 as F64)
+            *io0 = (0.5
                 * self.fVec0[((i32::wrapping_sub(self.IOTA0, iSlow71)) & 32767) as usize]
                 * fTemp4
                 + self.fRec14[0]
@@ -4185,9 +4129,9 @@ impl LambRs {
                 fTemp34,
                 -(fSlow18
                     * F64::max(
-                        (0.0 as F64),
+                        0.0,
                         (if (iTemp665 == 0) as i32 != 0 {
-                            (0.0 as F64)
+                            0.0
                         } else {
                             (if (iTemp665 == 1) as i32 != 0 {
                                 fSlow12 * LambRs_faustpower2_f(fSlow7 + fTemp666)
@@ -4264,80 +4208,80 @@ impl LambRs {
                                                             (if iSlow23 != 0 {
                                                                 fTemp667
                                                             } else {
-                                                                (1.7976931348623157e+308 as F64)
+                                                                1.7976931348623157e+308
                                                             }),
                                                             (if iSlow24 != 0 {
                                                                 self.fVec33[iSlow23 as usize]
                                                             } else {
-                                                                (1.7976931348623157e+308 as F64)
+                                                                1.7976931348623157e+308
                                                             }),
                                                         ),
                                                         (if iSlow25 != 0 {
                                                             self.fVec34[iSlow26 as usize]
                                                         } else {
-                                                            (1.7976931348623157e+308 as F64)
+                                                            1.7976931348623157e+308
                                                         }),
                                                     ),
                                                     (if iSlow27 != 0 {
                                                         self.fVec35[iSlow28 as usize]
                                                     } else {
-                                                        (1.7976931348623157e+308 as F64)
+                                                        1.7976931348623157e+308
                                                     }),
                                                 ),
                                                 (if iSlow29 != 0 {
                                                     self.fVec36[((i32::wrapping_sub(self.IOTA0, iSlow30)) & 31)
                                                         as usize]
                                                 } else {
-                                                    (1.7976931348623157e+308 as F64)
+                                                    1.7976931348623157e+308
                                                 }),
                                             ),
                                             (if iSlow31 != 0 {
                                                 self.fVec37[((i32::wrapping_sub(self.IOTA0, iSlow32)) & 63)
                                                     as usize]
                                             } else {
-                                                (1.7976931348623157e+308 as F64)
+                                                1.7976931348623157e+308
                                             }),
                                         ),
                                         (if iSlow33 != 0 {
                                             self.fVec38[((i32::wrapping_sub(self.IOTA0, iSlow34)) & 127)
                                                 as usize]
                                         } else {
-                                            (1.7976931348623157e+308 as F64)
+                                            1.7976931348623157e+308
                                         }),
                                     ),
                                     (if iSlow35 != 0 {
                                         self.fVec39[((i32::wrapping_sub(self.IOTA0, iSlow36)) & 255)
                                             as usize]
                                     } else {
-                                        (1.7976931348623157e+308 as F64)
+                                        1.7976931348623157e+308
                                     }),
                                 ),
                                 (if iSlow37 != 0 {
                                     self.fVec40[((i32::wrapping_sub(self.IOTA0, iSlow38)) & 511)
                                         as usize]
                                 } else {
-                                    (1.7976931348623157e+308 as F64)
+                                    1.7976931348623157e+308
                                 }),
                             ),
                             (if iSlow39 != 0 {
                                 self.fVec41[((i32::wrapping_sub(self.IOTA0, iSlow40))
                                     & 1023) as usize]
                             } else {
-                                (1.7976931348623157e+308 as F64)
+                                1.7976931348623157e+308
                             }),
                         ),
                         (if iSlow41 != 0 {
                             self.fVec42[((i32::wrapping_sub(self.IOTA0, iSlow42)) & 2047)
                                 as usize]
                         } else {
-                            (1.7976931348623157e+308 as F64)
+                            1.7976931348623157e+308
                         }),
                     ),
                     (if iSlow43 != 0 {
                         self.fVec43[((i32::wrapping_sub(self.IOTA0, iSlow44)) & 4095)
                             as usize]
                     } else {
-                        (1.7976931348623157e+308 as F64)
+                        1.7976931348623157e+308
                     }),
                 ),
             );
@@ -4397,87 +4341,87 @@ impl LambRs {
                                                         (if iSlow4 != 0 {
                                                             self.fRec17[0]
                                                         } else {
-                                                            (1.7976931348623157e+308 as F64)
+                                                            1.7976931348623157e+308
                                                         }),
                                                         (if iSlow45 != 0 {
                                                             self.fVec44[iSlow4 as usize]
                                                         } else {
-                                                            (1.7976931348623157e+308 as F64)
+                                                            1.7976931348623157e+308
                                                         }),
                                                     ),
                                                     (if iSlow46 != 0 {
                                                         self.fVec45[iSlow47 as usize]
                                                     } else {
-                                                        (1.7976931348623157e+308 as F64)
+                                                        1.7976931348623157e+308
                                                     }),
                                                 ),
                                                 (if iSlow48 != 0 {
                                                     self.fVec46[iSlow49 as usize]
                                                 } else {
-                                                    (1.7976931348623157e+308 as F64)
+                                                    1.7976931348623157e+308
                                                 }),
                                             ),
                                             (if iSlow50 != 0 {
                                                 self.fVec47[((i32::wrapping_sub(self.IOTA0, iSlow51)) & 31)
                                                     as usize]
                                             } else {
-                                                (1.7976931348623157e+308 as F64)
+                                                1.7976931348623157e+308
                                             }),
                                         ),
                                         (if iSlow52 != 0 {
                                             self.fVec48[((i32::wrapping_sub(self.IOTA0, iSlow53)) & 63)
                                                 as usize]
                                         } else {
-                                            (1.7976931348623157e+308 as F64)
+                                            1.7976931348623157e+308
                                         }),
                                     ),
                                     (if iSlow54 != 0 {
                                         self.fVec49[((i32::wrapping_sub(self.IOTA0, iSlow55)) & 127)
                                             as usize]
                                     } else {
-                                        (1.7976931348623157e+308 as F64)
+                                        1.7976931348623157e+308
                                     }),
                                 ),
                                 (if iSlow56 != 0 {
                                     self.fVec50[((i32::wrapping_sub(self.IOTA0, iSlow57)) & 255)
                                         as usize]
                                 } else {
-                                    (1.7976931348623157e+308 as F64)
+                                    1.7976931348623157e+308
                                 }),
                             ),
                             (if iSlow58 != 0 {
                                 self.fVec51[((i32::wrapping_sub(self.IOTA0, iSlow59)) & 511)
                                     as usize]
                             } else {
-                                (1.7976931348623157e+308 as F64)
+                                1.7976931348623157e+308
                             }),
                         ),
                         (if iSlow60 != 0 {
                             self.fVec52[((i32::wrapping_sub(self.IOTA0, iSlow61)) & 1023)
                                 as usize]
                         } else {
-                            (1.7976931348623157e+308 as F64)
+                            1.7976931348623157e+308
                         }),
                     ),
                     (if iSlow62 != 0 {
                         self.fVec53[((i32::wrapping_sub(self.IOTA0, iSlow63)) & 2047)
                             as usize]
                     } else {
-                        (1.7976931348623157e+308 as F64)
+                        1.7976931348623157e+308
                     }),
                 ),
                 (if iSlow64 != 0 {
                     self.fVec54[((i32::wrapping_sub(self.IOTA0, iSlow65)) & 4095)
                         as usize]
                 } else {
-                    (1.7976931348623157e+308 as F64)
+                    1.7976931348623157e+308
                 }),
             ) - self.fRec16[1];
             self.fVec55[0] = fTemp688;
-            let mut iTemp689: i32 = (fTemp688 > (0.0 as F64)) as i32;
+            let mut iTemp689: i32 = (fTemp688 > 0.0) as i32;
             let mut fTemp690: F64 = (if iTemp689 != 0 { fSlow67 } else { fSlow66 });
             self.fVec56[0] = fTemp690;
-            let mut fTemp691: F64 = (6.0 as F64) * fTemp690;
+            let mut fTemp691: F64 = 6.0 * fTemp690;
             let mut iTemp692: i32 = (fTemp691) as i32;
             let mut iTemp693: i32 = std::cmp::max(0, std::cmp::min(iTemp692, 6));
             let mut iTemp694: i32 = std::cmp::max(
@@ -4495,7 +4439,7 @@ impl LambRs {
             )) as usize] - fTemp696;
             let mut fTemp698: F64 = fTemp691 - (iTemp692) as F64;
             let mut fTemp699: F64 = fTemp696 + fTemp698 * fTemp697
-                + (0.5 as F64)
+                + 0.5
                     * (fTemp695
                         - (fTemp696
                             + fTemp698
@@ -4505,15 +4449,15 @@ impl LambRs {
             let mut fTemp700: F64 = (if iTemp689 != 0 {
                 fTemp699
             } else {
-                (1.0 as F64) - fTemp699
+                1.0 - fTemp699
             });
-            let mut iTemp701: i32 = (fTemp688 < (0.0 as F64)) as i32;
+            let mut iTemp701: i32 = (fTemp688 < 0.0) as i32;
             let mut fTemp702: F64 = fSlow1 * (iTemp701) as F64
                 + fSlow13 * (iTemp689) as F64;
             self.fVec57[0] = fTemp702;
             let mut fTemp703: F64 = self.fConst10 / fTemp702;
-            let mut fTemp704: F64 = fTemp703 + (0.5 as F64);
-            let mut fTemp705: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp704);
+            let mut fTemp704: F64 = fTemp703 + 0.5;
+            let mut fTemp705: F64 = 131071.0 * (1.0 - fTemp704);
             let mut iTemp706: i32 = (fTemp705) as i32;
             let mut iTemp707: i32 = std::cmp::max(
                 0,
@@ -4537,7 +4481,7 @@ impl LambRs {
                 iTemp707,
                 1,
             )) as usize] - fTemp709;
-            let mut fTemp711: F64 = (131071.0 as F64) * fTemp704;
+            let mut fTemp711: F64 = 131071.0 * fTemp704;
             let mut iTemp712: i32 = (fTemp711) as i32;
             let mut iTemp713: i32 = std::cmp::max(
                 0,
@@ -4561,10 +4505,10 @@ impl LambRs {
                 0,
                 std::cmp::min(i32::wrapping_add(iTemp713, 1), 917503),
             )) as usize] - fTemp715;
-            let mut fTemp717: F64 = (6.0 as F64) * self.fVec56[1];
+            let mut fTemp717: F64 = 6.0 * self.fVec56[1];
             let mut iTemp718: i32 = (fTemp717) as i32;
             let mut iTemp719: i32 = std::cmp::max(0, std::cmp::min(iTemp718, 6));
-            let mut fTemp720: F64 = (131071.0 as F64) * ((1.0 as F64) - self.fRec15[1]);
+            let mut fTemp720: F64 = 131071.0 * (1.0 - self.fRec15[1]);
             let mut iTemp721: i32 = (fTemp720) as i32;
             let mut iTemp722: i32 = std::cmp::max(
                 0,
@@ -4589,7 +4533,7 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp722, 1), 917503),
             )) as usize] - fTemp724;
             let mut fTemp726: F64 = fTemp717 - (iTemp718) as F64;
-            let mut fTemp727: F64 = (131071.0 as F64) * self.fRec15[1];
+            let mut fTemp727: F64 = 131071.0 * self.fRec15[1];
             let mut iTemp728: i32 = (fTemp727) as i32;
             let mut iTemp729: i32 = std::cmp::max(
                 0,
@@ -4614,7 +4558,7 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp729, 1), 917503),
             )) as usize] - fTemp731;
             let mut fTemp733: F64 = self.fRec15[1] + fTemp703;
-            let mut fTemp734: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp733);
+            let mut fTemp734: F64 = 131071.0 * (1.0 - fTemp733);
             let mut iTemp735: i32 = (fTemp734) as i32;
             let mut iTemp736: i32 = std::cmp::max(
                 0,
@@ -4638,7 +4582,7 @@ impl LambRs {
                 iTemp736,
                 1,
             )) as usize] - fTemp738;
-            let mut fTemp740: F64 = (131071.0 as F64) * fTemp733;
+            let mut fTemp740: F64 = 131071.0 * fTemp733;
             let mut iTemp741: i32 = (fTemp740) as i32;
             let mut iTemp742: i32 = std::cmp::max(
                 0,
@@ -4663,9 +4607,8 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp742, 1), 917503),
             )) as usize] - fTemp744;
             let mut fTemp746: F64 = self.fRec15[1]
-                + self.fConst10
-                    * ((1.0 as F64) / fTemp702 + (1.0 as F64) / self.fVec57[1]);
-            let mut fTemp747: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp746);
+                + self.fConst10 * (1.0 / fTemp702 + 1.0 / self.fVec57[1]);
+            let mut fTemp747: F64 = 131071.0 * (1.0 - fTemp746);
             let mut iTemp748: i32 = (fTemp747) as i32;
             let mut iTemp749: i32 = std::cmp::max(
                 0,
@@ -4689,7 +4632,7 @@ impl LambRs {
                 iTemp749,
                 1,
             )) as usize] - fTemp751;
-            let mut fTemp753: F64 = (131071.0 as F64) * fTemp746;
+            let mut fTemp753: F64 = 131071.0 * fTemp746;
             let mut iTemp754: i32 = (fTemp753) as i32;
             let mut iTemp755: i32 = std::cmp::max(
                 0,
@@ -4725,7 +4668,7 @@ impl LambRs {
                                             std::cmp::min(i32::wrapping_add(iTemp755, 8), 917503),
                                         )) as usize] - fTemp756))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp751 + fTemp698 * fTemp752
                         + (fTemp747 - (iTemp748) as F64)
                             * (fTemp750
@@ -4747,7 +4690,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp742, 8), 917503),
                                             )) as usize] - fTemp743))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp738 + fTemp698 * fTemp739
                             + (fTemp734 - (iTemp735) as F64)
                                 * (fTemp737
@@ -4758,7 +4701,7 @@ impl LambRs {
                                                     as usize] - fTemp737)))))
                 })) * self.fVec55[1]
                 / (fTemp688
-                    * ((1.0 as F64)
+                    * (1.0
                         - (if iTemp689 != 0 {
                             fTemp731 + fTemp726 * fTemp732
                                 + (fTemp727 - (iTemp728) as F64)
@@ -4771,7 +4714,7 @@ impl LambRs {
                                                         std::cmp::min(i32::wrapping_add(iTemp729, 8), 917503),
                                                     )) as usize] - fTemp730))))
                         } else {
-                            (1.0 as F64)
+                            1.0
                                 - (fTemp724 + fTemp726 * fTemp725
                                     + (fTemp720 - (iTemp721) as F64)
                                         * (fTemp723
@@ -4796,7 +4739,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp713, 8), 917503),
                                             )) as usize] - fTemp714))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp709 + fTemp698 * fTemp710
                             + (fTemp705 - (iTemp706) as F64)
                                 * (fTemp708
@@ -4805,20 +4748,12 @@ impl LambRs {
                                             * (fTemp710
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp707, 8))
                                                     as usize] - fTemp708)))))
-                }) - fTemp700) / ((1.0 as F64) - fTemp700))) as i32;
-            let mut fTemp761: F64 = (if iTemp760 != 0 {
-                (1.0 as F64)
-            } else {
-                (0.5 as F64)
-            });
-            let mut fTemp762: F64 = (if iTemp760 != 0 {
-                (0.5 as F64)
-            } else {
-                (0.0 as F64)
-            });
+                }) - fTemp700) / (1.0 - fTemp700))) as i32;
+            let mut fTemp761: F64 = (if iTemp760 != 0 { 1.0 } else { 0.5 });
+            let mut fTemp762: F64 = (if iTemp760 != 0 { 0.5 } else { 0.0 });
             let mut fTemp763: F64 = fTemp762 + fTemp761;
-            let mut fTemp764: F64 = (0.5 as F64) * fTemp763;
-            let mut fTemp765: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp764);
+            let mut fTemp764: F64 = 0.5 * fTemp763;
+            let mut fTemp765: F64 = 131071.0 * (1.0 - fTemp764);
             let mut iTemp766: i32 = (fTemp765) as i32;
             let mut iTemp767: i32 = std::cmp::max(
                 0,
@@ -4842,7 +4777,7 @@ impl LambRs {
                 iTemp767,
                 1,
             )) as usize] - fTemp769;
-            let mut fTemp771: F64 = (65535.5 as F64) * fTemp763;
+            let mut fTemp771: F64 = 65535.5 * fTemp763;
             let mut iTemp772: i32 = (fTemp771) as i32;
             let mut iTemp773: i32 = std::cmp::max(
                 0,
@@ -4876,7 +4811,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp773, 8))
                                             as usize] - fTemp774))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp769 + fTemp698 * fTemp770
                         + (fTemp765 - (iTemp766) as F64)
                             * (fTemp768
@@ -4887,7 +4822,7 @@ impl LambRs {
                                                 as usize] - fTemp768)))))
             });
             let mut fTemp778: F64 = fTemp703 + fTemp764;
-            let mut fTemp779: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp778);
+            let mut fTemp779: F64 = 131071.0 * (1.0 - fTemp778);
             let mut iTemp780: i32 = (fTemp779) as i32;
             let mut iTemp781: i32 = std::cmp::max(
                 0,
@@ -4911,7 +4846,7 @@ impl LambRs {
                 iTemp781,
                 1,
             )) as usize] - fTemp783;
-            let mut fTemp785: F64 = (131071.0 as F64) * fTemp778;
+            let mut fTemp785: F64 = 131071.0 * fTemp778;
             let mut iTemp786: i32 = (fTemp785) as i32;
             let mut iTemp787: i32 = std::cmp::max(
                 0,
@@ -4948,7 +4883,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp787, 8), 917503),
                                             )) as usize] - fTemp788))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp783 + fTemp698 * fTemp784
                             + (fTemp779 - (iTemp780) as F64)
                                 * (fTemp782
@@ -4957,12 +4892,12 @@ impl LambRs {
                                             * (fTemp784
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp781, 8))
                                                     as usize] - fTemp782)))))
-                }) - fTemp777) / ((1.0 as F64) - fTemp777))) as i32;
+                }) - fTemp777) / (1.0 - fTemp777))) as i32;
             let mut fTemp792: F64 = (if iTemp791 != 0 { fTemp761 } else { fTemp764 });
             let mut fTemp793: F64 = (if iTemp791 != 0 { fTemp764 } else { fTemp762 });
             let mut fTemp794: F64 = fTemp793 + fTemp792;
-            let mut fTemp795: F64 = (0.5 as F64) * fTemp794;
-            let mut fTemp796: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp795);
+            let mut fTemp795: F64 = 0.5 * fTemp794;
+            let mut fTemp796: F64 = 131071.0 * (1.0 - fTemp795);
             let mut iTemp797: i32 = (fTemp796) as i32;
             let mut iTemp798: i32 = std::cmp::max(
                 0,
@@ -4986,7 +4921,7 @@ impl LambRs {
                 iTemp798,
                 1,
             )) as usize] - fTemp800;
-            let mut fTemp802: F64 = (65535.5 as F64) * fTemp794;
+            let mut fTemp802: F64 = 65535.5 * fTemp794;
             let mut iTemp803: i32 = (fTemp802) as i32;
             let mut iTemp804: i32 = std::cmp::max(
                 0,
@@ -5020,7 +4955,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp804, 8))
                                             as usize] - fTemp805))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp800 + fTemp698 * fTemp801
                         + (fTemp796 - (iTemp797) as F64)
                             * (fTemp799
@@ -5031,7 +4966,7 @@ impl LambRs {
                                                 as usize] - fTemp799)))))
             });
             let mut fTemp809: F64 = fTemp703 + fTemp795;
-            let mut fTemp810: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp809);
+            let mut fTemp810: F64 = 131071.0 * (1.0 - fTemp809);
             let mut iTemp811: i32 = (fTemp810) as i32;
             let mut iTemp812: i32 = std::cmp::max(
                 0,
@@ -5055,7 +4990,7 @@ impl LambRs {
                 iTemp812,
                 1,
             )) as usize] - fTemp814;
-            let mut fTemp816: F64 = (131071.0 as F64) * fTemp809;
+            let mut fTemp816: F64 = 131071.0 * fTemp809;
             let mut iTemp817: i32 = (fTemp816) as i32;
             let mut iTemp818: i32 = std::cmp::max(
                 0,
@@ -5092,7 +5027,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp818, 8), 917503),
                                             )) as usize] - fTemp819))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp814 + fTemp698 * fTemp815
                             + (fTemp810 - (iTemp811) as F64)
                                 * (fTemp813
@@ -5101,12 +5036,12 @@ impl LambRs {
                                             * (fTemp815
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp812, 8))
                                                     as usize] - fTemp813)))))
-                }) - fTemp808) / ((1.0 as F64) - fTemp808))) as i32;
+                }) - fTemp808) / (1.0 - fTemp808))) as i32;
             let mut fTemp823: F64 = (if iTemp822 != 0 { fTemp792 } else { fTemp795 });
             let mut fTemp824: F64 = (if iTemp822 != 0 { fTemp795 } else { fTemp793 });
             let mut fTemp825: F64 = fTemp824 + fTemp823;
-            let mut fTemp826: F64 = (0.5 as F64) * fTemp825;
-            let mut fTemp827: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp826);
+            let mut fTemp826: F64 = 0.5 * fTemp825;
+            let mut fTemp827: F64 = 131071.0 * (1.0 - fTemp826);
             let mut iTemp828: i32 = (fTemp827) as i32;
             let mut iTemp829: i32 = std::cmp::max(
                 0,
@@ -5130,7 +5065,7 @@ impl LambRs {
                 iTemp829,
                 1,
             )) as usize] - fTemp831;
-            let mut fTemp833: F64 = (65535.5 as F64) * fTemp825;
+            let mut fTemp833: F64 = 65535.5 * fTemp825;
             let mut iTemp834: i32 = (fTemp833) as i32;
             let mut iTemp835: i32 = std::cmp::max(
                 0,
@@ -5164,7 +5099,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp835, 8))
                                             as usize] - fTemp836))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp831 + fTemp698 * fTemp832
                         + (fTemp827 - (iTemp828) as F64)
                             * (fTemp830
@@ -5175,7 +5110,7 @@ impl LambRs {
                                                 as usize] - fTemp830)))))
             });
             let mut fTemp840: F64 = fTemp703 + fTemp826;
-            let mut fTemp841: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp840);
+            let mut fTemp841: F64 = 131071.0 * (1.0 - fTemp840);
             let mut iTemp842: i32 = (fTemp841) as i32;
             let mut iTemp843: i32 = std::cmp::max(
                 0,
@@ -5199,7 +5134,7 @@ impl LambRs {
                 iTemp843,
                 1,
             )) as usize] - fTemp845;
-            let mut fTemp847: F64 = (131071.0 as F64) * fTemp840;
+            let mut fTemp847: F64 = 131071.0 * fTemp840;
             let mut iTemp848: i32 = (fTemp847) as i32;
             let mut iTemp849: i32 = std::cmp::max(
                 0,
@@ -5236,7 +5171,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp849, 8), 917503),
                                             )) as usize] - fTemp850))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp845 + fTemp698 * fTemp846
                             + (fTemp841 - (iTemp842) as F64)
                                 * (fTemp844
@@ -5245,12 +5180,12 @@ impl LambRs {
                                             * (fTemp846
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp843, 8))
                                                     as usize] - fTemp844)))))
-                }) - fTemp839) / ((1.0 as F64) - fTemp839))) as i32;
+                }) - fTemp839) / (1.0 - fTemp839))) as i32;
             let mut fTemp854: F64 = (if iTemp853 != 0 { fTemp823 } else { fTemp826 });
             let mut fTemp855: F64 = (if iTemp853 != 0 { fTemp826 } else { fTemp824 });
             let mut fTemp856: F64 = fTemp855 + fTemp854;
-            let mut fTemp857: F64 = (0.5 as F64) * fTemp856;
-            let mut fTemp858: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp857);
+            let mut fTemp857: F64 = 0.5 * fTemp856;
+            let mut fTemp858: F64 = 131071.0 * (1.0 - fTemp857);
             let mut iTemp859: i32 = (fTemp858) as i32;
             let mut iTemp860: i32 = std::cmp::max(
                 0,
@@ -5274,7 +5209,7 @@ impl LambRs {
                 iTemp860,
                 1,
             )) as usize] - fTemp862;
-            let mut fTemp864: F64 = (65535.5 as F64) * fTemp856;
+            let mut fTemp864: F64 = 65535.5 * fTemp856;
             let mut iTemp865: i32 = (fTemp864) as i32;
             let mut iTemp866: i32 = std::cmp::max(
                 0,
@@ -5308,7 +5243,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp866, 8))
                                             as usize] - fTemp867))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp862 + fTemp698 * fTemp863
                         + (fTemp858 - (iTemp859) as F64)
                             * (fTemp861
@@ -5319,7 +5254,7 @@ impl LambRs {
                                                 as usize] - fTemp861)))))
             });
             let mut fTemp871: F64 = fTemp703 + fTemp857;
-            let mut fTemp872: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp871);
+            let mut fTemp872: F64 = 131071.0 * (1.0 - fTemp871);
             let mut iTemp873: i32 = (fTemp872) as i32;
             let mut iTemp874: i32 = std::cmp::max(
                 0,
@@ -5343,7 +5278,7 @@ impl LambRs {
                 iTemp874,
                 1,
             )) as usize] - fTemp876;
-            let mut fTemp878: F64 = (131071.0 as F64) * fTemp871;
+            let mut fTemp878: F64 = 131071.0 * fTemp871;
             let mut iTemp879: i32 = (fTemp878) as i32;
             let mut iTemp880: i32 = std::cmp::max(
                 0,
@@ -5380,7 +5315,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp880, 8), 917503),
                                             )) as usize] - fTemp881))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp876 + fTemp698 * fTemp877
                             + (fTemp872 - (iTemp873) as F64)
                                 * (fTemp875
@@ -5389,12 +5324,12 @@ impl LambRs {
                                             * (fTemp877
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp874, 8))
                                                     as usize] - fTemp875)))))
-                }) - fTemp870) / ((1.0 as F64) - fTemp870))) as i32;
+                }) - fTemp870) / (1.0 - fTemp870))) as i32;
             let mut fTemp885: F64 = (if iTemp884 != 0 { fTemp854 } else { fTemp857 });
             let mut fTemp886: F64 = (if iTemp884 != 0 { fTemp857 } else { fTemp855 });
             let mut fTemp887: F64 = fTemp886 + fTemp885;
-            let mut fTemp888: F64 = (0.5 as F64) * fTemp887;
-            let mut fTemp889: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp888);
+            let mut fTemp888: F64 = 0.5 * fTemp887;
+            let mut fTemp889: F64 = 131071.0 * (1.0 - fTemp888);
             let mut iTemp890: i32 = (fTemp889) as i32;
             let mut iTemp891: i32 = std::cmp::max(
                 0,
@@ -5418,7 +5353,7 @@ impl LambRs {
                 iTemp891,
                 1,
             )) as usize] - fTemp893;
-            let mut fTemp895: F64 = (65535.5 as F64) * fTemp887;
+            let mut fTemp895: F64 = 65535.5 * fTemp887;
             let mut iTemp896: i32 = (fTemp895) as i32;
             let mut iTemp897: i32 = std::cmp::max(
                 0,
@@ -5452,7 +5387,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp897, 8))
                                             as usize] - fTemp898))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp893 + fTemp698 * fTemp894
                         + (fTemp889 - (iTemp890) as F64)
                             * (fTemp892
@@ -5463,7 +5398,7 @@ impl LambRs {
                                                 as usize] - fTemp892)))))
             });
             let mut fTemp902: F64 = fTemp703 + fTemp888;
-            let mut fTemp903: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp902);
+            let mut fTemp903: F64 = 131071.0 * (1.0 - fTemp902);
             let mut iTemp904: i32 = (fTemp903) as i32;
             let mut iTemp905: i32 = std::cmp::max(
                 0,
@@ -5487,7 +5422,7 @@ impl LambRs {
                 iTemp905,
                 1,
             )) as usize] - fTemp907;
-            let mut fTemp909: F64 = (131071.0 as F64) * fTemp902;
+            let mut fTemp909: F64 = 131071.0 * fTemp902;
             let mut iTemp910: i32 = (fTemp909) as i32;
             let mut iTemp911: i32 = std::cmp::max(
                 0,
@@ -5524,7 +5459,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp911, 8), 917503),
                                             )) as usize] - fTemp912))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp907 + fTemp698 * fTemp908
                             + (fTemp903 - (iTemp904) as F64)
                                 * (fTemp906
@@ -5533,12 +5468,12 @@ impl LambRs {
                                             * (fTemp908
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp905, 8))
                                                     as usize] - fTemp906)))))
-                }) - fTemp901) / ((1.0 as F64) - fTemp901))) as i32;
+                }) - fTemp901) / (1.0 - fTemp901))) as i32;
             let mut fTemp916: F64 = (if iTemp915 != 0 { fTemp885 } else { fTemp888 });
             let mut fTemp917: F64 = (if iTemp915 != 0 { fTemp888 } else { fTemp886 });
             let mut fTemp918: F64 = fTemp917 + fTemp916;
-            let mut fTemp919: F64 = (0.5 as F64) * fTemp918;
-            let mut fTemp920: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp919);
+            let mut fTemp919: F64 = 0.5 * fTemp918;
+            let mut fTemp920: F64 = 131071.0 * (1.0 - fTemp919);
             let mut iTemp921: i32 = (fTemp920) as i32;
             let mut iTemp922: i32 = std::cmp::max(
                 0,
@@ -5562,7 +5497,7 @@ impl LambRs {
                 iTemp922,
                 1,
             )) as usize] - fTemp924;
-            let mut fTemp926: F64 = (65535.5 as F64) * fTemp918;
+            let mut fTemp926: F64 = 65535.5 * fTemp918;
             let mut iTemp927: i32 = (fTemp926) as i32;
             let mut iTemp928: i32 = std::cmp::max(
                 0,
@@ -5596,7 +5531,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp928, 8))
                                             as usize] - fTemp929))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp924 + fTemp698 * fTemp925
                         + (fTemp920 - (iTemp921) as F64)
                             * (fTemp923
@@ -5607,7 +5542,7 @@ impl LambRs {
                                                 as usize] - fTemp923)))))
             });
             let mut fTemp933: F64 = fTemp703 + fTemp919;
-            let mut fTemp934: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp933);
+            let mut fTemp934: F64 = 131071.0 * (1.0 - fTemp933);
             let mut iTemp935: i32 = (fTemp934) as i32;
             let mut iTemp936: i32 = std::cmp::max(
                 0,
@@ -5631,7 +5566,7 @@ impl LambRs {
                 iTemp936,
                 1,
             )) as usize] - fTemp938;
-            let mut fTemp940: F64 = (131071.0 as F64) * fTemp933;
+            let mut fTemp940: F64 = 131071.0 * fTemp933;
             let mut iTemp941: i32 = (fTemp940) as i32;
             let mut iTemp942: i32 = std::cmp::max(
                 0,
@@ -5668,7 +5603,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp942, 8), 917503),
                                             )) as usize] - fTemp943))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp938 + fTemp698 * fTemp939
                             + (fTemp934 - (iTemp935) as F64)
                                 * (fTemp937
@@ -5677,12 +5612,12 @@ impl LambRs {
                                             * (fTemp939
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp936, 8))
                                                     as usize] - fTemp937)))))
-                }) - fTemp932) / ((1.0 as F64) - fTemp932))) as i32;
+                }) - fTemp932) / (1.0 - fTemp932))) as i32;
             let mut fTemp947: F64 = (if iTemp946 != 0 { fTemp916 } else { fTemp919 });
             let mut fTemp948: F64 = (if iTemp946 != 0 { fTemp919 } else { fTemp917 });
             let mut fTemp949: F64 = fTemp948 + fTemp947;
-            let mut fTemp950: F64 = (0.5 as F64) * fTemp949;
-            let mut fTemp951: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp950);
+            let mut fTemp950: F64 = 0.5 * fTemp949;
+            let mut fTemp951: F64 = 131071.0 * (1.0 - fTemp950);
             let mut iTemp952: i32 = (fTemp951) as i32;
             let mut iTemp953: i32 = std::cmp::max(
                 0,
@@ -5706,7 +5641,7 @@ impl LambRs {
                 iTemp953,
                 1,
             )) as usize] - fTemp955;
-            let mut fTemp957: F64 = (65535.5 as F64) * fTemp949;
+            let mut fTemp957: F64 = 65535.5 * fTemp949;
             let mut iTemp958: i32 = (fTemp957) as i32;
             let mut iTemp959: i32 = std::cmp::max(
                 0,
@@ -5740,7 +5675,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp959, 8))
                                             as usize] - fTemp960))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp955 + fTemp698 * fTemp956
                         + (fTemp951 - (iTemp952) as F64)
                             * (fTemp954
@@ -5751,7 +5686,7 @@ impl LambRs {
                                                 as usize] - fTemp954)))))
             });
             let mut fTemp964: F64 = fTemp703 + fTemp950;
-            let mut fTemp965: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp964);
+            let mut fTemp965: F64 = 131071.0 * (1.0 - fTemp964);
             let mut iTemp966: i32 = (fTemp965) as i32;
             let mut iTemp967: i32 = std::cmp::max(
                 0,
@@ -5775,7 +5710,7 @@ impl LambRs {
                 iTemp967,
                 1,
             )) as usize] - fTemp969;
-            let mut fTemp971: F64 = (131071.0 as F64) * fTemp964;
+            let mut fTemp971: F64 = 131071.0 * fTemp964;
             let mut iTemp972: i32 = (fTemp971) as i32;
             let mut iTemp973: i32 = std::cmp::max(
                 0,
@@ -5812,7 +5747,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp973, 8), 917503),
                                             )) as usize] - fTemp974))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp969 + fTemp698 * fTemp970
                             + (fTemp965 - (iTemp966) as F64)
                                 * (fTemp968
@@ -5821,12 +5756,12 @@ impl LambRs {
                                             * (fTemp970
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp967, 8))
                                                     as usize] - fTemp968)))))
-                }) - fTemp963) / ((1.0 as F64) - fTemp963))) as i32;
+                }) - fTemp963) / (1.0 - fTemp963))) as i32;
             let mut fTemp978: F64 = (if iTemp977 != 0 { fTemp947 } else { fTemp950 });
             let mut fTemp979: F64 = (if iTemp977 != 0 { fTemp950 } else { fTemp948 });
             let mut fTemp980: F64 = fTemp979 + fTemp978;
-            let mut fTemp981: F64 = (0.5 as F64) * fTemp980;
-            let mut fTemp982: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp981);
+            let mut fTemp981: F64 = 0.5 * fTemp980;
+            let mut fTemp982: F64 = 131071.0 * (1.0 - fTemp981);
             let mut iTemp983: i32 = (fTemp982) as i32;
             let mut iTemp984: i32 = std::cmp::max(
                 0,
@@ -5850,7 +5785,7 @@ impl LambRs {
                 iTemp984,
                 1,
             )) as usize] - fTemp986;
-            let mut fTemp988: F64 = (65535.5 as F64) * fTemp980;
+            let mut fTemp988: F64 = 65535.5 * fTemp980;
             let mut iTemp989: i32 = (fTemp988) as i32;
             let mut iTemp990: i32 = std::cmp::max(
                 0,
@@ -5884,7 +5819,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp990, 8))
                                             as usize] - fTemp991))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp986 + fTemp698 * fTemp987
                         + (fTemp982 - (iTemp983) as F64)
                             * (fTemp985
@@ -5895,7 +5830,7 @@ impl LambRs {
                                                 as usize] - fTemp985)))))
             });
             let mut fTemp995: F64 = fTemp703 + fTemp981;
-            let mut fTemp996: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp995);
+            let mut fTemp996: F64 = 131071.0 * (1.0 - fTemp995);
             let mut iTemp997: i32 = (fTemp996) as i32;
             let mut iTemp998: i32 = std::cmp::max(
                 0,
@@ -5919,7 +5854,7 @@ impl LambRs {
                 iTemp998,
                 1,
             )) as usize] - fTemp1000;
-            let mut fTemp1002: F64 = (131071.0 as F64) * fTemp995;
+            let mut fTemp1002: F64 = 131071.0 * fTemp995;
             let mut iTemp1003: i32 = (fTemp1002) as i32;
             let mut iTemp1004: i32 = std::cmp::max(
                 0,
@@ -5956,7 +5891,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1004, 8), 917503),
                                             )) as usize] - fTemp1005))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1000 + fTemp698 * fTemp1001
                             + (fTemp996 - (iTemp997) as F64)
                                 * (fTemp999
@@ -5965,12 +5900,12 @@ impl LambRs {
                                             * (fTemp1001
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp998, 8))
                                                     as usize] - fTemp999)))))
-                }) - fTemp994) / ((1.0 as F64) - fTemp994))) as i32;
+                }) - fTemp994) / (1.0 - fTemp994))) as i32;
             let mut fTemp1009: F64 = (if iTemp1008 != 0 { fTemp978 } else { fTemp981 });
             let mut fTemp1010: F64 = (if iTemp1008 != 0 { fTemp981 } else { fTemp979 });
             let mut fTemp1011: F64 = fTemp1010 + fTemp1009;
-            let mut fTemp1012: F64 = (0.5 as F64) * fTemp1011;
-            let mut fTemp1013: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1012);
+            let mut fTemp1012: F64 = 0.5 * fTemp1011;
+            let mut fTemp1013: F64 = 131071.0 * (1.0 - fTemp1012);
             let mut iTemp1014: i32 = (fTemp1013) as i32;
             let mut iTemp1015: i32 = std::cmp::max(
                 0,
@@ -5994,7 +5929,7 @@ impl LambRs {
                 iTemp1015,
                 1,
             )) as usize] - fTemp1017;
-            let mut fTemp1019: F64 = (65535.5 as F64) * fTemp1011;
+            let mut fTemp1019: F64 = 65535.5 * fTemp1011;
             let mut iTemp1020: i32 = (fTemp1019) as i32;
             let mut iTemp1021: i32 = std::cmp::max(
                 0,
@@ -6028,7 +5963,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1021, 8))
                                             as usize] - fTemp1022))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1017 + fTemp698 * fTemp1018
                         + (fTemp1013 - (iTemp1014) as F64)
                             * (fTemp1016
@@ -6039,7 +5974,7 @@ impl LambRs {
                                                 as usize] - fTemp1016)))))
             });
             let mut fTemp1026: F64 = fTemp703 + fTemp1012;
-            let mut fTemp1027: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1026);
+            let mut fTemp1027: F64 = 131071.0 * (1.0 - fTemp1026);
             let mut iTemp1028: i32 = (fTemp1027) as i32;
             let mut iTemp1029: i32 = std::cmp::max(
                 0,
@@ -6063,7 +5998,7 @@ impl LambRs {
                 iTemp1029,
                 1,
             )) as usize] - fTemp1031;
-            let mut fTemp1033: F64 = (131071.0 as F64) * fTemp1026;
+            let mut fTemp1033: F64 = 131071.0 * fTemp1026;
             let mut iTemp1034: i32 = (fTemp1033) as i32;
             let mut iTemp1035: i32 = std::cmp::max(
                 0,
@@ -6100,7 +6035,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1035, 8), 917503),
                                             )) as usize] - fTemp1036))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1031 + fTemp698 * fTemp1032
                             + (fTemp1027 - (iTemp1028) as F64)
                                 * (fTemp1030
@@ -6109,7 +6044,7 @@ impl LambRs {
                                             * (fTemp1032
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1029, 8))
                                                     as usize] - fTemp1030)))))
-                }) - fTemp1025) / ((1.0 as F64) - fTemp1025))) as i32;
+                }) - fTemp1025) / (1.0 - fTemp1025))) as i32;
             let mut fTemp1040: F64 = (if iTemp1039 != 0 {
                 fTemp1009
             } else {
@@ -6121,8 +6056,8 @@ impl LambRs {
                 fTemp1010
             });
             let mut fTemp1042: F64 = fTemp1041 + fTemp1040;
-            let mut fTemp1043: F64 = (0.5 as F64) * fTemp1042;
-            let mut fTemp1044: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1043);
+            let mut fTemp1043: F64 = 0.5 * fTemp1042;
+            let mut fTemp1044: F64 = 131071.0 * (1.0 - fTemp1043);
             let mut iTemp1045: i32 = (fTemp1044) as i32;
             let mut iTemp1046: i32 = std::cmp::max(
                 0,
@@ -6146,7 +6081,7 @@ impl LambRs {
                 iTemp1046,
                 1,
             )) as usize] - fTemp1048;
-            let mut fTemp1050: F64 = (65535.5 as F64) * fTemp1042;
+            let mut fTemp1050: F64 = 65535.5 * fTemp1042;
             let mut iTemp1051: i32 = (fTemp1050) as i32;
             let mut iTemp1052: i32 = std::cmp::max(
                 0,
@@ -6180,7 +6115,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1052, 8))
                                             as usize] - fTemp1053))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1048 + fTemp698 * fTemp1049
                         + (fTemp1044 - (iTemp1045) as F64)
                             * (fTemp1047
@@ -6191,7 +6126,7 @@ impl LambRs {
                                                 as usize] - fTemp1047)))))
             });
             let mut fTemp1057: F64 = fTemp703 + fTemp1043;
-            let mut fTemp1058: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1057);
+            let mut fTemp1058: F64 = 131071.0 * (1.0 - fTemp1057);
             let mut iTemp1059: i32 = (fTemp1058) as i32;
             let mut iTemp1060: i32 = std::cmp::max(
                 0,
@@ -6215,7 +6150,7 @@ impl LambRs {
                 iTemp1060,
                 1,
             )) as usize] - fTemp1062;
-            let mut fTemp1064: F64 = (131071.0 as F64) * fTemp1057;
+            let mut fTemp1064: F64 = 131071.0 * fTemp1057;
             let mut iTemp1065: i32 = (fTemp1064) as i32;
             let mut iTemp1066: i32 = std::cmp::max(
                 0,
@@ -6252,7 +6187,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1066, 8), 917503),
                                             )) as usize] - fTemp1067))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1062 + fTemp698 * fTemp1063
                             + (fTemp1058 - (iTemp1059) as F64)
                                 * (fTemp1061
@@ -6261,7 +6196,7 @@ impl LambRs {
                                             * (fTemp1063
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1060, 8))
                                                     as usize] - fTemp1061)))))
-                }) - fTemp1056) / ((1.0 as F64) - fTemp1056))) as i32;
+                }) - fTemp1056) / (1.0 - fTemp1056))) as i32;
             let mut fTemp1071: F64 = (if iTemp1070 != 0 {
                 fTemp1040
             } else {
@@ -6273,8 +6208,8 @@ impl LambRs {
                 fTemp1041
             });
             let mut fTemp1073: F64 = fTemp1072 + fTemp1071;
-            let mut fTemp1074: F64 = (0.5 as F64) * fTemp1073;
-            let mut fTemp1075: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1074);
+            let mut fTemp1074: F64 = 0.5 * fTemp1073;
+            let mut fTemp1075: F64 = 131071.0 * (1.0 - fTemp1074);
             let mut iTemp1076: i32 = (fTemp1075) as i32;
             let mut iTemp1077: i32 = std::cmp::max(
                 0,
@@ -6298,7 +6233,7 @@ impl LambRs {
                 iTemp1077,
                 1,
             )) as usize] - fTemp1079;
-            let mut fTemp1081: F64 = (65535.5 as F64) * fTemp1073;
+            let mut fTemp1081: F64 = 65535.5 * fTemp1073;
             let mut iTemp1082: i32 = (fTemp1081) as i32;
             let mut iTemp1083: i32 = std::cmp::max(
                 0,
@@ -6332,7 +6267,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1083, 8))
                                             as usize] - fTemp1084))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1079 + fTemp698 * fTemp1080
                         + (fTemp1075 - (iTemp1076) as F64)
                             * (fTemp1078
@@ -6343,7 +6278,7 @@ impl LambRs {
                                                 as usize] - fTemp1078)))))
             });
             let mut fTemp1088: F64 = fTemp703 + fTemp1074;
-            let mut fTemp1089: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1088);
+            let mut fTemp1089: F64 = 131071.0 * (1.0 - fTemp1088);
             let mut iTemp1090: i32 = (fTemp1089) as i32;
             let mut iTemp1091: i32 = std::cmp::max(
                 0,
@@ -6367,7 +6302,7 @@ impl LambRs {
                 iTemp1091,
                 1,
             )) as usize] - fTemp1093;
-            let mut fTemp1095: F64 = (131071.0 as F64) * fTemp1088;
+            let mut fTemp1095: F64 = 131071.0 * fTemp1088;
             let mut iTemp1096: i32 = (fTemp1095) as i32;
             let mut iTemp1097: i32 = std::cmp::max(
                 0,
@@ -6404,7 +6339,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1097, 8), 917503),
                                             )) as usize] - fTemp1098))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1093 + fTemp698 * fTemp1094
                             + (fTemp1089 - (iTemp1090) as F64)
                                 * (fTemp1092
@@ -6413,7 +6348,7 @@ impl LambRs {
                                             * (fTemp1094
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1091, 8))
                                                     as usize] - fTemp1092)))))
-                }) - fTemp1087) / ((1.0 as F64) - fTemp1087))) as i32;
+                }) - fTemp1087) / (1.0 - fTemp1087))) as i32;
             let mut fTemp1102: F64 = (if iTemp1101 != 0 {
                 fTemp1071
             } else {
@@ -6425,8 +6360,8 @@ impl LambRs {
                 fTemp1072
             });
             let mut fTemp1104: F64 = fTemp1103 + fTemp1102;
-            let mut fTemp1105: F64 = (0.5 as F64) * fTemp1104;
-            let mut fTemp1106: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1105);
+            let mut fTemp1105: F64 = 0.5 * fTemp1104;
+            let mut fTemp1106: F64 = 131071.0 * (1.0 - fTemp1105);
             let mut iTemp1107: i32 = (fTemp1106) as i32;
             let mut iTemp1108: i32 = std::cmp::max(
                 0,
@@ -6450,7 +6385,7 @@ impl LambRs {
                 iTemp1108,
                 1,
             )) as usize] - fTemp1110;
-            let mut fTemp1112: F64 = (65535.5 as F64) * fTemp1104;
+            let mut fTemp1112: F64 = 65535.5 * fTemp1104;
             let mut iTemp1113: i32 = (fTemp1112) as i32;
             let mut iTemp1114: i32 = std::cmp::max(
                 0,
@@ -6484,7 +6419,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1114, 8))
                                             as usize] - fTemp1115))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1110 + fTemp698 * fTemp1111
                         + (fTemp1106 - (iTemp1107) as F64)
                             * (fTemp1109
@@ -6495,7 +6430,7 @@ impl LambRs {
                                                 as usize] - fTemp1109)))))
             });
             let mut fTemp1119: F64 = fTemp703 + fTemp1105;
-            let mut fTemp1120: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1119);
+            let mut fTemp1120: F64 = 131071.0 * (1.0 - fTemp1119);
             let mut iTemp1121: i32 = (fTemp1120) as i32;
             let mut iTemp1122: i32 = std::cmp::max(
                 0,
@@ -6519,7 +6454,7 @@ impl LambRs {
                 iTemp1122,
                 1,
             )) as usize] - fTemp1124;
-            let mut fTemp1126: F64 = (131071.0 as F64) * fTemp1119;
+            let mut fTemp1126: F64 = 131071.0 * fTemp1119;
             let mut iTemp1127: i32 = (fTemp1126) as i32;
             let mut iTemp1128: i32 = std::cmp::max(
                 0,
@@ -6556,7 +6491,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1128, 8), 917503),
                                             )) as usize] - fTemp1129))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1124 + fTemp698 * fTemp1125
                             + (fTemp1120 - (iTemp1121) as F64)
                                 * (fTemp1123
@@ -6565,7 +6500,7 @@ impl LambRs {
                                             * (fTemp1125
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1122, 8))
                                                     as usize] - fTemp1123)))))
-                }) - fTemp1118) / ((1.0 as F64) - fTemp1118))) as i32;
+                }) - fTemp1118) / (1.0 - fTemp1118))) as i32;
             let mut fTemp1133: F64 = (if iTemp1132 != 0 {
                 fTemp1102
             } else {
@@ -6577,8 +6512,8 @@ impl LambRs {
                 fTemp1103
             });
             let mut fTemp1135: F64 = fTemp1134 + fTemp1133;
-            let mut fTemp1136: F64 = (0.5 as F64) * fTemp1135;
-            let mut fTemp1137: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1136);
+            let mut fTemp1136: F64 = 0.5 * fTemp1135;
+            let mut fTemp1137: F64 = 131071.0 * (1.0 - fTemp1136);
             let mut iTemp1138: i32 = (fTemp1137) as i32;
             let mut iTemp1139: i32 = std::cmp::max(
                 0,
@@ -6602,7 +6537,7 @@ impl LambRs {
                 iTemp1139,
                 1,
             )) as usize] - fTemp1141;
-            let mut fTemp1143: F64 = (65535.5 as F64) * fTemp1135;
+            let mut fTemp1143: F64 = 65535.5 * fTemp1135;
             let mut iTemp1144: i32 = (fTemp1143) as i32;
             let mut iTemp1145: i32 = std::cmp::max(
                 0,
@@ -6636,7 +6571,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1145, 8))
                                             as usize] - fTemp1146))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1141 + fTemp698 * fTemp1142
                         + (fTemp1137 - (iTemp1138) as F64)
                             * (fTemp1140
@@ -6647,7 +6582,7 @@ impl LambRs {
                                                 as usize] - fTemp1140)))))
             });
             let mut fTemp1150: F64 = fTemp703 + fTemp1136;
-            let mut fTemp1151: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1150);
+            let mut fTemp1151: F64 = 131071.0 * (1.0 - fTemp1150);
             let mut iTemp1152: i32 = (fTemp1151) as i32;
             let mut iTemp1153: i32 = std::cmp::max(
                 0,
@@ -6671,7 +6606,7 @@ impl LambRs {
                 iTemp1153,
                 1,
             )) as usize] - fTemp1155;
-            let mut fTemp1157: F64 = (131071.0 as F64) * fTemp1150;
+            let mut fTemp1157: F64 = 131071.0 * fTemp1150;
             let mut iTemp1158: i32 = (fTemp1157) as i32;
             let mut iTemp1159: i32 = std::cmp::max(
                 0,
@@ -6708,7 +6643,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1159, 8), 917503),
                                             )) as usize] - fTemp1160))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1155 + fTemp698 * fTemp1156
                             + (fTemp1151 - (iTemp1152) as F64)
                                 * (fTemp1154
@@ -6717,7 +6652,7 @@ impl LambRs {
                                             * (fTemp1156
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1153, 8))
                                                     as usize] - fTemp1154)))))
-                }) - fTemp1149) / ((1.0 as F64) - fTemp1149))) as i32;
+                }) - fTemp1149) / (1.0 - fTemp1149))) as i32;
             let mut fTemp1164: F64 = (if iTemp1163 != 0 {
                 fTemp1133
             } else {
@@ -6729,8 +6664,8 @@ impl LambRs {
                 fTemp1134
             });
             let mut fTemp1166: F64 = fTemp1165 + fTemp1164;
-            let mut fTemp1167: F64 = (0.5 as F64) * fTemp1166;
-            let mut fTemp1168: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1167);
+            let mut fTemp1167: F64 = 0.5 * fTemp1166;
+            let mut fTemp1168: F64 = 131071.0 * (1.0 - fTemp1167);
             let mut iTemp1169: i32 = (fTemp1168) as i32;
             let mut iTemp1170: i32 = std::cmp::max(
                 0,
@@ -6754,7 +6689,7 @@ impl LambRs {
                 iTemp1170,
                 1,
             )) as usize] - fTemp1172;
-            let mut fTemp1174: F64 = (65535.5 as F64) * fTemp1166;
+            let mut fTemp1174: F64 = 65535.5 * fTemp1166;
             let mut iTemp1175: i32 = (fTemp1174) as i32;
             let mut iTemp1176: i32 = std::cmp::max(
                 0,
@@ -6788,7 +6723,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1176, 8))
                                             as usize] - fTemp1177))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1172 + fTemp698 * fTemp1173
                         + (fTemp1168 - (iTemp1169) as F64)
                             * (fTemp1171
@@ -6799,7 +6734,7 @@ impl LambRs {
                                                 as usize] - fTemp1171)))))
             });
             let mut fTemp1181: F64 = fTemp703 + fTemp1167;
-            let mut fTemp1182: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1181);
+            let mut fTemp1182: F64 = 131071.0 * (1.0 - fTemp1181);
             let mut iTemp1183: i32 = (fTemp1182) as i32;
             let mut iTemp1184: i32 = std::cmp::max(
                 0,
@@ -6823,7 +6758,7 @@ impl LambRs {
                 iTemp1184,
                 1,
             )) as usize] - fTemp1186;
-            let mut fTemp1188: F64 = (131071.0 as F64) * fTemp1181;
+            let mut fTemp1188: F64 = 131071.0 * fTemp1181;
             let mut iTemp1189: i32 = (fTemp1188) as i32;
             let mut iTemp1190: i32 = std::cmp::max(
                 0,
@@ -6860,7 +6795,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1190, 8), 917503),
                                             )) as usize] - fTemp1191))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1186 + fTemp698 * fTemp1187
                             + (fTemp1182 - (iTemp1183) as F64)
                                 * (fTemp1185
@@ -6869,7 +6804,7 @@ impl LambRs {
                                             * (fTemp1187
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1184, 8))
                                                     as usize] - fTemp1185)))))
-                }) - fTemp1180) / ((1.0 as F64) - fTemp1180))) as i32;
+                }) - fTemp1180) / (1.0 - fTemp1180))) as i32;
             let mut fTemp1195: F64 = (if iTemp1194 != 0 {
                 fTemp1164
             } else {
@@ -6881,8 +6816,8 @@ impl LambRs {
                 fTemp1165
             });
             let mut fTemp1197: F64 = fTemp1196 + fTemp1195;
-            let mut fTemp1198: F64 = (0.5 as F64) * fTemp1197;
-            let mut fTemp1199: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1198);
+            let mut fTemp1198: F64 = 0.5 * fTemp1197;
+            let mut fTemp1199: F64 = 131071.0 * (1.0 - fTemp1198);
             let mut iTemp1200: i32 = (fTemp1199) as i32;
             let mut iTemp1201: i32 = std::cmp::max(
                 0,
@@ -6906,7 +6841,7 @@ impl LambRs {
                 iTemp1201,
                 1,
             )) as usize] - fTemp1203;
-            let mut fTemp1205: F64 = (65535.5 as F64) * fTemp1197;
+            let mut fTemp1205: F64 = 65535.5 * fTemp1197;
             let mut iTemp1206: i32 = (fTemp1205) as i32;
             let mut iTemp1207: i32 = std::cmp::max(
                 0,
@@ -6940,7 +6875,7 @@ impl LambRs {
                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1207, 8))
                                             as usize] - fTemp1208))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1203 + fTemp698 * fTemp1204
                         + (fTemp1199 - (iTemp1200) as F64)
                             * (fTemp1202
@@ -6951,7 +6886,7 @@ impl LambRs {
                                                 as usize] - fTemp1202)))))
             });
             let mut fTemp1212: F64 = fTemp703 + fTemp1198;
-            let mut fTemp1213: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1212);
+            let mut fTemp1213: F64 = 131071.0 * (1.0 - fTemp1212);
             let mut iTemp1214: i32 = (fTemp1213) as i32;
             let mut iTemp1215: i32 = std::cmp::max(
                 0,
@@ -6975,7 +6910,7 @@ impl LambRs {
                 iTemp1215,
                 1,
             )) as usize] - fTemp1217;
-            let mut fTemp1219: F64 = (131071.0 as F64) * fTemp1212;
+            let mut fTemp1219: F64 = 131071.0 * fTemp1212;
             let mut iTemp1220: i32 = (fTemp1219) as i32;
             let mut iTemp1221: i32 = std::cmp::max(
                 0,
@@ -7012,7 +6947,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1221, 8), 917503),
                                             )) as usize] - fTemp1222))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1217 + fTemp698 * fTemp1218
                             + (fTemp1213 - (iTemp1214) as F64)
                                 * (fTemp1216
@@ -7021,7 +6956,7 @@ impl LambRs {
                                             * (fTemp1218
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1215, 8))
                                                     as usize] - fTemp1216)))))
-                }) - fTemp1211) / ((1.0 as F64) - fTemp1211))) as i32;
+                }) - fTemp1211) / (1.0 - fTemp1211))) as i32;
             let mut fTemp1226: F64 = (if iTemp1225 != 0 {
                 fTemp1195
             } else {
@@ -7033,8 +6968,8 @@ impl LambRs {
                 fTemp1196
             });
             let mut fTemp1228: F64 = fTemp1227 + fTemp1226;
-            let mut fTemp1229: F64 = (0.5 as F64) * fTemp1228;
-            let mut fTemp1230: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1229);
+            let mut fTemp1229: F64 = 0.5 * fTemp1228;
+            let mut fTemp1230: F64 = 131071.0 * (1.0 - fTemp1229);
             let mut iTemp1231: i32 = (fTemp1230) as i32;
             let mut iTemp1232: i32 = std::cmp::max(
                 0,
@@ -7058,7 +6993,7 @@ impl LambRs {
                 iTemp1232,
                 1,
             )) as usize] - fTemp1234;
-            let mut fTemp1236: F64 = (65535.5 as F64) * fTemp1228;
+            let mut fTemp1236: F64 = 65535.5 * fTemp1228;
             let mut iTemp1237: i32 = (fTemp1236) as i32;
             let mut iTemp1238: i32 = std::cmp::max(
                 0,
@@ -7094,7 +7029,7 @@ impl LambRs {
                                             std::cmp::min(i32::wrapping_add(iTemp1238, 8), 917503),
                                         )) as usize] - fTemp1239))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1234 + fTemp698 * fTemp1235
                         + (fTemp1230 - (iTemp1231) as F64)
                             * (fTemp1233
@@ -7107,7 +7042,7 @@ impl LambRs {
                                             )) as usize] - fTemp1233)))))
             });
             let mut fTemp1243: F64 = fTemp703 + fTemp1229;
-            let mut fTemp1244: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1243);
+            let mut fTemp1244: F64 = 131071.0 * (1.0 - fTemp1243);
             let mut iTemp1245: i32 = (fTemp1244) as i32;
             let mut iTemp1246: i32 = std::cmp::max(
                 0,
@@ -7131,7 +7066,7 @@ impl LambRs {
                 iTemp1246,
                 1,
             )) as usize] - fTemp1248;
-            let mut fTemp1250: F64 = (131071.0 as F64) * fTemp1243;
+            let mut fTemp1250: F64 = 131071.0 * fTemp1243;
             let mut iTemp1251: i32 = (fTemp1250) as i32;
             let mut iTemp1252: i32 = std::cmp::max(
                 0,
@@ -7168,7 +7103,7 @@ impl LambRs {
                                                 std::cmp::min(i32::wrapping_add(iTemp1252, 8), 917503),
                                             )) as usize] - fTemp1253))))
                 } else {
-                    (1.0 as F64)
+                    1.0
                         - (fTemp1248 + fTemp698 * fTemp1249
                             + (fTemp1244 - (iTemp1245) as F64)
                                 * (fTemp1247
@@ -7177,18 +7112,18 @@ impl LambRs {
                                             * (fTemp1249
                                                 - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1246, 8))
                                                     as usize] - fTemp1247)))))
-                }) - fTemp1242) / ((1.0 as F64) - fTemp1242))) as i32;
+                }) - fTemp1242) / (1.0 - fTemp1242))) as i32;
             let mut fTemp1257: F64 = F64::min(
-                (1.0 as F64),
+                1.0,
                 F64::max(
-                    (0.0 as F64),
-                    (0.5 as F64)
+                    0.0,
+                    0.5
                         * ((if iTemp1256 != 0 { fTemp1229 } else { fTemp1227 })
                             + (if iTemp1256 != 0 { fTemp1226 } else { fTemp1229 })),
                 ),
             );
             self.fRec15[0] = fTemp1257;
-            let mut fTemp1258: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1257);
+            let mut fTemp1258: F64 = 131071.0 * (1.0 - fTemp1257);
             let mut iTemp1259: i32 = (fTemp1258) as i32;
             let mut iTemp1260: i32 = std::cmp::max(
                 0,
@@ -7212,7 +7147,7 @@ impl LambRs {
                 iTemp1260,
                 1,
             )) as usize] - fTemp1262;
-            let mut fTemp1264: F64 = (131071.0 as F64) * fTemp1257;
+            let mut fTemp1264: F64 = 131071.0 * fTemp1257;
             let mut iTemp1265: i32 = (fTemp1264) as i32;
             let mut iTemp1266: i32 = std::cmp::max(
                 0,
@@ -7248,7 +7183,7 @@ impl LambRs {
                                             std::cmp::min(i32::wrapping_add(iTemp1266, 8), 917503),
                                         )) as usize] - fTemp1267))))
             } else {
-                (1.0 as F64)
+                1.0
                     - (fTemp1262 + fTemp698 * fTemp1263
                         + (fTemp1258 - (iTemp1259) as F64)
                             * (fTemp1261
@@ -7261,7 +7196,7 @@ impl LambRs {
                                             )) as usize] - fTemp1261)))))
             });
             let mut fTemp1271: F64 = fTemp703 + fTemp1257;
-            let mut fTemp1272: F64 = (131071.0 as F64) * ((1.0 as F64) - fTemp1271);
+            let mut fTemp1272: F64 = 131071.0 * (1.0 - fTemp1271);
             let mut iTemp1273: i32 = (fTemp1272) as i32;
             let mut iTemp1274: i32 = std::cmp::max(
                 0,
@@ -7285,7 +7220,7 @@ impl LambRs {
                 iTemp1274,
                 1,
             )) as usize] - fTemp1276;
-            let mut fTemp1278: F64 = (131071.0 as F64) * fTemp1271;
+            let mut fTemp1278: F64 = 131071.0 * fTemp1271;
             let mut iTemp1279: i32 = (fTemp1278) as i32;
             let mut iTemp1280: i32 = std::cmp::max(
                 0,
@@ -7310,7 +7245,7 @@ impl LambRs {
                 std::cmp::min(i32::wrapping_add(iTemp1280, 1), 917503),
             )) as usize] - fTemp1282;
             let mut fTemp1284: F64 = self.fRec16[1]
-                + (if (((0.001 as F64) * fTemp702) == (0.0 as F64)) as i32 != 0 {
+                + (if ((0.001 * fTemp702) == 0.0) as i32 != 0 {
                     fTemp688
                 } else {
                     fTemp688
@@ -7326,7 +7261,7 @@ impl LambRs {
                                                         std::cmp::min(i32::wrapping_add(iTemp1280, 8), 917503),
                                                     )) as usize] - fTemp1281))))
                         } else {
-                            (1.0 as F64)
+                            1.0
                                 - (fTemp1276 + fTemp698 * fTemp1277
                                     + (fTemp1272 - (iTemp1273) as F64)
                                         * (fTemp1275
@@ -7335,7 +7270,7 @@ impl LambRs {
                                                     * (fTemp1277
                                                         - (ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp1274, 8))
                                                             as usize] - fTemp1275)))))
-                        }) - fTemp1270) / ((1.0 as F64) - fTemp1270)
+                        }) - fTemp1270) / (1.0 - fTemp1270)
                 });
             self.fRec16[0] = (if iTemp701 != 0 {
                 F64::min(fTemp1284, self.fRec16[1])
@@ -7343,12 +7278,12 @@ impl LambRs {
                 F64::max(fTemp1284, self.fRec16[1])
             });
             self.fVec58[(self.IOTA0 & 8191) as usize] = F64::powf(
-                (1e+01 as F64),
-                (0.05 as F64) * self.fRec16[0],
+                1e+01,
+                0.05 * self.fRec16[0],
             );
             let mut fTemp1285: F64 = self
                 .fVec58[((i32::wrapping_sub(self.IOTA0, iSlow70)) & 8191) as usize];
-            *io1 = ((0.5 as F64) * fTemp4
+            *io1 = (0.5 * fTemp4
                 * self.fVec1[((i32::wrapping_sub(self.IOTA0, iSlow71)) & 32767) as usize]
                 + self.fRec14[0] * fTemp6
                     * self
@@ -7450,9 +7385,6 @@ where
     fn compute(&mut self, count: usize, ios: &mut [&mut [Self::F]]) {
         self.compute(count, ios)
     }
-    fn compute_vec(&mut self, count: usize, ios: &mut [Vec<Self::F>]) {
-        self.compute(count, ios)
-    }
 }
 impl<'a> LambRs {
     pub fn as_inplace_dsp(
@@ -7466,6 +7398,23 @@ impl<'a> LambRs {
 impl faust_traits::StaticInitDsp for LambRs {
     fn static_init(&mut self, sample_rate: i32) {
         self.init(sample_rate)
+    }
+}
+impl faust_traits::InPlaceVecDsp for LambRs
+where
+    Self: faust_traits::AssociatedFaustFloat<F = FaustFloat>,
+{
+    fn compute_vec(&mut self, count: usize, ios: &mut [Vec<Self::F>]) {
+        self.compute(count, ios)
+    }
+}
+impl<'a> LambRs {
+    pub fn as_inplace_vec_dsp(
+        &'a mut self,
+    ) -> &'a mut dyn faust_traits::InPlaceVecDsp<
+        F = <LambRs as faust_traits::AssociatedFaustFloat>::F,
+    > {
+        self
     }
 }
 pub type FaustFloat = F64;

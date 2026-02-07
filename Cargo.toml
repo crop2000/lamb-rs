@@ -8,7 +8,8 @@ name        = "lamb"
 version     = "2.1.1"
 
 [features]
-# default       = ["default-boxed", "faust-rebuild"]
+# default = ["default-boxed", "faust-rebuild"]
+# default = ["faust-rebuild"]
 # default = ["default-boxed"]
 default = []
 # default-boxed = ["dep:default-boxed"]
@@ -25,6 +26,7 @@ crate-type = ["cdylib", "lib"]
 # Uncomment the below line to disable the on-by-default VST3 feature to remove
 # the GPL compatibility requirement
 cyma           = { git = "https://github.com/exa04/cyma.git" }
+libm           = "0.2.16"
 nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 
 
