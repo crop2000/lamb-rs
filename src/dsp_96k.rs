@@ -7925,6 +7925,7 @@ impl faust_ui::UISelfGet for UIActiveValue {
         }
     }
 }
+#[cfg(feature = "std")]
 impl faust_ui::UIToActiveValue for UIActive {
     type D = LambRs;
     #[inline]
@@ -8029,6 +8030,7 @@ impl faust_ui::UIRange for UIActive {
         }
     }
 }
+#[cfg(feature = "std")]
 impl faust_ui::UIName for UIActive {
     fn name(&self) -> String {
         match self {
@@ -8145,6 +8147,7 @@ impl faust_traits::AssociatedFaustFloat for UIPassiveValue {
 impl faust_ui::DiscriminantOf for UIPassive {
     type ValueEnum = UIPassiveValue;
 }
+#[cfg(feature = "std")]
 impl faust_ui::UIGet for UIPassive {
     type D = LambRs;
     fn get_value(
@@ -8177,6 +8180,7 @@ impl faust_ui::UISelfSet for UIPassiveValue {
         }
     }
 }
+#[cfg(feature = "std")]
 impl faust_ui::UIToPassiveValue for UIPassive {
     type D = LambRs;
     #[inline]
@@ -8211,6 +8215,7 @@ impl faust_ui::UIRange for UIPassive {
         }
     }
 }
+#[cfg(feature = "std")]
 impl faust_ui::UIName for UIPassive {
     fn name(&self) -> String {
         match self {
@@ -8241,6 +8246,7 @@ impl faust_ui::SetDsp for LambRs {
         faust_ui::UISelfSet::set(value, self);
     }
 }
+#[cfg(feature = "std")]
 impl faust_ui::UIEnumsDsp for LambRs {
     type DA = UIActive;
     type EA = UIActiveValue;
@@ -8302,6 +8308,7 @@ pub mod meta {
     }
 }
 pub struct WidgetTree;
+#[cfg(feature = "std")]
 impl faust_ui::UIGroups<LambRs> for WidgetTree {
     fn widget_tree() -> Vec<faust_ui::GroupOrWidget<LambRs>> {
         vec![

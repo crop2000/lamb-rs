@@ -8,10 +8,11 @@ name        = "lamb"
 version     = "2.1.1"
 
 [features]
+default = ["std"]
+std     = []
 # default = ["default-boxed", "faust-rebuild"]
 # default = ["faust-rebuild"]
 # default = ["default-boxed"]
-default = []
 # default-boxed = ["dep:default-boxed"]
 faust-rebuild = ["dep:faust-build", "dep:faust-ui-build"]
 
