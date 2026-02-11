@@ -11,8 +11,6 @@
 #![allow(clippy::nursery)]
 #![allow(clippy::unwrap_used)]
 #![allow(clippy::too_many_lines)]
-#[allow(unused)]
-use libm::{remainder, rint, remainderf, rintf};
 use faust_traits::*;
 #[derive(Debug, default_boxed::DefaultBoxed)]
 #[repr(C)]
@@ -191,6 +189,23 @@ fn LambRs_faustpower2_f(value: F64) -> F64 {
 static ftbl0LambRsSIG0: std::sync::RwLock<[F64; 1835008]> = std::sync::RwLock::new(
     [0.0; 1835008],
 );
+#[cfg(not(target_arch = "wasm32"))]
+mod ffi {
+    use core::ffi::c_double;
+    #[cfg_attr(not(target_os = "windows"), link(name = "m"))]
+    unsafe extern "C" {
+        pub fn remainder(from: c_double, to: c_double) -> c_double;
+        pub fn rint(val: c_double) -> c_double;
+    }
+}
+fn remainder_f64(from: f64, to: f64) -> f64 {
+    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::remainder(from, to) }
+    #[cfg(target_arch = "wasm32")] libm::remainder(from, to)
+}
+fn rint_f64(val: f64) -> f64 {
+    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::rint(val) }
+    #[cfg(target_arch = "wasm32")] libm::rint(val)
+}
 pub const FAUST_INPUTS: usize = 2;
 pub const FAUST_OUTPUTS: usize = 4;
 pub const FAUST_ACTIVES: usize = 15;
@@ -7745,7 +7760,7 @@ impl LambRs {
     }
 }
 impl faust_traits::InitDsp for LambRs {
-    fn instance_init(&mut self, sample_rate: usize) {
+    fn instance_init(&mut self, sample_rate: u32) {
         self.instance_init(sample_rate as i32)
     }
 }
@@ -7779,11 +7794,6 @@ impl<'a> LambRs {
         F = <LambRs as faust_traits::AssociatedFaustFloat>::F,
     > {
         self
-    }
-}
-impl faust_traits::StaticInitDsp for LambRs {
-    fn static_init(&mut self, sample_rate: i32) {
-        self.init(sample_rate)
     }
 }
 impl faust_traits::InPlaceVecDsp for LambRs
