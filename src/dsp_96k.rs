@@ -7759,6 +7759,10 @@ impl LambRs {
         }
     }
 }
+pub const IOS: usize = [
+    FAUST_INPUTS,
+    FAUST_OUTPUTS,
+][(FAUST_INPUTS < FAUST_OUTPUTS) as usize];
 impl faust_traits::InitDsp for LambRs {
     fn instance_init(&mut self, sample_rate: u32) {
         self.instance_init(sample_rate as i32)
@@ -7775,47 +7779,25 @@ impl faust_traits::IOSizeDsp for LambRs {
         FAUST_OUTPUTS
     }
 }
-pub const IOS: usize = [
-    FAUST_INPUTS,
-    FAUST_OUTPUTS,
-][(FAUST_INPUTS < FAUST_OUTPUTS) as usize];
 impl faust_traits::InPlaceDsp for LambRs
 where
-    Self: faust_traits::AssociatedFaustFloat<F = FaustFloat>,
+    Self: faust_traits::AssociatedFaustFloat<FF = FaustFloat>,
 {
-    fn compute(&mut self, count: usize, ios: &mut [&mut [Self::F]]) {
+    fn compute(&mut self, count: usize, ios: &mut [&mut [Self::FF]]) {
         self.compute(count, ios)
-    }
-}
-impl<'a> LambRs {
-    pub fn as_inplace_dsp(
-        &'a mut self,
-    ) -> &'a mut dyn faust_traits::InPlaceDsp<
-        F = <LambRs as faust_traits::AssociatedFaustFloat>::F,
-    > {
-        self
     }
 }
 impl faust_traits::InPlaceVecDsp for LambRs
 where
-    Self: faust_traits::AssociatedFaustFloat<F = FaustFloat>,
+    Self: faust_traits::AssociatedFaustFloat<FF = FaustFloat>,
 {
-    fn compute_vec(&mut self, count: usize, ios: &mut [Vec<Self::F>]) {
+    fn compute_vec(&mut self, count: usize, ios: &mut [Vec<Self::FF>]) {
         self.compute(count, ios)
-    }
-}
-impl<'a> LambRs {
-    pub fn as_inplace_vec_dsp(
-        &'a mut self,
-    ) -> &'a mut dyn faust_traits::InPlaceVecDsp<
-        F = <LambRs as faust_traits::AssociatedFaustFloat>::F,
-    > {
-        self
     }
 }
 pub type FaustFloat = F64;
 impl faust_traits::AssociatedFaustFloat for LambRs {
-    type F = FaustFloat;
+    type FF = FaustFloat;
 }
 #[derive(
     Debug,
@@ -7860,7 +7842,7 @@ pub enum UIActiveValue {
     OutputGain(FaustFloat),
 }
 impl faust_traits::AssociatedFaustFloat for UIActiveValue {
-    type F = FaustFloat;
+    type FF = FaustFloat;
 }
 impl faust_ui::DiscriminantOf for UIActive {
     type ValueEnum = UIActiveValue;
@@ -7870,7 +7852,7 @@ impl faust_ui::UISet for UIActive {
     fn set(
         &self,
         dsp: &mut LambRs,
-        value: <Self::D as faust_traits::AssociatedFaustFloat>::F,
+        value: <Self::D as faust_traits::AssociatedFaustFloat>::FF,
     ) {
         match self {
             UIActive::Bypass => dsp.fCheckbox0 = value,
@@ -7915,7 +7897,7 @@ impl faust_ui::UISelfSet for UIActiveValue {
 }
 impl faust_ui::UISelfGet for UIActiveValue {
     type D = LambRs;
-    fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::F {
+    fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::FF {
         match self {
             UIActiveValue::Bypass(value) => *value,
             UIActiveValue::FixedLatency(value) => *value,
@@ -7941,7 +7923,7 @@ impl faust_ui::UIToActiveValue for UIActive {
     #[inline]
     fn value(
         &self,
-        value: <Self::D as faust_traits::AssociatedFaustFloat>::F,
+        value: <Self::D as faust_traits::AssociatedFaustFloat>::FF,
     ) -> <Self::D as faust_ui::UIEnumsDsp>::EA {
         match self {
             UIActive::Bypass => UIActiveValue::Bypass(value),
@@ -8152,7 +8134,7 @@ pub enum UIPassiveValue {
     Latency(FaustFloat),
 }
 impl faust_traits::AssociatedFaustFloat for UIPassiveValue {
-    type F = FaustFloat;
+    type FF = FaustFloat;
 }
 impl faust_ui::DiscriminantOf for UIPassive {
     type ValueEnum = UIPassiveValue;
@@ -8163,7 +8145,7 @@ impl faust_ui::UIGet for UIPassive {
     fn get_value(
         &self,
         dsp: &Self::D,
-    ) -> <Self::D as faust_traits::AssociatedFaustFloat>::F {
+    ) -> <Self::D as faust_traits::AssociatedFaustFloat>::FF {
         match self {
             Self::Latency => dsp.fHbargraph0,
         }
@@ -8176,7 +8158,7 @@ impl faust_ui::UIGet for UIPassive {
 }
 impl faust_ui::UISelfGet for UIPassiveValue {
     type D = LambRs;
-    fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::F {
+    fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::FF {
         match self {
             UIPassiveValue::Latency(value) => *value,
         }
@@ -8196,7 +8178,7 @@ impl faust_ui::UIToPassiveValue for UIPassive {
     #[inline]
     fn value(
         &self,
-        value: <Self::D as faust_traits::AssociatedFaustFloat>::F,
+        value: <Self::D as faust_traits::AssociatedFaustFloat>::FF,
     ) -> <Self::D as faust_ui::UIEnumsDsp>::EP {
         match self {
             UIPassive::Latency => UIPassiveValue::Latency(value),
@@ -8249,6 +8231,17 @@ impl faust_ui::UIVariantArrayIndex for UIPassive {
 }
 impl strum::VariantArray for UIPassiveValue {
     const VARIANTS: &'static [UIPassiveValue] = &[Self::Latency(0.0)];
+}
+impl faust_ui::TrySetDsp for LambRs {
+    type E = UIActiveValue;
+    fn try_set(&mut self, value: impl TryInto<Self::E>) -> bool {
+        if let Ok(value) = value.try_into() {
+            faust_ui::UISelfSet::set(&value, self);
+            true
+        } else {
+            false
+        }
+    }
 }
 impl faust_ui::SetDsp for LambRs {
     type E = UIActiveValue;
