@@ -189,23 +189,6 @@ fn LambRs_faustpower2_f(value: F64) -> F64 {
 static ftbl0LambRsSIG0: std::sync::RwLock<[F64; 1835008]> = std::sync::RwLock::new(
     [0.0; 1835008],
 );
-#[cfg(not(target_arch = "wasm32"))]
-mod ffi {
-    use core::ffi::c_double;
-    #[cfg_attr(not(target_os = "windows"), link(name = "m"))]
-    unsafe extern "C" {
-        pub fn remainder(from: c_double, to: c_double) -> c_double;
-        pub fn rint(val: c_double) -> c_double;
-    }
-}
-fn remainder_f64(from: f64, to: f64) -> f64 {
-    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::remainder(from, to) }
-    #[cfg(target_arch = "wasm32")] libm::remainder(from, to)
-}
-fn rint_f64(val: f64) -> f64 {
-    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::rint(val) }
-    #[cfg(target_arch = "wasm32")] libm::rint(val)
-}
 pub const FAUST_INPUTS: usize = 2;
 pub const FAUST_OUTPUTS: usize = 4;
 pub const FAUST_ACTIVES: usize = 15;
@@ -370,8 +353,8 @@ impl LambRs {
         m.declare("platform.lib/name", r"Generic Platform Library");
         m.declare("platform.lib/version", r"1.3.0");
         m.declare("routes.lib/name", r"Faust Signal Routing Library");
-        m.declare("routes.lib/version", r"1.2.0");
-        m.declare("signals.lib/name", r"Faust Signal Routing Library");
+        m.declare("routes.lib/version", r"1.3.0");
+        m.declare("signals.lib/name", r"Faust Routing Library");
         m.declare("signals.lib/version", r"1.6.0");
         m.declare("version", r"0.1");
     }
@@ -1392,10 +1375,10 @@ impl LambRs {
             self.fVec31[0] = fTemp70;
             let mut fTemp71: F64 = 6.0 * fTemp70;
             let mut iTemp72: i32 = (fTemp71) as i32;
-            let mut iTemp73: i32 = std::cmp::max(0, std::cmp::min(iTemp72, 6));
-            let mut iTemp74: i32 = std::cmp::max(
+            let mut iTemp73: i32 = core::cmp::max(0, core::cmp::min(iTemp72, 6));
+            let mut iTemp74: i32 = core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp73, 917497), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp73, 917497), 1835007),
             );
             let mut fTemp75: F64 = ftbl0LambRsSIG0_guard[(i32::wrapping_add(iTemp74, 7))
                 as usize];
@@ -1420,14 +1403,14 @@ impl LambRs {
             let mut fTemp84: F64 = fTemp83 + 0.5;
             let mut fTemp85: F64 = 262143.0 * (1.0 - fTemp84);
             let mut iTemp86: i32 = (fTemp85) as i32;
-            let mut iTemp87: i32 = std::cmp::max(
+            let mut iTemp87: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp86, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp86, 262143)),
                         ),
                     ),
                     1835007,
@@ -1440,91 +1423,91 @@ impl LambRs {
                 as usize] - fTemp89;
             let mut fTemp91: F64 = 262143.0 * fTemp84;
             let mut iTemp92: i32 = (fTemp91) as i32;
-            let mut iTemp93: i32 = std::cmp::max(
+            let mut iTemp93: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp92, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp92, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp94: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp94: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp93, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp93, 7), 1835007),
             )) as usize];
             let mut fTemp95: F64 = ftbl0LambRsSIG0_guard[iTemp93 as usize];
-            let mut fTemp96: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp96: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp93, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp93, 1), 1835007),
             )) as usize] - fTemp95;
             let mut fTemp97: F64 = 6.0 * self.fVec31[1];
             let mut iTemp98: i32 = (fTemp97) as i32;
-            let mut iTemp99: i32 = std::cmp::max(0, std::cmp::min(iTemp98, 6));
+            let mut iTemp99: i32 = core::cmp::max(0, core::cmp::min(iTemp98, 6));
             let mut fTemp100: F64 = 262143.0 * (1.0 - self.fRec1[1]);
             let mut iTemp101: i32 = (fTemp100) as i32;
-            let mut iTemp102: i32 = std::cmp::max(
+            let mut iTemp102: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp101, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp101, 262143)),
                         ),
                         iTemp99,
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp103: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp103: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp102, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp102, 7), 1835007),
             )) as usize];
             let mut fTemp104: F64 = ftbl0LambRsSIG0_guard[iTemp102 as usize];
-            let mut fTemp105: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp105: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp102, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp102, 1), 1835007),
             )) as usize] - fTemp104;
             let mut fTemp106: F64 = fTemp97 - (iTemp98) as F64;
             let mut fTemp107: F64 = 262143.0 * self.fRec1[1];
             let mut iTemp108: i32 = (fTemp107) as i32;
-            let mut iTemp109: i32 = std::cmp::max(
+            let mut iTemp109: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp99,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp108, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp108, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp110: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp110: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp109, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp109, 7), 1835007),
             )) as usize];
             let mut fTemp111: F64 = ftbl0LambRsSIG0_guard[iTemp109 as usize];
-            let mut fTemp112: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp112: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp109, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp109, 1), 1835007),
             )) as usize] - fTemp111;
             let mut fTemp113: F64 = self.fRec1[1] + fTemp83;
             let mut fTemp114: F64 = 262143.0 * (1.0 - fTemp113);
             let mut iTemp115: i32 = (fTemp114) as i32;
-            let mut iTemp116: i32 = std::cmp::max(
+            let mut iTemp116: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp115, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp115, 262143)),
                         ),
                     ),
                     1835007,
@@ -1541,39 +1524,39 @@ impl LambRs {
             )) as usize] - fTemp118;
             let mut fTemp120: F64 = 262143.0 * fTemp113;
             let mut iTemp121: i32 = (fTemp120) as i32;
-            let mut iTemp122: i32 = std::cmp::max(
+            let mut iTemp122: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp121, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp121, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp123: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp123: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp122, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp122, 7), 1835007),
             )) as usize];
             let mut fTemp124: F64 = ftbl0LambRsSIG0_guard[iTemp122 as usize];
-            let mut fTemp125: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp125: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp122, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp122, 1), 1835007),
             )) as usize] - fTemp124;
             let mut fTemp126: F64 = self.fRec1[1]
                 + self.fConst10 * (1.0 / fTemp82 + 1.0 / self.fVec32[1]);
             let mut fTemp127: F64 = 262143.0 * (1.0 - fTemp126);
             let mut iTemp128: i32 = (fTemp127) as i32;
-            let mut iTemp129: i32 = std::cmp::max(
+            let mut iTemp129: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp128, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp128, 262143)),
                         ),
                         iTemp73,
                     ),
@@ -1591,27 +1574,27 @@ impl LambRs {
             )) as usize] - fTemp131;
             let mut fTemp133: F64 = 262143.0 * fTemp126;
             let mut iTemp134: i32 = (fTemp133) as i32;
-            let mut iTemp135: i32 = std::cmp::max(
+            let mut iTemp135: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp134, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp134, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp136: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp136: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp135, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp135, 7), 1835007),
             )) as usize];
             let mut fTemp137: F64 = ftbl0LambRsSIG0_guard[iTemp135 as usize];
-            let mut fTemp138: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp138: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp135, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp135, 1), 1835007),
             )) as usize] - fTemp137;
             let mut fTemp139: F64 = ((if iTemp65 != 0 {
                 fTemp137 + fTemp78 * fTemp138
@@ -1620,9 +1603,9 @@ impl LambRs {
                             - (fTemp137
                                 + fTemp78
                                     * (fTemp138
-                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                             0,
-                                            std::cmp::min(i32::wrapping_add(iTemp135, 8), 1835007),
+                                            core::cmp::min(i32::wrapping_add(iTemp135, 8), 1835007),
                                         )) as usize] - fTemp136))))
             } else {
                 1.0
@@ -1642,9 +1625,9 @@ impl LambRs {
                                 - (fTemp124
                                     + fTemp78
                                         * (fTemp125
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp122, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp122, 8), 1835007),
                                             )) as usize] - fTemp123))))
                 } else {
                     1.0
@@ -1666,9 +1649,9 @@ impl LambRs {
                                         - (fTemp111
                                             + fTemp106
                                                 * (fTemp112
-                                                    - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                                    - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                         0,
-                                                        std::cmp::min(i32::wrapping_add(iTemp109, 8), 1835007),
+                                                        core::cmp::min(i32::wrapping_add(iTemp109, 8), 1835007),
                                                     )) as usize] - fTemp110))))
                         } else {
                             1.0
@@ -1678,9 +1661,9 @@ impl LambRs {
                                             - (fTemp104
                                                 + fTemp106
                                                     * (fTemp105
-                                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                             0,
-                                                            std::cmp::min(i32::wrapping_add(iTemp102, 8), 1835007),
+                                                            core::cmp::min(i32::wrapping_add(iTemp102, 8), 1835007),
                                                         )) as usize] - fTemp103)))))
                         })));
             let mut iTemp140: i32 = (fTemp139
@@ -1691,9 +1674,9 @@ impl LambRs {
                                 - (fTemp95
                                     + fTemp78
                                         * (fTemp96
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp93, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp93, 8), 1835007),
                                             )) as usize] - fTemp94))))
                 } else {
                     1.0
@@ -1712,14 +1695,14 @@ impl LambRs {
             let mut fTemp144: F64 = 0.5 * fTemp143;
             let mut fTemp145: F64 = 262143.0 * (1.0 - fTemp144);
             let mut iTemp146: i32 = (fTemp145) as i32;
-            let mut iTemp147: i32 = std::cmp::max(
+            let mut iTemp147: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp146, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp146, 262143)),
                         ),
                     ),
                     1835007,
@@ -1736,14 +1719,14 @@ impl LambRs {
             )) as usize] - fTemp149;
             let mut fTemp151: F64 = 131071.5 * fTemp143;
             let mut iTemp152: i32 = (fTemp151) as i32;
-            let mut iTemp153: i32 = std::cmp::max(
+            let mut iTemp153: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp152, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp152, 262143)),
                         ),
                     ),
                     1835007,
@@ -1781,14 +1764,14 @@ impl LambRs {
             let mut fTemp158: F64 = fTemp83 + fTemp144;
             let mut fTemp159: F64 = 262143.0 * (1.0 - fTemp158);
             let mut iTemp160: i32 = (fTemp159) as i32;
-            let mut iTemp161: i32 = std::cmp::max(
+            let mut iTemp161: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp160, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp160, 262143)),
                         ),
                     ),
                     1835007,
@@ -1805,27 +1788,27 @@ impl LambRs {
             )) as usize] - fTemp163;
             let mut fTemp165: F64 = 262143.0 * fTemp158;
             let mut iTemp166: i32 = (fTemp165) as i32;
-            let mut iTemp167: i32 = std::cmp::max(
+            let mut iTemp167: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp166, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp166, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp168: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp168: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp167, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp167, 7), 1835007),
             )) as usize];
             let mut fTemp169: F64 = ftbl0LambRsSIG0_guard[iTemp167 as usize];
-            let mut fTemp170: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp170: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp167, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp167, 1), 1835007),
             )) as usize] - fTemp169;
             let mut iTemp171: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -1835,9 +1818,9 @@ impl LambRs {
                                 - (fTemp169
                                     + fTemp78
                                         * (fTemp170
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp167, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp167, 8), 1835007),
                                             )) as usize] - fTemp168))))
                 } else {
                     1.0
@@ -1856,14 +1839,14 @@ impl LambRs {
             let mut fTemp175: F64 = 0.5 * fTemp174;
             let mut fTemp176: F64 = 262143.0 * (1.0 - fTemp175);
             let mut iTemp177: i32 = (fTemp176) as i32;
-            let mut iTemp178: i32 = std::cmp::max(
+            let mut iTemp178: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp177, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp177, 262143)),
                         ),
                     ),
                     1835007,
@@ -1880,14 +1863,14 @@ impl LambRs {
             )) as usize] - fTemp180;
             let mut fTemp182: F64 = 131071.5 * fTemp174;
             let mut iTemp183: i32 = (fTemp182) as i32;
-            let mut iTemp184: i32 = std::cmp::max(
+            let mut iTemp184: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp183, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp183, 262143)),
                         ),
                     ),
                     1835007,
@@ -1925,14 +1908,14 @@ impl LambRs {
             let mut fTemp189: F64 = fTemp83 + fTemp175;
             let mut fTemp190: F64 = 262143.0 * (1.0 - fTemp189);
             let mut iTemp191: i32 = (fTemp190) as i32;
-            let mut iTemp192: i32 = std::cmp::max(
+            let mut iTemp192: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp191, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp191, 262143)),
                         ),
                     ),
                     1835007,
@@ -1949,27 +1932,27 @@ impl LambRs {
             )) as usize] - fTemp194;
             let mut fTemp196: F64 = 262143.0 * fTemp189;
             let mut iTemp197: i32 = (fTemp196) as i32;
-            let mut iTemp198: i32 = std::cmp::max(
+            let mut iTemp198: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp197, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp197, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp199: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp199: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp198, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp198, 7), 1835007),
             )) as usize];
             let mut fTemp200: F64 = ftbl0LambRsSIG0_guard[iTemp198 as usize];
-            let mut fTemp201: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp201: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp198, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp198, 1), 1835007),
             )) as usize] - fTemp200;
             let mut iTemp202: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -1979,9 +1962,9 @@ impl LambRs {
                                 - (fTemp200
                                     + fTemp78
                                         * (fTemp201
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp198, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp198, 8), 1835007),
                                             )) as usize] - fTemp199))))
                 } else {
                     1.0
@@ -2000,14 +1983,14 @@ impl LambRs {
             let mut fTemp206: F64 = 0.5 * fTemp205;
             let mut fTemp207: F64 = 262143.0 * (1.0 - fTemp206);
             let mut iTemp208: i32 = (fTemp207) as i32;
-            let mut iTemp209: i32 = std::cmp::max(
+            let mut iTemp209: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp208, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp208, 262143)),
                         ),
                     ),
                     1835007,
@@ -2024,14 +2007,14 @@ impl LambRs {
             )) as usize] - fTemp211;
             let mut fTemp213: F64 = 131071.5 * fTemp205;
             let mut iTemp214: i32 = (fTemp213) as i32;
-            let mut iTemp215: i32 = std::cmp::max(
+            let mut iTemp215: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp214, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp214, 262143)),
                         ),
                     ),
                     1835007,
@@ -2069,14 +2052,14 @@ impl LambRs {
             let mut fTemp220: F64 = fTemp83 + fTemp206;
             let mut fTemp221: F64 = 262143.0 * (1.0 - fTemp220);
             let mut iTemp222: i32 = (fTemp221) as i32;
-            let mut iTemp223: i32 = std::cmp::max(
+            let mut iTemp223: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp222, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp222, 262143)),
                         ),
                     ),
                     1835007,
@@ -2093,27 +2076,27 @@ impl LambRs {
             )) as usize] - fTemp225;
             let mut fTemp227: F64 = 262143.0 * fTemp220;
             let mut iTemp228: i32 = (fTemp227) as i32;
-            let mut iTemp229: i32 = std::cmp::max(
+            let mut iTemp229: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp228, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp228, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp230: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp230: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp229, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp229, 7), 1835007),
             )) as usize];
             let mut fTemp231: F64 = ftbl0LambRsSIG0_guard[iTemp229 as usize];
-            let mut fTemp232: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp232: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp229, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp229, 1), 1835007),
             )) as usize] - fTemp231;
             let mut iTemp233: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -2123,9 +2106,9 @@ impl LambRs {
                                 - (fTemp231
                                     + fTemp78
                                         * (fTemp232
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp229, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp229, 8), 1835007),
                                             )) as usize] - fTemp230))))
                 } else {
                     1.0
@@ -2144,14 +2127,14 @@ impl LambRs {
             let mut fTemp237: F64 = 0.5 * fTemp236;
             let mut fTemp238: F64 = 262143.0 * (1.0 - fTemp237);
             let mut iTemp239: i32 = (fTemp238) as i32;
-            let mut iTemp240: i32 = std::cmp::max(
+            let mut iTemp240: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp239, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp239, 262143)),
                         ),
                     ),
                     1835007,
@@ -2168,14 +2151,14 @@ impl LambRs {
             )) as usize] - fTemp242;
             let mut fTemp244: F64 = 131071.5 * fTemp236;
             let mut iTemp245: i32 = (fTemp244) as i32;
-            let mut iTemp246: i32 = std::cmp::max(
+            let mut iTemp246: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp245, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp245, 262143)),
                         ),
                     ),
                     1835007,
@@ -2213,14 +2196,14 @@ impl LambRs {
             let mut fTemp251: F64 = fTemp83 + fTemp237;
             let mut fTemp252: F64 = 262143.0 * (1.0 - fTemp251);
             let mut iTemp253: i32 = (fTemp252) as i32;
-            let mut iTemp254: i32 = std::cmp::max(
+            let mut iTemp254: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp253, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp253, 262143)),
                         ),
                     ),
                     1835007,
@@ -2237,27 +2220,27 @@ impl LambRs {
             )) as usize] - fTemp256;
             let mut fTemp258: F64 = 262143.0 * fTemp251;
             let mut iTemp259: i32 = (fTemp258) as i32;
-            let mut iTemp260: i32 = std::cmp::max(
+            let mut iTemp260: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp259, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp259, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp261: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp261: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp260, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp260, 7), 1835007),
             )) as usize];
             let mut fTemp262: F64 = ftbl0LambRsSIG0_guard[iTemp260 as usize];
-            let mut fTemp263: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp263: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp260, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp260, 1), 1835007),
             )) as usize] - fTemp262;
             let mut iTemp264: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -2267,9 +2250,9 @@ impl LambRs {
                                 - (fTemp262
                                     + fTemp78
                                         * (fTemp263
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp260, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp260, 8), 1835007),
                                             )) as usize] - fTemp261))))
                 } else {
                     1.0
@@ -2288,14 +2271,14 @@ impl LambRs {
             let mut fTemp268: F64 = 0.5 * fTemp267;
             let mut fTemp269: F64 = 262143.0 * (1.0 - fTemp268);
             let mut iTemp270: i32 = (fTemp269) as i32;
-            let mut iTemp271: i32 = std::cmp::max(
+            let mut iTemp271: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp270, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp270, 262143)),
                         ),
                     ),
                     1835007,
@@ -2312,14 +2295,14 @@ impl LambRs {
             )) as usize] - fTemp273;
             let mut fTemp275: F64 = 131071.5 * fTemp267;
             let mut iTemp276: i32 = (fTemp275) as i32;
-            let mut iTemp277: i32 = std::cmp::max(
+            let mut iTemp277: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp276, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp276, 262143)),
                         ),
                     ),
                     1835007,
@@ -2357,14 +2340,14 @@ impl LambRs {
             let mut fTemp282: F64 = fTemp83 + fTemp268;
             let mut fTemp283: F64 = 262143.0 * (1.0 - fTemp282);
             let mut iTemp284: i32 = (fTemp283) as i32;
-            let mut iTemp285: i32 = std::cmp::max(
+            let mut iTemp285: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp284, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp284, 262143)),
                         ),
                     ),
                     1835007,
@@ -2381,27 +2364,27 @@ impl LambRs {
             )) as usize] - fTemp287;
             let mut fTemp289: F64 = 262143.0 * fTemp282;
             let mut iTemp290: i32 = (fTemp289) as i32;
-            let mut iTemp291: i32 = std::cmp::max(
+            let mut iTemp291: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp290, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp290, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp292: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp292: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp291, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp291, 7), 1835007),
             )) as usize];
             let mut fTemp293: F64 = ftbl0LambRsSIG0_guard[iTemp291 as usize];
-            let mut fTemp294: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp294: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp291, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp291, 1), 1835007),
             )) as usize] - fTemp293;
             let mut iTemp295: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -2411,9 +2394,9 @@ impl LambRs {
                                 - (fTemp293
                                     + fTemp78
                                         * (fTemp294
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp291, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp291, 8), 1835007),
                                             )) as usize] - fTemp292))))
                 } else {
                     1.0
@@ -2432,14 +2415,14 @@ impl LambRs {
             let mut fTemp299: F64 = 0.5 * fTemp298;
             let mut fTemp300: F64 = 262143.0 * (1.0 - fTemp299);
             let mut iTemp301: i32 = (fTemp300) as i32;
-            let mut iTemp302: i32 = std::cmp::max(
+            let mut iTemp302: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp301, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp301, 262143)),
                         ),
                     ),
                     1835007,
@@ -2456,14 +2439,14 @@ impl LambRs {
             )) as usize] - fTemp304;
             let mut fTemp306: F64 = 131071.5 * fTemp298;
             let mut iTemp307: i32 = (fTemp306) as i32;
-            let mut iTemp308: i32 = std::cmp::max(
+            let mut iTemp308: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp307, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp307, 262143)),
                         ),
                     ),
                     1835007,
@@ -2501,14 +2484,14 @@ impl LambRs {
             let mut fTemp313: F64 = fTemp83 + fTemp299;
             let mut fTemp314: F64 = 262143.0 * (1.0 - fTemp313);
             let mut iTemp315: i32 = (fTemp314) as i32;
-            let mut iTemp316: i32 = std::cmp::max(
+            let mut iTemp316: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp315, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp315, 262143)),
                         ),
                     ),
                     1835007,
@@ -2525,27 +2508,27 @@ impl LambRs {
             )) as usize] - fTemp318;
             let mut fTemp320: F64 = 262143.0 * fTemp313;
             let mut iTemp321: i32 = (fTemp320) as i32;
-            let mut iTemp322: i32 = std::cmp::max(
+            let mut iTemp322: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp321, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp321, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp323: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp323: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp322, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp322, 7), 1835007),
             )) as usize];
             let mut fTemp324: F64 = ftbl0LambRsSIG0_guard[iTemp322 as usize];
-            let mut fTemp325: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp325: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp322, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp322, 1), 1835007),
             )) as usize] - fTemp324;
             let mut iTemp326: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -2555,9 +2538,9 @@ impl LambRs {
                                 - (fTemp324
                                     + fTemp78
                                         * (fTemp325
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp322, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp322, 8), 1835007),
                                             )) as usize] - fTemp323))))
                 } else {
                     1.0
@@ -2576,14 +2559,14 @@ impl LambRs {
             let mut fTemp330: F64 = 0.5 * fTemp329;
             let mut fTemp331: F64 = 262143.0 * (1.0 - fTemp330);
             let mut iTemp332: i32 = (fTemp331) as i32;
-            let mut iTemp333: i32 = std::cmp::max(
+            let mut iTemp333: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp332, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp332, 262143)),
                         ),
                     ),
                     1835007,
@@ -2600,14 +2583,14 @@ impl LambRs {
             )) as usize] - fTemp335;
             let mut fTemp337: F64 = 131071.5 * fTemp329;
             let mut iTemp338: i32 = (fTemp337) as i32;
-            let mut iTemp339: i32 = std::cmp::max(
+            let mut iTemp339: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp338, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp338, 262143)),
                         ),
                     ),
                     1835007,
@@ -2645,14 +2628,14 @@ impl LambRs {
             let mut fTemp344: F64 = fTemp83 + fTemp330;
             let mut fTemp345: F64 = 262143.0 * (1.0 - fTemp344);
             let mut iTemp346: i32 = (fTemp345) as i32;
-            let mut iTemp347: i32 = std::cmp::max(
+            let mut iTemp347: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp346, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp346, 262143)),
                         ),
                     ),
                     1835007,
@@ -2669,27 +2652,27 @@ impl LambRs {
             )) as usize] - fTemp349;
             let mut fTemp351: F64 = 262143.0 * fTemp344;
             let mut iTemp352: i32 = (fTemp351) as i32;
-            let mut iTemp353: i32 = std::cmp::max(
+            let mut iTemp353: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp352, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp352, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp354: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp354: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp353, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp353, 7), 1835007),
             )) as usize];
             let mut fTemp355: F64 = ftbl0LambRsSIG0_guard[iTemp353 as usize];
-            let mut fTemp356: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp356: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp353, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp353, 1), 1835007),
             )) as usize] - fTemp355;
             let mut iTemp357: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -2699,9 +2682,9 @@ impl LambRs {
                                 - (fTemp355
                                     + fTemp78
                                         * (fTemp356
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp353, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp353, 8), 1835007),
                                             )) as usize] - fTemp354))))
                 } else {
                     1.0
@@ -2720,14 +2703,14 @@ impl LambRs {
             let mut fTemp361: F64 = 0.5 * fTemp360;
             let mut fTemp362: F64 = 262143.0 * (1.0 - fTemp361);
             let mut iTemp363: i32 = (fTemp362) as i32;
-            let mut iTemp364: i32 = std::cmp::max(
+            let mut iTemp364: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp363, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp363, 262143)),
                         ),
                     ),
                     1835007,
@@ -2744,14 +2727,14 @@ impl LambRs {
             )) as usize] - fTemp366;
             let mut fTemp368: F64 = 131071.5 * fTemp360;
             let mut iTemp369: i32 = (fTemp368) as i32;
-            let mut iTemp370: i32 = std::cmp::max(
+            let mut iTemp370: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp369, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp369, 262143)),
                         ),
                     ),
                     1835007,
@@ -2789,14 +2772,14 @@ impl LambRs {
             let mut fTemp375: F64 = fTemp83 + fTemp361;
             let mut fTemp376: F64 = 262143.0 * (1.0 - fTemp375);
             let mut iTemp377: i32 = (fTemp376) as i32;
-            let mut iTemp378: i32 = std::cmp::max(
+            let mut iTemp378: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp377, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp377, 262143)),
                         ),
                     ),
                     1835007,
@@ -2813,27 +2796,27 @@ impl LambRs {
             )) as usize] - fTemp380;
             let mut fTemp382: F64 = 262143.0 * fTemp375;
             let mut iTemp383: i32 = (fTemp382) as i32;
-            let mut iTemp384: i32 = std::cmp::max(
+            let mut iTemp384: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp383, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp383, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp385: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp385: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp384, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp384, 7), 1835007),
             )) as usize];
             let mut fTemp386: F64 = ftbl0LambRsSIG0_guard[iTemp384 as usize];
-            let mut fTemp387: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp387: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp384, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp384, 1), 1835007),
             )) as usize] - fTemp386;
             let mut iTemp388: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -2843,9 +2826,9 @@ impl LambRs {
                                 - (fTemp386
                                     + fTemp78
                                         * (fTemp387
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp384, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp384, 8), 1835007),
                                             )) as usize] - fTemp385))))
                 } else {
                     1.0
@@ -2864,14 +2847,14 @@ impl LambRs {
             let mut fTemp392: F64 = 0.5 * fTemp391;
             let mut fTemp393: F64 = 262143.0 * (1.0 - fTemp392);
             let mut iTemp394: i32 = (fTemp393) as i32;
-            let mut iTemp395: i32 = std::cmp::max(
+            let mut iTemp395: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp394, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp394, 262143)),
                         ),
                     ),
                     1835007,
@@ -2888,14 +2871,14 @@ impl LambRs {
             )) as usize] - fTemp397;
             let mut fTemp399: F64 = 131071.5 * fTemp391;
             let mut iTemp400: i32 = (fTemp399) as i32;
-            let mut iTemp401: i32 = std::cmp::max(
+            let mut iTemp401: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp400, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp400, 262143)),
                         ),
                     ),
                     1835007,
@@ -2933,14 +2916,14 @@ impl LambRs {
             let mut fTemp406: F64 = fTemp83 + fTemp392;
             let mut fTemp407: F64 = 262143.0 * (1.0 - fTemp406);
             let mut iTemp408: i32 = (fTemp407) as i32;
-            let mut iTemp409: i32 = std::cmp::max(
+            let mut iTemp409: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp408, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp408, 262143)),
                         ),
                     ),
                     1835007,
@@ -2957,27 +2940,27 @@ impl LambRs {
             )) as usize] - fTemp411;
             let mut fTemp413: F64 = 262143.0 * fTemp406;
             let mut iTemp414: i32 = (fTemp413) as i32;
-            let mut iTemp415: i32 = std::cmp::max(
+            let mut iTemp415: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp414, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp414, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp416: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp416: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp415, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp415, 7), 1835007),
             )) as usize];
             let mut fTemp417: F64 = ftbl0LambRsSIG0_guard[iTemp415 as usize];
-            let mut fTemp418: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp418: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp415, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp415, 1), 1835007),
             )) as usize] - fTemp417;
             let mut iTemp419: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -2987,9 +2970,9 @@ impl LambRs {
                                 - (fTemp417
                                     + fTemp78
                                         * (fTemp418
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp415, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp415, 8), 1835007),
                                             )) as usize] - fTemp416))))
                 } else {
                     1.0
@@ -3008,14 +2991,14 @@ impl LambRs {
             let mut fTemp423: F64 = 0.5 * fTemp422;
             let mut fTemp424: F64 = 262143.0 * (1.0 - fTemp423);
             let mut iTemp425: i32 = (fTemp424) as i32;
-            let mut iTemp426: i32 = std::cmp::max(
+            let mut iTemp426: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp425, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp425, 262143)),
                         ),
                     ),
                     1835007,
@@ -3032,14 +3015,14 @@ impl LambRs {
             )) as usize] - fTemp428;
             let mut fTemp430: F64 = 131071.5 * fTemp422;
             let mut iTemp431: i32 = (fTemp430) as i32;
-            let mut iTemp432: i32 = std::cmp::max(
+            let mut iTemp432: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp431, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp431, 262143)),
                         ),
                     ),
                     1835007,
@@ -3077,14 +3060,14 @@ impl LambRs {
             let mut fTemp437: F64 = fTemp83 + fTemp423;
             let mut fTemp438: F64 = 262143.0 * (1.0 - fTemp437);
             let mut iTemp439: i32 = (fTemp438) as i32;
-            let mut iTemp440: i32 = std::cmp::max(
+            let mut iTemp440: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp439, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp439, 262143)),
                         ),
                     ),
                     1835007,
@@ -3101,27 +3084,27 @@ impl LambRs {
             )) as usize] - fTemp442;
             let mut fTemp444: F64 = 262143.0 * fTemp437;
             let mut iTemp445: i32 = (fTemp444) as i32;
-            let mut iTemp446: i32 = std::cmp::max(
+            let mut iTemp446: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp445, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp445, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp447: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp447: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp446, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp446, 7), 1835007),
             )) as usize];
             let mut fTemp448: F64 = ftbl0LambRsSIG0_guard[iTemp446 as usize];
-            let mut fTemp449: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp449: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp446, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp446, 1), 1835007),
             )) as usize] - fTemp448;
             let mut iTemp450: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -3131,9 +3114,9 @@ impl LambRs {
                                 - (fTemp448
                                     + fTemp78
                                         * (fTemp449
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp446, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp446, 8), 1835007),
                                             )) as usize] - fTemp447))))
                 } else {
                     1.0
@@ -3152,14 +3135,14 @@ impl LambRs {
             let mut fTemp454: F64 = 0.5 * fTemp453;
             let mut fTemp455: F64 = 262143.0 * (1.0 - fTemp454);
             let mut iTemp456: i32 = (fTemp455) as i32;
-            let mut iTemp457: i32 = std::cmp::max(
+            let mut iTemp457: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp456, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp456, 262143)),
                         ),
                     ),
                     1835007,
@@ -3176,14 +3159,14 @@ impl LambRs {
             )) as usize] - fTemp459;
             let mut fTemp461: F64 = 131071.5 * fTemp453;
             let mut iTemp462: i32 = (fTemp461) as i32;
-            let mut iTemp463: i32 = std::cmp::max(
+            let mut iTemp463: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp462, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp462, 262143)),
                         ),
                     ),
                     1835007,
@@ -3221,14 +3204,14 @@ impl LambRs {
             let mut fTemp468: F64 = fTemp83 + fTemp454;
             let mut fTemp469: F64 = 262143.0 * (1.0 - fTemp468);
             let mut iTemp470: i32 = (fTemp469) as i32;
-            let mut iTemp471: i32 = std::cmp::max(
+            let mut iTemp471: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp470, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp470, 262143)),
                         ),
                     ),
                     1835007,
@@ -3245,27 +3228,27 @@ impl LambRs {
             )) as usize] - fTemp473;
             let mut fTemp475: F64 = 262143.0 * fTemp468;
             let mut iTemp476: i32 = (fTemp475) as i32;
-            let mut iTemp477: i32 = std::cmp::max(
+            let mut iTemp477: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp476, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp476, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp478: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp478: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp477, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp477, 7), 1835007),
             )) as usize];
             let mut fTemp479: F64 = ftbl0LambRsSIG0_guard[iTemp477 as usize];
-            let mut fTemp480: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp480: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp477, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp477, 1), 1835007),
             )) as usize] - fTemp479;
             let mut iTemp481: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -3275,9 +3258,9 @@ impl LambRs {
                                 - (fTemp479
                                     + fTemp78
                                         * (fTemp480
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp477, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp477, 8), 1835007),
                                             )) as usize] - fTemp478))))
                 } else {
                     1.0
@@ -3296,14 +3279,14 @@ impl LambRs {
             let mut fTemp485: F64 = 0.5 * fTemp484;
             let mut fTemp486: F64 = 262143.0 * (1.0 - fTemp485);
             let mut iTemp487: i32 = (fTemp486) as i32;
-            let mut iTemp488: i32 = std::cmp::max(
+            let mut iTemp488: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp487, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp487, 262143)),
                         ),
                     ),
                     1835007,
@@ -3320,14 +3303,14 @@ impl LambRs {
             )) as usize] - fTemp490;
             let mut fTemp492: F64 = 131071.5 * fTemp484;
             let mut iTemp493: i32 = (fTemp492) as i32;
-            let mut iTemp494: i32 = std::cmp::max(
+            let mut iTemp494: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp493, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp493, 262143)),
                         ),
                     ),
                     1835007,
@@ -3365,14 +3348,14 @@ impl LambRs {
             let mut fTemp499: F64 = fTemp83 + fTemp485;
             let mut fTemp500: F64 = 262143.0 * (1.0 - fTemp499);
             let mut iTemp501: i32 = (fTemp500) as i32;
-            let mut iTemp502: i32 = std::cmp::max(
+            let mut iTemp502: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp501, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp501, 262143)),
                         ),
                     ),
                     1835007,
@@ -3389,27 +3372,27 @@ impl LambRs {
             )) as usize] - fTemp504;
             let mut fTemp506: F64 = 262143.0 * fTemp499;
             let mut iTemp507: i32 = (fTemp506) as i32;
-            let mut iTemp508: i32 = std::cmp::max(
+            let mut iTemp508: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp507, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp507, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp509: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp509: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp508, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp508, 7), 1835007),
             )) as usize];
             let mut fTemp510: F64 = ftbl0LambRsSIG0_guard[iTemp508 as usize];
-            let mut fTemp511: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp511: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp508, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp508, 1), 1835007),
             )) as usize] - fTemp510;
             let mut iTemp512: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -3419,9 +3402,9 @@ impl LambRs {
                                 - (fTemp510
                                     + fTemp78
                                         * (fTemp511
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp508, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp508, 8), 1835007),
                                             )) as usize] - fTemp509))))
                 } else {
                     1.0
@@ -3440,14 +3423,14 @@ impl LambRs {
             let mut fTemp516: F64 = 0.5 * fTemp515;
             let mut fTemp517: F64 = 262143.0 * (1.0 - fTemp516);
             let mut iTemp518: i32 = (fTemp517) as i32;
-            let mut iTemp519: i32 = std::cmp::max(
+            let mut iTemp519: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp518, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp518, 262143)),
                         ),
                     ),
                     1835007,
@@ -3464,14 +3447,14 @@ impl LambRs {
             )) as usize] - fTemp521;
             let mut fTemp523: F64 = 131071.5 * fTemp515;
             let mut iTemp524: i32 = (fTemp523) as i32;
-            let mut iTemp525: i32 = std::cmp::max(
+            let mut iTemp525: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp524, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp524, 262143)),
                         ),
                     ),
                     1835007,
@@ -3509,14 +3492,14 @@ impl LambRs {
             let mut fTemp530: F64 = fTemp83 + fTemp516;
             let mut fTemp531: F64 = 262143.0 * (1.0 - fTemp530);
             let mut iTemp532: i32 = (fTemp531) as i32;
-            let mut iTemp533: i32 = std::cmp::max(
+            let mut iTemp533: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp532, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp532, 262143)),
                         ),
                     ),
                     1835007,
@@ -3533,27 +3516,27 @@ impl LambRs {
             )) as usize] - fTemp535;
             let mut fTemp537: F64 = 262143.0 * fTemp530;
             let mut iTemp538: i32 = (fTemp537) as i32;
-            let mut iTemp539: i32 = std::cmp::max(
+            let mut iTemp539: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp538, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp538, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp540: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp540: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp539, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp539, 7), 1835007),
             )) as usize];
             let mut fTemp541: F64 = ftbl0LambRsSIG0_guard[iTemp539 as usize];
-            let mut fTemp542: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp542: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp539, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp539, 1), 1835007),
             )) as usize] - fTemp541;
             let mut iTemp543: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -3563,9 +3546,9 @@ impl LambRs {
                                 - (fTemp541
                                     + fTemp78
                                         * (fTemp542
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp539, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp539, 8), 1835007),
                                             )) as usize] - fTemp540))))
                 } else {
                     1.0
@@ -3584,14 +3567,14 @@ impl LambRs {
             let mut fTemp547: F64 = 0.5 * fTemp546;
             let mut fTemp548: F64 = 262143.0 * (1.0 - fTemp547);
             let mut iTemp549: i32 = (fTemp548) as i32;
-            let mut iTemp550: i32 = std::cmp::max(
+            let mut iTemp550: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp549, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp549, 262143)),
                         ),
                     ),
                     1835007,
@@ -3608,14 +3591,14 @@ impl LambRs {
             )) as usize] - fTemp552;
             let mut fTemp554: F64 = 131071.5 * fTemp546;
             let mut iTemp555: i32 = (fTemp554) as i32;
-            let mut iTemp556: i32 = std::cmp::max(
+            let mut iTemp556: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp555, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp555, 262143)),
                         ),
                     ),
                     1835007,
@@ -3653,14 +3636,14 @@ impl LambRs {
             let mut fTemp561: F64 = fTemp83 + fTemp547;
             let mut fTemp562: F64 = 262143.0 * (1.0 - fTemp561);
             let mut iTemp563: i32 = (fTemp562) as i32;
-            let mut iTemp564: i32 = std::cmp::max(
+            let mut iTemp564: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp563, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp563, 262143)),
                         ),
                     ),
                     1835007,
@@ -3677,27 +3660,27 @@ impl LambRs {
             )) as usize] - fTemp566;
             let mut fTemp568: F64 = 262143.0 * fTemp561;
             let mut iTemp569: i32 = (fTemp568) as i32;
-            let mut iTemp570: i32 = std::cmp::max(
+            let mut iTemp570: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp569, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp569, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp571: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp571: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp570, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp570, 7), 1835007),
             )) as usize];
             let mut fTemp572: F64 = ftbl0LambRsSIG0_guard[iTemp570 as usize];
-            let mut fTemp573: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp573: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp570, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp570, 1), 1835007),
             )) as usize] - fTemp572;
             let mut iTemp574: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -3707,9 +3690,9 @@ impl LambRs {
                                 - (fTemp572
                                     + fTemp78
                                         * (fTemp573
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp570, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp570, 8), 1835007),
                                             )) as usize] - fTemp571))))
                 } else {
                     1.0
@@ -3728,14 +3711,14 @@ impl LambRs {
             let mut fTemp578: F64 = 0.5 * fTemp577;
             let mut fTemp579: F64 = 262143.0 * (1.0 - fTemp578);
             let mut iTemp580: i32 = (fTemp579) as i32;
-            let mut iTemp581: i32 = std::cmp::max(
+            let mut iTemp581: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp580, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp580, 262143)),
                         ),
                     ),
                     1835007,
@@ -3752,14 +3735,14 @@ impl LambRs {
             )) as usize] - fTemp583;
             let mut fTemp585: F64 = 131071.5 * fTemp577;
             let mut iTemp586: i32 = (fTemp585) as i32;
-            let mut iTemp587: i32 = std::cmp::max(
+            let mut iTemp587: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp586, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp586, 262143)),
                         ),
                     ),
                     1835007,
@@ -3797,14 +3780,14 @@ impl LambRs {
             let mut fTemp592: F64 = fTemp83 + fTemp578;
             let mut fTemp593: F64 = 262143.0 * (1.0 - fTemp592);
             let mut iTemp594: i32 = (fTemp593) as i32;
-            let mut iTemp595: i32 = std::cmp::max(
+            let mut iTemp595: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp594, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp594, 262143)),
                         ),
                     ),
                     1835007,
@@ -3821,27 +3804,27 @@ impl LambRs {
             )) as usize] - fTemp597;
             let mut fTemp599: F64 = 262143.0 * fTemp592;
             let mut iTemp600: i32 = (fTemp599) as i32;
-            let mut iTemp601: i32 = std::cmp::max(
+            let mut iTemp601: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp600, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp600, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp602: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp602: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp601, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp601, 7), 1835007),
             )) as usize];
             let mut fTemp603: F64 = ftbl0LambRsSIG0_guard[iTemp601 as usize];
-            let mut fTemp604: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp604: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp601, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp601, 1), 1835007),
             )) as usize] - fTemp603;
             let mut iTemp605: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -3851,9 +3834,9 @@ impl LambRs {
                                 - (fTemp603
                                     + fTemp78
                                         * (fTemp604
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp601, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp601, 8), 1835007),
                                             )) as usize] - fTemp602))))
                 } else {
                     1.0
@@ -3872,14 +3855,14 @@ impl LambRs {
             let mut fTemp609: F64 = 0.5 * fTemp608;
             let mut fTemp610: F64 = 262143.0 * (1.0 - fTemp609);
             let mut iTemp611: i32 = (fTemp610) as i32;
-            let mut iTemp612: i32 = std::cmp::max(
+            let mut iTemp612: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp611, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp611, 262143)),
                         ),
                     ),
                     1835007,
@@ -3896,14 +3879,14 @@ impl LambRs {
             )) as usize] - fTemp614;
             let mut fTemp616: F64 = 131071.5 * fTemp608;
             let mut iTemp617: i32 = (fTemp616) as i32;
-            let mut iTemp618: i32 = std::cmp::max(
+            let mut iTemp618: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp617, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp617, 262143)),
                         ),
                     ),
                     1835007,
@@ -3941,14 +3924,14 @@ impl LambRs {
             let mut fTemp623: F64 = fTemp83 + fTemp609;
             let mut fTemp624: F64 = 262143.0 * (1.0 - fTemp623);
             let mut iTemp625: i32 = (fTemp624) as i32;
-            let mut iTemp626: i32 = std::cmp::max(
+            let mut iTemp626: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp625, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp625, 262143)),
                         ),
                     ),
                     1835007,
@@ -3965,27 +3948,27 @@ impl LambRs {
             )) as usize] - fTemp628;
             let mut fTemp630: F64 = 262143.0 * fTemp623;
             let mut iTemp631: i32 = (fTemp630) as i32;
-            let mut iTemp632: i32 = std::cmp::max(
+            let mut iTemp632: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp631, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp631, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp633: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp633: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp632, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp632, 7), 1835007),
             )) as usize];
             let mut fTemp634: F64 = ftbl0LambRsSIG0_guard[iTemp632 as usize];
-            let mut fTemp635: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp635: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp632, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp632, 1), 1835007),
             )) as usize] - fTemp634;
             let mut iTemp636: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -3995,9 +3978,9 @@ impl LambRs {
                                 - (fTemp634
                                     + fTemp78
                                         * (fTemp635
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp632, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp632, 8), 1835007),
                                             )) as usize] - fTemp633))))
                 } else {
                     1.0
@@ -4016,14 +3999,14 @@ impl LambRs {
             let mut fTemp640: F64 = 0.5 * fTemp639;
             let mut fTemp641: F64 = 262143.0 * (1.0 - fTemp640);
             let mut iTemp642: i32 = (fTemp641) as i32;
-            let mut iTemp643: i32 = std::cmp::max(
+            let mut iTemp643: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp642, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp642, 262143)),
                         ),
                     ),
                     1835007,
@@ -4040,14 +4023,14 @@ impl LambRs {
             )) as usize] - fTemp645;
             let mut fTemp647: F64 = 131071.5 * fTemp639;
             let mut iTemp648: i32 = (fTemp647) as i32;
-            let mut iTemp649: i32 = std::cmp::max(
+            let mut iTemp649: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp648, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp648, 262143)),
                         ),
                     ),
                     1835007,
@@ -4069,9 +4052,9 @@ impl LambRs {
                             - (fTemp651
                                 + fTemp78
                                     * (fTemp652
-                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                             0,
-                                            std::cmp::min(i32::wrapping_add(iTemp649, 8), 1835007),
+                                            core::cmp::min(i32::wrapping_add(iTemp649, 8), 1835007),
                                         )) as usize] - fTemp650))))
             } else {
                 1.0
@@ -4081,22 +4064,22 @@ impl LambRs {
                                 - (fTemp645
                                     + fTemp78
                                         * (fTemp646
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp643, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp643, 8), 1835007),
                                             )) as usize] - fTemp644)))))
             });
             let mut fTemp654: F64 = fTemp83 + fTemp640;
             let mut fTemp655: F64 = 262143.0 * (1.0 - fTemp654);
             let mut iTemp656: i32 = (fTemp655) as i32;
-            let mut iTemp657: i32 = std::cmp::max(
+            let mut iTemp657: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp656, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp656, 262143)),
                         ),
                     ),
                     1835007,
@@ -4113,27 +4096,27 @@ impl LambRs {
             )) as usize] - fTemp659;
             let mut fTemp661: F64 = 262143.0 * fTemp654;
             let mut iTemp662: i32 = (fTemp661) as i32;
-            let mut iTemp663: i32 = std::cmp::max(
+            let mut iTemp663: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp662, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp662, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp664: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp664: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp663, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp663, 7), 1835007),
             )) as usize];
             let mut fTemp665: F64 = ftbl0LambRsSIG0_guard[iTemp663 as usize];
-            let mut fTemp666: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp666: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp663, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp663, 1), 1835007),
             )) as usize] - fTemp665;
             let mut iTemp667: i32 = (fTemp139
                 > (((if iTemp65 != 0 {
@@ -4143,9 +4126,9 @@ impl LambRs {
                                 - (fTemp665
                                     + fTemp78
                                         * (fTemp666
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp663, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp663, 8), 1835007),
                                             )) as usize] - fTemp664))))
                 } else {
                     1.0
@@ -4170,14 +4153,14 @@ impl LambRs {
             self.fRec1[0] = fTemp668;
             let mut fTemp669: F64 = 262143.0 * (1.0 - fTemp668);
             let mut iTemp670: i32 = (fTemp669) as i32;
-            let mut iTemp671: i32 = std::cmp::max(
+            let mut iTemp671: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp670, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp670, 262143)),
                         ),
                     ),
                     1835007,
@@ -4194,14 +4177,14 @@ impl LambRs {
             )) as usize] - fTemp673;
             let mut fTemp675: F64 = 262143.0 * fTemp668;
             let mut iTemp676: i32 = (fTemp675) as i32;
-            let mut iTemp677: i32 = std::cmp::max(
+            let mut iTemp677: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp676, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp676, 262143)),
                         ),
                     ),
                     1835007,
@@ -4223,9 +4206,9 @@ impl LambRs {
                             - (fTemp679
                                 + fTemp78
                                     * (fTemp680
-                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                             0,
-                                            std::cmp::min(i32::wrapping_add(iTemp677, 8), 1835007),
+                                            core::cmp::min(i32::wrapping_add(iTemp677, 8), 1835007),
                                         )) as usize] - fTemp678))))
             } else {
                 1.0
@@ -4235,22 +4218,22 @@ impl LambRs {
                                 - (fTemp673
                                     + fTemp78
                                         * (fTemp674
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp671, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp671, 8), 1835007),
                                             )) as usize] - fTemp672)))))
             });
             let mut fTemp682: F64 = fTemp83 + fTemp668;
             let mut fTemp683: F64 = 262143.0 * (1.0 - fTemp682);
             let mut iTemp684: i32 = (fTemp683) as i32;
-            let mut iTemp685: i32 = std::cmp::max(
+            let mut iTemp685: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp684, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp684, 262143)),
                         ),
                     ),
                     1835007,
@@ -4267,27 +4250,27 @@ impl LambRs {
             )) as usize] - fTemp687;
             let mut fTemp689: F64 = 262143.0 * fTemp682;
             let mut iTemp690: i32 = (fTemp689) as i32;
-            let mut iTemp691: i32 = std::cmp::max(
+            let mut iTemp691: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp73,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp690, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp690, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp692: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp692: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp691, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp691, 7), 1835007),
             )) as usize];
             let mut fTemp693: F64 = ftbl0LambRsSIG0_guard[iTemp691 as usize];
-            let mut fTemp694: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp694: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp691, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp691, 1), 1835007),
             )) as usize] - fTemp693;
             let mut fTemp695: F64 = self.fRec2[1]
                 + (if ((0.001 * fTemp82) == 0.0) as i32 != 0 {
@@ -4301,9 +4284,9 @@ impl LambRs {
                                         - (fTemp693
                                             + fTemp78
                                                 * (fTemp694
-                                                    - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                                    - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                         0,
-                                                        std::cmp::min(i32::wrapping_add(iTemp691, 8), 1835007),
+                                                        core::cmp::min(i32::wrapping_add(iTemp691, 8), 1835007),
                                                     )) as usize] - fTemp692))))
                         } else {
                             1.0
@@ -4664,10 +4647,10 @@ impl LambRs {
             self.fVec60[0] = fTemp725;
             let mut fTemp726: F64 = 6.0 * fTemp725;
             let mut iTemp727: i32 = (fTemp726) as i32;
-            let mut iTemp728: i32 = std::cmp::max(0, std::cmp::min(iTemp727, 6));
-            let mut iTemp729: i32 = std::cmp::max(
+            let mut iTemp728: i32 = core::cmp::max(0, core::cmp::min(iTemp727, 6));
+            let mut iTemp729: i32 = core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp728, 917497), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp728, 917497), 1835007),
             );
             let mut fTemp730: F64 = ftbl0LambRsSIG0_guard[(i32::wrapping_add(
                 iTemp729,
@@ -4700,14 +4683,14 @@ impl LambRs {
             let mut fTemp739: F64 = fTemp738 + 0.5;
             let mut fTemp740: F64 = 262143.0 * (1.0 - fTemp739);
             let mut iTemp741: i32 = (fTemp740) as i32;
-            let mut iTemp742: i32 = std::cmp::max(
+            let mut iTemp742: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp741, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp741, 262143)),
                         ),
                     ),
                     1835007,
@@ -4724,91 +4707,91 @@ impl LambRs {
             )) as usize] - fTemp744;
             let mut fTemp746: F64 = 262143.0 * fTemp739;
             let mut iTemp747: i32 = (fTemp746) as i32;
-            let mut iTemp748: i32 = std::cmp::max(
+            let mut iTemp748: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp747, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp747, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp749: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp749: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp748, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp748, 7), 1835007),
             )) as usize];
             let mut fTemp750: F64 = ftbl0LambRsSIG0_guard[iTemp748 as usize];
-            let mut fTemp751: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp751: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp748, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp748, 1), 1835007),
             )) as usize] - fTemp750;
             let mut fTemp752: F64 = 6.0 * self.fVec60[1];
             let mut iTemp753: i32 = (fTemp752) as i32;
-            let mut iTemp754: i32 = std::cmp::max(0, std::cmp::min(iTemp753, 6));
+            let mut iTemp754: i32 = core::cmp::max(0, core::cmp::min(iTemp753, 6));
             let mut fTemp755: F64 = 262143.0 * (1.0 - self.fRec15[1]);
             let mut iTemp756: i32 = (fTemp755) as i32;
-            let mut iTemp757: i32 = std::cmp::max(
+            let mut iTemp757: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp756, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp756, 262143)),
                         ),
                         iTemp754,
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp758: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp758: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp757, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp757, 7), 1835007),
             )) as usize];
             let mut fTemp759: F64 = ftbl0LambRsSIG0_guard[iTemp757 as usize];
-            let mut fTemp760: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp760: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp757, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp757, 1), 1835007),
             )) as usize] - fTemp759;
             let mut fTemp761: F64 = fTemp752 - (iTemp753) as F64;
             let mut fTemp762: F64 = 262143.0 * self.fRec15[1];
             let mut iTemp763: i32 = (fTemp762) as i32;
-            let mut iTemp764: i32 = std::cmp::max(
+            let mut iTemp764: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp754,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp763, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp763, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp765: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp765: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp764, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp764, 7), 1835007),
             )) as usize];
             let mut fTemp766: F64 = ftbl0LambRsSIG0_guard[iTemp764 as usize];
-            let mut fTemp767: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp767: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp764, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp764, 1), 1835007),
             )) as usize] - fTemp766;
             let mut fTemp768: F64 = self.fRec15[1] + fTemp738;
             let mut fTemp769: F64 = 262143.0 * (1.0 - fTemp768);
             let mut iTemp770: i32 = (fTemp769) as i32;
-            let mut iTemp771: i32 = std::cmp::max(
+            let mut iTemp771: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp770, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp770, 262143)),
                         ),
                     ),
                     1835007,
@@ -4825,39 +4808,39 @@ impl LambRs {
             )) as usize] - fTemp773;
             let mut fTemp775: F64 = 262143.0 * fTemp768;
             let mut iTemp776: i32 = (fTemp775) as i32;
-            let mut iTemp777: i32 = std::cmp::max(
+            let mut iTemp777: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp776, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp776, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp778: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp778: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp777, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp777, 7), 1835007),
             )) as usize];
             let mut fTemp779: F64 = ftbl0LambRsSIG0_guard[iTemp777 as usize];
-            let mut fTemp780: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp780: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp777, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp777, 1), 1835007),
             )) as usize] - fTemp779;
             let mut fTemp781: F64 = self.fRec15[1]
                 + self.fConst10 * (1.0 / fTemp737 + 1.0 / self.fVec61[1]);
             let mut fTemp782: F64 = 262143.0 * (1.0 - fTemp781);
             let mut iTemp783: i32 = (fTemp782) as i32;
-            let mut iTemp784: i32 = std::cmp::max(
+            let mut iTemp784: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp783, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp783, 262143)),
                         ),
                         iTemp728,
                     ),
@@ -4875,27 +4858,27 @@ impl LambRs {
             )) as usize] - fTemp786;
             let mut fTemp788: F64 = 262143.0 * fTemp781;
             let mut iTemp789: i32 = (fTemp788) as i32;
-            let mut iTemp790: i32 = std::cmp::max(
+            let mut iTemp790: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp789, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp789, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp791: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp791: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp790, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp790, 7), 1835007),
             )) as usize];
             let mut fTemp792: F64 = ftbl0LambRsSIG0_guard[iTemp790 as usize];
-            let mut fTemp793: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp793: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp790, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp790, 1), 1835007),
             )) as usize] - fTemp792;
             let mut fTemp794: F64 = ((if iTemp724 != 0 {
                 fTemp792 + fTemp733 * fTemp793
@@ -4904,9 +4887,9 @@ impl LambRs {
                             - (fTemp792
                                 + fTemp733
                                     * (fTemp793
-                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                             0,
-                                            std::cmp::min(i32::wrapping_add(iTemp790, 8), 1835007),
+                                            core::cmp::min(i32::wrapping_add(iTemp790, 8), 1835007),
                                         )) as usize] - fTemp791))))
             } else {
                 1.0
@@ -4926,9 +4909,9 @@ impl LambRs {
                                 - (fTemp779
                                     + fTemp733
                                         * (fTemp780
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp777, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp777, 8), 1835007),
                                             )) as usize] - fTemp778))))
                 } else {
                     1.0
@@ -4950,9 +4933,9 @@ impl LambRs {
                                         - (fTemp766
                                             + fTemp761
                                                 * (fTemp767
-                                                    - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                                    - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                         0,
-                                                        std::cmp::min(i32::wrapping_add(iTemp764, 8), 1835007),
+                                                        core::cmp::min(i32::wrapping_add(iTemp764, 8), 1835007),
                                                     )) as usize] - fTemp765))))
                         } else {
                             1.0
@@ -4962,9 +4945,9 @@ impl LambRs {
                                             - (fTemp759
                                                 + fTemp761
                                                     * (fTemp760
-                                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                             0,
-                                                            std::cmp::min(i32::wrapping_add(iTemp757, 8), 1835007),
+                                                            core::cmp::min(i32::wrapping_add(iTemp757, 8), 1835007),
                                                         )) as usize] - fTemp758)))))
                         })));
             let mut iTemp795: i32 = (fTemp794
@@ -4975,9 +4958,9 @@ impl LambRs {
                                 - (fTemp750
                                     + fTemp733
                                         * (fTemp751
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp748, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp748, 8), 1835007),
                                             )) as usize] - fTemp749))))
                 } else {
                     1.0
@@ -4996,14 +4979,14 @@ impl LambRs {
             let mut fTemp799: F64 = 0.5 * fTemp798;
             let mut fTemp800: F64 = 262143.0 * (1.0 - fTemp799);
             let mut iTemp801: i32 = (fTemp800) as i32;
-            let mut iTemp802: i32 = std::cmp::max(
+            let mut iTemp802: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp801, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp801, 262143)),
                         ),
                     ),
                     1835007,
@@ -5020,14 +5003,14 @@ impl LambRs {
             )) as usize] - fTemp804;
             let mut fTemp806: F64 = 131071.5 * fTemp798;
             let mut iTemp807: i32 = (fTemp806) as i32;
-            let mut iTemp808: i32 = std::cmp::max(
+            let mut iTemp808: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp807, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp807, 262143)),
                         ),
                     ),
                     1835007,
@@ -5065,14 +5048,14 @@ impl LambRs {
             let mut fTemp813: F64 = fTemp738 + fTemp799;
             let mut fTemp814: F64 = 262143.0 * (1.0 - fTemp813);
             let mut iTemp815: i32 = (fTemp814) as i32;
-            let mut iTemp816: i32 = std::cmp::max(
+            let mut iTemp816: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp815, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp815, 262143)),
                         ),
                     ),
                     1835007,
@@ -5089,27 +5072,27 @@ impl LambRs {
             )) as usize] - fTemp818;
             let mut fTemp820: F64 = 262143.0 * fTemp813;
             let mut iTemp821: i32 = (fTemp820) as i32;
-            let mut iTemp822: i32 = std::cmp::max(
+            let mut iTemp822: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp821, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp821, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp823: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp823: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp822, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp822, 7), 1835007),
             )) as usize];
             let mut fTemp824: F64 = ftbl0LambRsSIG0_guard[iTemp822 as usize];
-            let mut fTemp825: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp825: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp822, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp822, 1), 1835007),
             )) as usize] - fTemp824;
             let mut iTemp826: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -5119,9 +5102,9 @@ impl LambRs {
                                 - (fTemp824
                                     + fTemp733
                                         * (fTemp825
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp822, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp822, 8), 1835007),
                                             )) as usize] - fTemp823))))
                 } else {
                     1.0
@@ -5140,14 +5123,14 @@ impl LambRs {
             let mut fTemp830: F64 = 0.5 * fTemp829;
             let mut fTemp831: F64 = 262143.0 * (1.0 - fTemp830);
             let mut iTemp832: i32 = (fTemp831) as i32;
-            let mut iTemp833: i32 = std::cmp::max(
+            let mut iTemp833: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp832, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp832, 262143)),
                         ),
                     ),
                     1835007,
@@ -5164,14 +5147,14 @@ impl LambRs {
             )) as usize] - fTemp835;
             let mut fTemp837: F64 = 131071.5 * fTemp829;
             let mut iTemp838: i32 = (fTemp837) as i32;
-            let mut iTemp839: i32 = std::cmp::max(
+            let mut iTemp839: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp838, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp838, 262143)),
                         ),
                     ),
                     1835007,
@@ -5209,14 +5192,14 @@ impl LambRs {
             let mut fTemp844: F64 = fTemp738 + fTemp830;
             let mut fTemp845: F64 = 262143.0 * (1.0 - fTemp844);
             let mut iTemp846: i32 = (fTemp845) as i32;
-            let mut iTemp847: i32 = std::cmp::max(
+            let mut iTemp847: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp846, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp846, 262143)),
                         ),
                     ),
                     1835007,
@@ -5233,27 +5216,27 @@ impl LambRs {
             )) as usize] - fTemp849;
             let mut fTemp851: F64 = 262143.0 * fTemp844;
             let mut iTemp852: i32 = (fTemp851) as i32;
-            let mut iTemp853: i32 = std::cmp::max(
+            let mut iTemp853: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp852, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp852, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp854: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp854: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp853, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp853, 7), 1835007),
             )) as usize];
             let mut fTemp855: F64 = ftbl0LambRsSIG0_guard[iTemp853 as usize];
-            let mut fTemp856: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp856: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp853, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp853, 1), 1835007),
             )) as usize] - fTemp855;
             let mut iTemp857: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -5263,9 +5246,9 @@ impl LambRs {
                                 - (fTemp855
                                     + fTemp733
                                         * (fTemp856
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp853, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp853, 8), 1835007),
                                             )) as usize] - fTemp854))))
                 } else {
                     1.0
@@ -5284,14 +5267,14 @@ impl LambRs {
             let mut fTemp861: F64 = 0.5 * fTemp860;
             let mut fTemp862: F64 = 262143.0 * (1.0 - fTemp861);
             let mut iTemp863: i32 = (fTemp862) as i32;
-            let mut iTemp864: i32 = std::cmp::max(
+            let mut iTemp864: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp863, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp863, 262143)),
                         ),
                     ),
                     1835007,
@@ -5308,14 +5291,14 @@ impl LambRs {
             )) as usize] - fTemp866;
             let mut fTemp868: F64 = 131071.5 * fTemp860;
             let mut iTemp869: i32 = (fTemp868) as i32;
-            let mut iTemp870: i32 = std::cmp::max(
+            let mut iTemp870: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp869, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp869, 262143)),
                         ),
                     ),
                     1835007,
@@ -5353,14 +5336,14 @@ impl LambRs {
             let mut fTemp875: F64 = fTemp738 + fTemp861;
             let mut fTemp876: F64 = 262143.0 * (1.0 - fTemp875);
             let mut iTemp877: i32 = (fTemp876) as i32;
-            let mut iTemp878: i32 = std::cmp::max(
+            let mut iTemp878: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp877, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp877, 262143)),
                         ),
                     ),
                     1835007,
@@ -5377,27 +5360,27 @@ impl LambRs {
             )) as usize] - fTemp880;
             let mut fTemp882: F64 = 262143.0 * fTemp875;
             let mut iTemp883: i32 = (fTemp882) as i32;
-            let mut iTemp884: i32 = std::cmp::max(
+            let mut iTemp884: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp883, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp883, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp885: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp885: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp884, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp884, 7), 1835007),
             )) as usize];
             let mut fTemp886: F64 = ftbl0LambRsSIG0_guard[iTemp884 as usize];
-            let mut fTemp887: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp887: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp884, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp884, 1), 1835007),
             )) as usize] - fTemp886;
             let mut iTemp888: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -5407,9 +5390,9 @@ impl LambRs {
                                 - (fTemp886
                                     + fTemp733
                                         * (fTemp887
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp884, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp884, 8), 1835007),
                                             )) as usize] - fTemp885))))
                 } else {
                     1.0
@@ -5428,14 +5411,14 @@ impl LambRs {
             let mut fTemp892: F64 = 0.5 * fTemp891;
             let mut fTemp893: F64 = 262143.0 * (1.0 - fTemp892);
             let mut iTemp894: i32 = (fTemp893) as i32;
-            let mut iTemp895: i32 = std::cmp::max(
+            let mut iTemp895: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp894, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp894, 262143)),
                         ),
                     ),
                     1835007,
@@ -5452,14 +5435,14 @@ impl LambRs {
             )) as usize] - fTemp897;
             let mut fTemp899: F64 = 131071.5 * fTemp891;
             let mut iTemp900: i32 = (fTemp899) as i32;
-            let mut iTemp901: i32 = std::cmp::max(
+            let mut iTemp901: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp900, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp900, 262143)),
                         ),
                     ),
                     1835007,
@@ -5497,14 +5480,14 @@ impl LambRs {
             let mut fTemp906: F64 = fTemp738 + fTemp892;
             let mut fTemp907: F64 = 262143.0 * (1.0 - fTemp906);
             let mut iTemp908: i32 = (fTemp907) as i32;
-            let mut iTemp909: i32 = std::cmp::max(
+            let mut iTemp909: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp908, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp908, 262143)),
                         ),
                     ),
                     1835007,
@@ -5521,27 +5504,27 @@ impl LambRs {
             )) as usize] - fTemp911;
             let mut fTemp913: F64 = 262143.0 * fTemp906;
             let mut iTemp914: i32 = (fTemp913) as i32;
-            let mut iTemp915: i32 = std::cmp::max(
+            let mut iTemp915: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp914, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp914, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp916: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp916: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp915, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp915, 7), 1835007),
             )) as usize];
             let mut fTemp917: F64 = ftbl0LambRsSIG0_guard[iTemp915 as usize];
-            let mut fTemp918: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp918: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp915, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp915, 1), 1835007),
             )) as usize] - fTemp917;
             let mut iTemp919: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -5551,9 +5534,9 @@ impl LambRs {
                                 - (fTemp917
                                     + fTemp733
                                         * (fTemp918
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp915, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp915, 8), 1835007),
                                             )) as usize] - fTemp916))))
                 } else {
                     1.0
@@ -5572,14 +5555,14 @@ impl LambRs {
             let mut fTemp923: F64 = 0.5 * fTemp922;
             let mut fTemp924: F64 = 262143.0 * (1.0 - fTemp923);
             let mut iTemp925: i32 = (fTemp924) as i32;
-            let mut iTemp926: i32 = std::cmp::max(
+            let mut iTemp926: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp925, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp925, 262143)),
                         ),
                     ),
                     1835007,
@@ -5596,14 +5579,14 @@ impl LambRs {
             )) as usize] - fTemp928;
             let mut fTemp930: F64 = 131071.5 * fTemp922;
             let mut iTemp931: i32 = (fTemp930) as i32;
-            let mut iTemp932: i32 = std::cmp::max(
+            let mut iTemp932: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp931, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp931, 262143)),
                         ),
                     ),
                     1835007,
@@ -5641,14 +5624,14 @@ impl LambRs {
             let mut fTemp937: F64 = fTemp738 + fTemp923;
             let mut fTemp938: F64 = 262143.0 * (1.0 - fTemp937);
             let mut iTemp939: i32 = (fTemp938) as i32;
-            let mut iTemp940: i32 = std::cmp::max(
+            let mut iTemp940: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp939, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp939, 262143)),
                         ),
                     ),
                     1835007,
@@ -5665,27 +5648,27 @@ impl LambRs {
             )) as usize] - fTemp942;
             let mut fTemp944: F64 = 262143.0 * fTemp937;
             let mut iTemp945: i32 = (fTemp944) as i32;
-            let mut iTemp946: i32 = std::cmp::max(
+            let mut iTemp946: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp945, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp945, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp947: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp947: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp946, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp946, 7), 1835007),
             )) as usize];
             let mut fTemp948: F64 = ftbl0LambRsSIG0_guard[iTemp946 as usize];
-            let mut fTemp949: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp949: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp946, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp946, 1), 1835007),
             )) as usize] - fTemp948;
             let mut iTemp950: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -5695,9 +5678,9 @@ impl LambRs {
                                 - (fTemp948
                                     + fTemp733
                                         * (fTemp949
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp946, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp946, 8), 1835007),
                                             )) as usize] - fTemp947))))
                 } else {
                     1.0
@@ -5716,14 +5699,14 @@ impl LambRs {
             let mut fTemp954: F64 = 0.5 * fTemp953;
             let mut fTemp955: F64 = 262143.0 * (1.0 - fTemp954);
             let mut iTemp956: i32 = (fTemp955) as i32;
-            let mut iTemp957: i32 = std::cmp::max(
+            let mut iTemp957: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp956, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp956, 262143)),
                         ),
                     ),
                     1835007,
@@ -5740,14 +5723,14 @@ impl LambRs {
             )) as usize] - fTemp959;
             let mut fTemp961: F64 = 131071.5 * fTemp953;
             let mut iTemp962: i32 = (fTemp961) as i32;
-            let mut iTemp963: i32 = std::cmp::max(
+            let mut iTemp963: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp962, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp962, 262143)),
                         ),
                     ),
                     1835007,
@@ -5785,14 +5768,14 @@ impl LambRs {
             let mut fTemp968: F64 = fTemp738 + fTemp954;
             let mut fTemp969: F64 = 262143.0 * (1.0 - fTemp968);
             let mut iTemp970: i32 = (fTemp969) as i32;
-            let mut iTemp971: i32 = std::cmp::max(
+            let mut iTemp971: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp970, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp970, 262143)),
                         ),
                     ),
                     1835007,
@@ -5809,27 +5792,27 @@ impl LambRs {
             )) as usize] - fTemp973;
             let mut fTemp975: F64 = 262143.0 * fTemp968;
             let mut iTemp976: i32 = (fTemp975) as i32;
-            let mut iTemp977: i32 = std::cmp::max(
+            let mut iTemp977: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp976, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp976, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp978: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp978: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp977, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp977, 7), 1835007),
             )) as usize];
             let mut fTemp979: F64 = ftbl0LambRsSIG0_guard[iTemp977 as usize];
-            let mut fTemp980: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp980: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp977, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp977, 1), 1835007),
             )) as usize] - fTemp979;
             let mut iTemp981: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -5839,9 +5822,9 @@ impl LambRs {
                                 - (fTemp979
                                     + fTemp733
                                         * (fTemp980
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp977, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp977, 8), 1835007),
                                             )) as usize] - fTemp978))))
                 } else {
                     1.0
@@ -5860,14 +5843,14 @@ impl LambRs {
             let mut fTemp985: F64 = 0.5 * fTemp984;
             let mut fTemp986: F64 = 262143.0 * (1.0 - fTemp985);
             let mut iTemp987: i32 = (fTemp986) as i32;
-            let mut iTemp988: i32 = std::cmp::max(
+            let mut iTemp988: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp987, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp987, 262143)),
                         ),
                     ),
                     1835007,
@@ -5884,14 +5867,14 @@ impl LambRs {
             )) as usize] - fTemp990;
             let mut fTemp992: F64 = 131071.5 * fTemp984;
             let mut iTemp993: i32 = (fTemp992) as i32;
-            let mut iTemp994: i32 = std::cmp::max(
+            let mut iTemp994: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp993, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp993, 262143)),
                         ),
                     ),
                     1835007,
@@ -5929,14 +5912,14 @@ impl LambRs {
             let mut fTemp999: F64 = fTemp738 + fTemp985;
             let mut fTemp1000: F64 = 262143.0 * (1.0 - fTemp999);
             let mut iTemp1001: i32 = (fTemp1000) as i32;
-            let mut iTemp1002: i32 = std::cmp::max(
+            let mut iTemp1002: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1001, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1001, 262143)),
                         ),
                     ),
                     1835007,
@@ -5953,27 +5936,27 @@ impl LambRs {
             )) as usize] - fTemp1004;
             let mut fTemp1006: F64 = 262143.0 * fTemp999;
             let mut iTemp1007: i32 = (fTemp1006) as i32;
-            let mut iTemp1008: i32 = std::cmp::max(
+            let mut iTemp1008: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1007, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1007, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1009: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1009: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1008, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1008, 7), 1835007),
             )) as usize];
             let mut fTemp1010: F64 = ftbl0LambRsSIG0_guard[iTemp1008 as usize];
-            let mut fTemp1011: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1011: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1008, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1008, 1), 1835007),
             )) as usize] - fTemp1010;
             let mut iTemp1012: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -5983,9 +5966,9 @@ impl LambRs {
                                 - (fTemp1010
                                     + fTemp733
                                         * (fTemp1011
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1008, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1008, 8), 1835007),
                                             )) as usize] - fTemp1009))))
                 } else {
                     1.0
@@ -6004,14 +5987,14 @@ impl LambRs {
             let mut fTemp1016: F64 = 0.5 * fTemp1015;
             let mut fTemp1017: F64 = 262143.0 * (1.0 - fTemp1016);
             let mut iTemp1018: i32 = (fTemp1017) as i32;
-            let mut iTemp1019: i32 = std::cmp::max(
+            let mut iTemp1019: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1018, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1018, 262143)),
                         ),
                     ),
                     1835007,
@@ -6028,14 +6011,14 @@ impl LambRs {
             )) as usize] - fTemp1021;
             let mut fTemp1023: F64 = 131071.5 * fTemp1015;
             let mut iTemp1024: i32 = (fTemp1023) as i32;
-            let mut iTemp1025: i32 = std::cmp::max(
+            let mut iTemp1025: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1024, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1024, 262143)),
                         ),
                     ),
                     1835007,
@@ -6073,14 +6056,14 @@ impl LambRs {
             let mut fTemp1030: F64 = fTemp738 + fTemp1016;
             let mut fTemp1031: F64 = 262143.0 * (1.0 - fTemp1030);
             let mut iTemp1032: i32 = (fTemp1031) as i32;
-            let mut iTemp1033: i32 = std::cmp::max(
+            let mut iTemp1033: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1032, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1032, 262143)),
                         ),
                     ),
                     1835007,
@@ -6097,27 +6080,27 @@ impl LambRs {
             )) as usize] - fTemp1035;
             let mut fTemp1037: F64 = 262143.0 * fTemp1030;
             let mut iTemp1038: i32 = (fTemp1037) as i32;
-            let mut iTemp1039: i32 = std::cmp::max(
+            let mut iTemp1039: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1038, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1038, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1040: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1040: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1039, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1039, 7), 1835007),
             )) as usize];
             let mut fTemp1041: F64 = ftbl0LambRsSIG0_guard[iTemp1039 as usize];
-            let mut fTemp1042: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1042: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1039, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1039, 1), 1835007),
             )) as usize] - fTemp1041;
             let mut iTemp1043: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -6127,9 +6110,9 @@ impl LambRs {
                                 - (fTemp1041
                                     + fTemp733
                                         * (fTemp1042
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1039, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1039, 8), 1835007),
                                             )) as usize] - fTemp1040))))
                 } else {
                     1.0
@@ -6156,14 +6139,14 @@ impl LambRs {
             let mut fTemp1047: F64 = 0.5 * fTemp1046;
             let mut fTemp1048: F64 = 262143.0 * (1.0 - fTemp1047);
             let mut iTemp1049: i32 = (fTemp1048) as i32;
-            let mut iTemp1050: i32 = std::cmp::max(
+            let mut iTemp1050: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1049, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1049, 262143)),
                         ),
                     ),
                     1835007,
@@ -6180,14 +6163,14 @@ impl LambRs {
             )) as usize] - fTemp1052;
             let mut fTemp1054: F64 = 131071.5 * fTemp1046;
             let mut iTemp1055: i32 = (fTemp1054) as i32;
-            let mut iTemp1056: i32 = std::cmp::max(
+            let mut iTemp1056: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1055, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1055, 262143)),
                         ),
                     ),
                     1835007,
@@ -6225,14 +6208,14 @@ impl LambRs {
             let mut fTemp1061: F64 = fTemp738 + fTemp1047;
             let mut fTemp1062: F64 = 262143.0 * (1.0 - fTemp1061);
             let mut iTemp1063: i32 = (fTemp1062) as i32;
-            let mut iTemp1064: i32 = std::cmp::max(
+            let mut iTemp1064: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1063, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1063, 262143)),
                         ),
                     ),
                     1835007,
@@ -6249,27 +6232,27 @@ impl LambRs {
             )) as usize] - fTemp1066;
             let mut fTemp1068: F64 = 262143.0 * fTemp1061;
             let mut iTemp1069: i32 = (fTemp1068) as i32;
-            let mut iTemp1070: i32 = std::cmp::max(
+            let mut iTemp1070: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1069, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1069, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1071: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1071: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1070, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1070, 7), 1835007),
             )) as usize];
             let mut fTemp1072: F64 = ftbl0LambRsSIG0_guard[iTemp1070 as usize];
-            let mut fTemp1073: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1073: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1070, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1070, 1), 1835007),
             )) as usize] - fTemp1072;
             let mut iTemp1074: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -6279,9 +6262,9 @@ impl LambRs {
                                 - (fTemp1072
                                     + fTemp733
                                         * (fTemp1073
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1070, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1070, 8), 1835007),
                                             )) as usize] - fTemp1071))))
                 } else {
                     1.0
@@ -6308,14 +6291,14 @@ impl LambRs {
             let mut fTemp1078: F64 = 0.5 * fTemp1077;
             let mut fTemp1079: F64 = 262143.0 * (1.0 - fTemp1078);
             let mut iTemp1080: i32 = (fTemp1079) as i32;
-            let mut iTemp1081: i32 = std::cmp::max(
+            let mut iTemp1081: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1080, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1080, 262143)),
                         ),
                     ),
                     1835007,
@@ -6332,14 +6315,14 @@ impl LambRs {
             )) as usize] - fTemp1083;
             let mut fTemp1085: F64 = 131071.5 * fTemp1077;
             let mut iTemp1086: i32 = (fTemp1085) as i32;
-            let mut iTemp1087: i32 = std::cmp::max(
+            let mut iTemp1087: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1086, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1086, 262143)),
                         ),
                     ),
                     1835007,
@@ -6377,14 +6360,14 @@ impl LambRs {
             let mut fTemp1092: F64 = fTemp738 + fTemp1078;
             let mut fTemp1093: F64 = 262143.0 * (1.0 - fTemp1092);
             let mut iTemp1094: i32 = (fTemp1093) as i32;
-            let mut iTemp1095: i32 = std::cmp::max(
+            let mut iTemp1095: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1094, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1094, 262143)),
                         ),
                     ),
                     1835007,
@@ -6401,27 +6384,27 @@ impl LambRs {
             )) as usize] - fTemp1097;
             let mut fTemp1099: F64 = 262143.0 * fTemp1092;
             let mut iTemp1100: i32 = (fTemp1099) as i32;
-            let mut iTemp1101: i32 = std::cmp::max(
+            let mut iTemp1101: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1100, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1100, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1102: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1102: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1101, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1101, 7), 1835007),
             )) as usize];
             let mut fTemp1103: F64 = ftbl0LambRsSIG0_guard[iTemp1101 as usize];
-            let mut fTemp1104: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1104: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1101, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1101, 1), 1835007),
             )) as usize] - fTemp1103;
             let mut iTemp1105: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -6431,9 +6414,9 @@ impl LambRs {
                                 - (fTemp1103
                                     + fTemp733
                                         * (fTemp1104
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1101, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1101, 8), 1835007),
                                             )) as usize] - fTemp1102))))
                 } else {
                     1.0
@@ -6460,14 +6443,14 @@ impl LambRs {
             let mut fTemp1109: F64 = 0.5 * fTemp1108;
             let mut fTemp1110: F64 = 262143.0 * (1.0 - fTemp1109);
             let mut iTemp1111: i32 = (fTemp1110) as i32;
-            let mut iTemp1112: i32 = std::cmp::max(
+            let mut iTemp1112: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1111, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1111, 262143)),
                         ),
                     ),
                     1835007,
@@ -6484,14 +6467,14 @@ impl LambRs {
             )) as usize] - fTemp1114;
             let mut fTemp1116: F64 = 131071.5 * fTemp1108;
             let mut iTemp1117: i32 = (fTemp1116) as i32;
-            let mut iTemp1118: i32 = std::cmp::max(
+            let mut iTemp1118: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1117, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1117, 262143)),
                         ),
                     ),
                     1835007,
@@ -6529,14 +6512,14 @@ impl LambRs {
             let mut fTemp1123: F64 = fTemp738 + fTemp1109;
             let mut fTemp1124: F64 = 262143.0 * (1.0 - fTemp1123);
             let mut iTemp1125: i32 = (fTemp1124) as i32;
-            let mut iTemp1126: i32 = std::cmp::max(
+            let mut iTemp1126: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1125, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1125, 262143)),
                         ),
                     ),
                     1835007,
@@ -6553,27 +6536,27 @@ impl LambRs {
             )) as usize] - fTemp1128;
             let mut fTemp1130: F64 = 262143.0 * fTemp1123;
             let mut iTemp1131: i32 = (fTemp1130) as i32;
-            let mut iTemp1132: i32 = std::cmp::max(
+            let mut iTemp1132: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1131, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1131, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1133: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1133: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1132, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1132, 7), 1835007),
             )) as usize];
             let mut fTemp1134: F64 = ftbl0LambRsSIG0_guard[iTemp1132 as usize];
-            let mut fTemp1135: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1135: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1132, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1132, 1), 1835007),
             )) as usize] - fTemp1134;
             let mut iTemp1136: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -6583,9 +6566,9 @@ impl LambRs {
                                 - (fTemp1134
                                     + fTemp733
                                         * (fTemp1135
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1132, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1132, 8), 1835007),
                                             )) as usize] - fTemp1133))))
                 } else {
                     1.0
@@ -6612,14 +6595,14 @@ impl LambRs {
             let mut fTemp1140: F64 = 0.5 * fTemp1139;
             let mut fTemp1141: F64 = 262143.0 * (1.0 - fTemp1140);
             let mut iTemp1142: i32 = (fTemp1141) as i32;
-            let mut iTemp1143: i32 = std::cmp::max(
+            let mut iTemp1143: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1142, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1142, 262143)),
                         ),
                     ),
                     1835007,
@@ -6636,14 +6619,14 @@ impl LambRs {
             )) as usize] - fTemp1145;
             let mut fTemp1147: F64 = 131071.5 * fTemp1139;
             let mut iTemp1148: i32 = (fTemp1147) as i32;
-            let mut iTemp1149: i32 = std::cmp::max(
+            let mut iTemp1149: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1148, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1148, 262143)),
                         ),
                     ),
                     1835007,
@@ -6681,14 +6664,14 @@ impl LambRs {
             let mut fTemp1154: F64 = fTemp738 + fTemp1140;
             let mut fTemp1155: F64 = 262143.0 * (1.0 - fTemp1154);
             let mut iTemp1156: i32 = (fTemp1155) as i32;
-            let mut iTemp1157: i32 = std::cmp::max(
+            let mut iTemp1157: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1156, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1156, 262143)),
                         ),
                     ),
                     1835007,
@@ -6705,27 +6688,27 @@ impl LambRs {
             )) as usize] - fTemp1159;
             let mut fTemp1161: F64 = 262143.0 * fTemp1154;
             let mut iTemp1162: i32 = (fTemp1161) as i32;
-            let mut iTemp1163: i32 = std::cmp::max(
+            let mut iTemp1163: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1162, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1162, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1164: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1164: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1163, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1163, 7), 1835007),
             )) as usize];
             let mut fTemp1165: F64 = ftbl0LambRsSIG0_guard[iTemp1163 as usize];
-            let mut fTemp1166: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1166: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1163, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1163, 1), 1835007),
             )) as usize] - fTemp1165;
             let mut iTemp1167: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -6735,9 +6718,9 @@ impl LambRs {
                                 - (fTemp1165
                                     + fTemp733
                                         * (fTemp1166
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1163, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1163, 8), 1835007),
                                             )) as usize] - fTemp1164))))
                 } else {
                     1.0
@@ -6764,14 +6747,14 @@ impl LambRs {
             let mut fTemp1171: F64 = 0.5 * fTemp1170;
             let mut fTemp1172: F64 = 262143.0 * (1.0 - fTemp1171);
             let mut iTemp1173: i32 = (fTemp1172) as i32;
-            let mut iTemp1174: i32 = std::cmp::max(
+            let mut iTemp1174: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1173, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1173, 262143)),
                         ),
                     ),
                     1835007,
@@ -6788,14 +6771,14 @@ impl LambRs {
             )) as usize] - fTemp1176;
             let mut fTemp1178: F64 = 131071.5 * fTemp1170;
             let mut iTemp1179: i32 = (fTemp1178) as i32;
-            let mut iTemp1180: i32 = std::cmp::max(
+            let mut iTemp1180: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1179, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1179, 262143)),
                         ),
                     ),
                     1835007,
@@ -6833,14 +6816,14 @@ impl LambRs {
             let mut fTemp1185: F64 = fTemp738 + fTemp1171;
             let mut fTemp1186: F64 = 262143.0 * (1.0 - fTemp1185);
             let mut iTemp1187: i32 = (fTemp1186) as i32;
-            let mut iTemp1188: i32 = std::cmp::max(
+            let mut iTemp1188: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1187, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1187, 262143)),
                         ),
                     ),
                     1835007,
@@ -6857,27 +6840,27 @@ impl LambRs {
             )) as usize] - fTemp1190;
             let mut fTemp1192: F64 = 262143.0 * fTemp1185;
             let mut iTemp1193: i32 = (fTemp1192) as i32;
-            let mut iTemp1194: i32 = std::cmp::max(
+            let mut iTemp1194: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1193, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1193, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1195: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1195: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1194, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1194, 7), 1835007),
             )) as usize];
             let mut fTemp1196: F64 = ftbl0LambRsSIG0_guard[iTemp1194 as usize];
-            let mut fTemp1197: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1197: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1194, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1194, 1), 1835007),
             )) as usize] - fTemp1196;
             let mut iTemp1198: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -6887,9 +6870,9 @@ impl LambRs {
                                 - (fTemp1196
                                     + fTemp733
                                         * (fTemp1197
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1194, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1194, 8), 1835007),
                                             )) as usize] - fTemp1195))))
                 } else {
                     1.0
@@ -6916,14 +6899,14 @@ impl LambRs {
             let mut fTemp1202: F64 = 0.5 * fTemp1201;
             let mut fTemp1203: F64 = 262143.0 * (1.0 - fTemp1202);
             let mut iTemp1204: i32 = (fTemp1203) as i32;
-            let mut iTemp1205: i32 = std::cmp::max(
+            let mut iTemp1205: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1204, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1204, 262143)),
                         ),
                     ),
                     1835007,
@@ -6940,14 +6923,14 @@ impl LambRs {
             )) as usize] - fTemp1207;
             let mut fTemp1209: F64 = 131071.5 * fTemp1201;
             let mut iTemp1210: i32 = (fTemp1209) as i32;
-            let mut iTemp1211: i32 = std::cmp::max(
+            let mut iTemp1211: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1210, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1210, 262143)),
                         ),
                     ),
                     1835007,
@@ -6985,14 +6968,14 @@ impl LambRs {
             let mut fTemp1216: F64 = fTemp738 + fTemp1202;
             let mut fTemp1217: F64 = 262143.0 * (1.0 - fTemp1216);
             let mut iTemp1218: i32 = (fTemp1217) as i32;
-            let mut iTemp1219: i32 = std::cmp::max(
+            let mut iTemp1219: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1218, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1218, 262143)),
                         ),
                     ),
                     1835007,
@@ -7009,27 +6992,27 @@ impl LambRs {
             )) as usize] - fTemp1221;
             let mut fTemp1223: F64 = 262143.0 * fTemp1216;
             let mut iTemp1224: i32 = (fTemp1223) as i32;
-            let mut iTemp1225: i32 = std::cmp::max(
+            let mut iTemp1225: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1224, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1224, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1226: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1226: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1225, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1225, 7), 1835007),
             )) as usize];
             let mut fTemp1227: F64 = ftbl0LambRsSIG0_guard[iTemp1225 as usize];
-            let mut fTemp1228: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1228: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1225, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1225, 1), 1835007),
             )) as usize] - fTemp1227;
             let mut iTemp1229: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -7039,9 +7022,9 @@ impl LambRs {
                                 - (fTemp1227
                                     + fTemp733
                                         * (fTemp1228
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1225, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1225, 8), 1835007),
                                             )) as usize] - fTemp1226))))
                 } else {
                     1.0
@@ -7068,14 +7051,14 @@ impl LambRs {
             let mut fTemp1233: F64 = 0.5 * fTemp1232;
             let mut fTemp1234: F64 = 262143.0 * (1.0 - fTemp1233);
             let mut iTemp1235: i32 = (fTemp1234) as i32;
-            let mut iTemp1236: i32 = std::cmp::max(
+            let mut iTemp1236: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1235, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1235, 262143)),
                         ),
                     ),
                     1835007,
@@ -7092,14 +7075,14 @@ impl LambRs {
             )) as usize] - fTemp1238;
             let mut fTemp1240: F64 = 131071.5 * fTemp1232;
             let mut iTemp1241: i32 = (fTemp1240) as i32;
-            let mut iTemp1242: i32 = std::cmp::max(
+            let mut iTemp1242: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1241, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1241, 262143)),
                         ),
                     ),
                     1835007,
@@ -7137,14 +7120,14 @@ impl LambRs {
             let mut fTemp1247: F64 = fTemp738 + fTemp1233;
             let mut fTemp1248: F64 = 262143.0 * (1.0 - fTemp1247);
             let mut iTemp1249: i32 = (fTemp1248) as i32;
-            let mut iTemp1250: i32 = std::cmp::max(
+            let mut iTemp1250: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1249, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1249, 262143)),
                         ),
                     ),
                     1835007,
@@ -7161,27 +7144,27 @@ impl LambRs {
             )) as usize] - fTemp1252;
             let mut fTemp1254: F64 = 262143.0 * fTemp1247;
             let mut iTemp1255: i32 = (fTemp1254) as i32;
-            let mut iTemp1256: i32 = std::cmp::max(
+            let mut iTemp1256: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1255, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1255, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1257: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1257: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1256, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1256, 7), 1835007),
             )) as usize];
             let mut fTemp1258: F64 = ftbl0LambRsSIG0_guard[iTemp1256 as usize];
-            let mut fTemp1259: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1259: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1256, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1256, 1), 1835007),
             )) as usize] - fTemp1258;
             let mut iTemp1260: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -7191,9 +7174,9 @@ impl LambRs {
                                 - (fTemp1258
                                     + fTemp733
                                         * (fTemp1259
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1256, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1256, 8), 1835007),
                                             )) as usize] - fTemp1257))))
                 } else {
                     1.0
@@ -7220,14 +7203,14 @@ impl LambRs {
             let mut fTemp1264: F64 = 0.5 * fTemp1263;
             let mut fTemp1265: F64 = 262143.0 * (1.0 - fTemp1264);
             let mut iTemp1266: i32 = (fTemp1265) as i32;
-            let mut iTemp1267: i32 = std::cmp::max(
+            let mut iTemp1267: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1266, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1266, 262143)),
                         ),
                     ),
                     1835007,
@@ -7244,14 +7227,14 @@ impl LambRs {
             )) as usize] - fTemp1269;
             let mut fTemp1271: F64 = 131071.5 * fTemp1263;
             let mut iTemp1272: i32 = (fTemp1271) as i32;
-            let mut iTemp1273: i32 = std::cmp::max(
+            let mut iTemp1273: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1272, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1272, 262143)),
                         ),
                     ),
                     1835007,
@@ -7289,14 +7272,14 @@ impl LambRs {
             let mut fTemp1278: F64 = fTemp738 + fTemp1264;
             let mut fTemp1279: F64 = 262143.0 * (1.0 - fTemp1278);
             let mut iTemp1280: i32 = (fTemp1279) as i32;
-            let mut iTemp1281: i32 = std::cmp::max(
+            let mut iTemp1281: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1280, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1280, 262143)),
                         ),
                     ),
                     1835007,
@@ -7313,27 +7296,27 @@ impl LambRs {
             )) as usize] - fTemp1283;
             let mut fTemp1285: F64 = 262143.0 * fTemp1278;
             let mut iTemp1286: i32 = (fTemp1285) as i32;
-            let mut iTemp1287: i32 = std::cmp::max(
+            let mut iTemp1287: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1286, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1286, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1288: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1288: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1287, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1287, 7), 1835007),
             )) as usize];
             let mut fTemp1289: F64 = ftbl0LambRsSIG0_guard[iTemp1287 as usize];
-            let mut fTemp1290: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1290: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1287, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1287, 1), 1835007),
             )) as usize] - fTemp1289;
             let mut iTemp1291: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -7343,9 +7326,9 @@ impl LambRs {
                                 - (fTemp1289
                                     + fTemp733
                                         * (fTemp1290
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1287, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1287, 8), 1835007),
                                             )) as usize] - fTemp1288))))
                 } else {
                     1.0
@@ -7372,14 +7355,14 @@ impl LambRs {
             let mut fTemp1295: F64 = 0.5 * fTemp1294;
             let mut fTemp1296: F64 = 262143.0 * (1.0 - fTemp1295);
             let mut iTemp1297: i32 = (fTemp1296) as i32;
-            let mut iTemp1298: i32 = std::cmp::max(
+            let mut iTemp1298: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1297, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1297, 262143)),
                         ),
                     ),
                     1835007,
@@ -7396,14 +7379,14 @@ impl LambRs {
             )) as usize] - fTemp1300;
             let mut fTemp1302: F64 = 131071.5 * fTemp1294;
             let mut iTemp1303: i32 = (fTemp1302) as i32;
-            let mut iTemp1304: i32 = std::cmp::max(
+            let mut iTemp1304: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1303, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1303, 262143)),
                         ),
                     ),
                     1835007,
@@ -7425,9 +7408,9 @@ impl LambRs {
                             - (fTemp1306
                                 + fTemp733
                                     * (fTemp1307
-                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                             0,
-                                            std::cmp::min(i32::wrapping_add(iTemp1304, 8), 1835007),
+                                            core::cmp::min(i32::wrapping_add(iTemp1304, 8), 1835007),
                                         )) as usize] - fTemp1305))))
             } else {
                 1.0
@@ -7437,22 +7420,22 @@ impl LambRs {
                                 - (fTemp1300
                                     + fTemp733
                                         * (fTemp1301
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1298, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1298, 8), 1835007),
                                             )) as usize] - fTemp1299)))))
             });
             let mut fTemp1309: F64 = fTemp738 + fTemp1295;
             let mut fTemp1310: F64 = 262143.0 * (1.0 - fTemp1309);
             let mut iTemp1311: i32 = (fTemp1310) as i32;
-            let mut iTemp1312: i32 = std::cmp::max(
+            let mut iTemp1312: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1311, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1311, 262143)),
                         ),
                     ),
                     1835007,
@@ -7469,27 +7452,27 @@ impl LambRs {
             )) as usize] - fTemp1314;
             let mut fTemp1316: F64 = 262143.0 * fTemp1309;
             let mut iTemp1317: i32 = (fTemp1316) as i32;
-            let mut iTemp1318: i32 = std::cmp::max(
+            let mut iTemp1318: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1317, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1317, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1319: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1319: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1318, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1318, 7), 1835007),
             )) as usize];
             let mut fTemp1320: F64 = ftbl0LambRsSIG0_guard[iTemp1318 as usize];
-            let mut fTemp1321: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1321: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1318, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1318, 1), 1835007),
             )) as usize] - fTemp1320;
             let mut iTemp1322: i32 = (fTemp794
                 > (((if iTemp724 != 0 {
@@ -7499,9 +7482,9 @@ impl LambRs {
                                 - (fTemp1320
                                     + fTemp733
                                         * (fTemp1321
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1318, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1318, 8), 1835007),
                                             )) as usize] - fTemp1319))))
                 } else {
                     1.0
@@ -7526,14 +7509,14 @@ impl LambRs {
             self.fRec15[0] = fTemp1323;
             let mut fTemp1324: F64 = 262143.0 * (1.0 - fTemp1323);
             let mut iTemp1325: i32 = (fTemp1324) as i32;
-            let mut iTemp1326: i32 = std::cmp::max(
+            let mut iTemp1326: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1325, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1325, 262143)),
                         ),
                     ),
                     1835007,
@@ -7550,14 +7533,14 @@ impl LambRs {
             )) as usize] - fTemp1328;
             let mut fTemp1330: F64 = 262143.0 * fTemp1323;
             let mut iTemp1331: i32 = (fTemp1330) as i32;
-            let mut iTemp1332: i32 = std::cmp::max(
+            let mut iTemp1332: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1331, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1331, 262143)),
                         ),
                     ),
                     1835007,
@@ -7579,9 +7562,9 @@ impl LambRs {
                             - (fTemp1334
                                 + fTemp733
                                     * (fTemp1335
-                                        - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                        - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                             0,
-                                            std::cmp::min(i32::wrapping_add(iTemp1332, 8), 1835007),
+                                            core::cmp::min(i32::wrapping_add(iTemp1332, 8), 1835007),
                                         )) as usize] - fTemp1333))))
             } else {
                 1.0
@@ -7591,22 +7574,22 @@ impl LambRs {
                                 - (fTemp1328
                                     + fTemp733
                                         * (fTemp1329
-                                            - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                            - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                 0,
-                                                std::cmp::min(i32::wrapping_add(iTemp1326, 8), 1835007),
+                                                core::cmp::min(i32::wrapping_add(iTemp1326, 8), 1835007),
                                             )) as usize] - fTemp1327)))))
             });
             let mut fTemp1337: F64 = fTemp738 + fTemp1323;
             let mut fTemp1338: F64 = 262143.0 * (1.0 - fTemp1337);
             let mut iTemp1339: i32 = (fTemp1338) as i32;
-            let mut iTemp1340: i32 = std::cmp::max(
+            let mut iTemp1340: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1339, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1339, 262143)),
                         ),
                     ),
                     1835007,
@@ -7623,27 +7606,27 @@ impl LambRs {
             )) as usize] - fTemp1342;
             let mut fTemp1344: F64 = 262143.0 * fTemp1337;
             let mut iTemp1345: i32 = (fTemp1344) as i32;
-            let mut iTemp1346: i32 = std::cmp::max(
+            let mut iTemp1346: i32 = core::cmp::max(
                 0,
-                std::cmp::min(
+                core::cmp::min(
                     i32::wrapping_add(
                         iTemp728,
                         i32::wrapping_mul(
                             7,
-                            std::cmp::max(0, std::cmp::min(iTemp1345, 262143)),
+                            core::cmp::max(0, core::cmp::min(iTemp1345, 262143)),
                         ),
                     ),
                     1835007,
                 ),
             );
-            let mut fTemp1347: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1347: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1346, 7), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1346, 7), 1835007),
             )) as usize];
             let mut fTemp1348: F64 = ftbl0LambRsSIG0_guard[iTemp1346 as usize];
-            let mut fTemp1349: F64 = ftbl0LambRsSIG0_guard[(std::cmp::max(
+            let mut fTemp1349: F64 = ftbl0LambRsSIG0_guard[(core::cmp::max(
                 0,
-                std::cmp::min(i32::wrapping_add(iTemp1346, 1), 1835007),
+                core::cmp::min(i32::wrapping_add(iTemp1346, 1), 1835007),
             )) as usize] - fTemp1348;
             let mut fTemp1350: F64 = self.fRec16[1]
                 + (if ((0.001 * fTemp737) == 0.0) as i32 != 0 {
@@ -7657,9 +7640,9 @@ impl LambRs {
                                         - (fTemp1348
                                             + fTemp733
                                                 * (fTemp1349
-                                                    - (ftbl0LambRsSIG0_guard[(std::cmp::max(
+                                                    - (ftbl0LambRsSIG0_guard[(core::cmp::max(
                                                         0,
-                                                        std::cmp::min(i32::wrapping_add(iTemp1346, 8), 1835007),
+                                                        core::cmp::min(i32::wrapping_add(iTemp1346, 8), 1835007),
                                                     )) as usize] - fTemp1347))))
                         } else {
                             1.0
@@ -7758,6 +7741,23 @@ impl LambRs {
             self.fRec16[1] = self.fRec16[0];
         }
     }
+}
+#[cfg(not(target_arch = "wasm32"))]
+mod ffi {
+    use core::ffi::c_double;
+    #[cfg_attr(not(target_os = "windows"), link(name = "m"))]
+    unsafe extern "C" {
+        pub fn remainder(from: c_double, to: c_double) -> c_double;
+        pub fn rint(val: c_double) -> c_double;
+    }
+}
+fn remainder(from: f64, to: f64) -> f64 {
+    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::remainder(from, to) }
+    #[cfg(target_arch = "wasm32")] libm::remainder(from, to)
+}
+fn rint(val: f64) -> f64 {
+    #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::rint(val) }
+    #[cfg(target_arch = "wasm32")] libm::rint(val)
 }
 pub const IOS: usize = [
     FAUST_INPUTS,
@@ -7917,7 +7917,6 @@ impl faust_ui::UISelfGet for UIActiveValue {
         }
     }
 }
-#[cfg(feature = "std")]
 impl faust_ui::UIToActiveValue for UIActive {
     type D = LambRs;
     #[inline]
@@ -8022,25 +8021,24 @@ impl faust_ui::UIRange for UIActive {
         }
     }
 }
-#[cfg(feature = "std")]
 impl faust_ui::UIName for UIActive {
-    fn name(&self) -> String {
+    fn name(&self) -> &'static str {
         match self {
-            UIActive::Bypass => "Bypass".to_owned(),
-            UIActive::FixedLatency => "FixedLatency".to_owned(),
-            UIActive::InputGain => "InputGain".to_owned(),
-            UIActive::Strength => "Strength".to_owned(),
-            UIActive::Thresh => "Thresh".to_owned(),
-            UIActive::Attack => "Attack".to_owned(),
-            UIActive::AttackShape => "AttackShape".to_owned(),
-            UIActive::Release => "Release".to_owned(),
-            UIActive::ReleaseShape => "ReleaseShape".to_owned(),
-            UIActive::ReleaseHold => "ReleaseHold".to_owned(),
-            UIActive::Knee => "Knee".to_owned(),
-            UIActive::Link => "Link".to_owned(),
-            UIActive::AdaptiveRelease => "AdaptiveRelease".to_owned(),
-            UIActive::Lookahead => "Lookahead".to_owned(),
-            UIActive::OutputGain => "OutputGain".to_owned(),
+            UIActive::Bypass => "Bypass",
+            UIActive::FixedLatency => "FixedLatency",
+            UIActive::InputGain => "InputGain",
+            UIActive::Strength => "Strength",
+            UIActive::Thresh => "Thresh",
+            UIActive::Attack => "Attack",
+            UIActive::AttackShape => "AttackShape",
+            UIActive::Release => "Release",
+            UIActive::ReleaseShape => "ReleaseShape",
+            UIActive::ReleaseHold => "ReleaseHold",
+            UIActive::Knee => "Knee",
+            UIActive::Link => "Link",
+            UIActive::AdaptiveRelease => "AdaptiveRelease",
+            UIActive::Lookahead => "Lookahead",
+            UIActive::OutputGain => "OutputGain",
         }
     }
 }
@@ -8139,7 +8137,6 @@ impl faust_traits::AssociatedFaustFloat for UIPassiveValue {
 impl faust_ui::DiscriminantOf for UIPassive {
     type ValueEnum = UIPassiveValue;
 }
-#[cfg(feature = "std")]
 impl faust_ui::UIGet for UIPassive {
     type D = LambRs;
     fn get_value(
@@ -8172,7 +8169,6 @@ impl faust_ui::UISelfSet for UIPassiveValue {
         }
     }
 }
-#[cfg(feature = "std")]
 impl faust_ui::UIToPassiveValue for UIPassive {
     type D = LambRs;
     #[inline]
@@ -8207,11 +8203,10 @@ impl faust_ui::UIRange for UIPassive {
         }
     }
 }
-#[cfg(feature = "std")]
 impl faust_ui::UIName for UIPassive {
-    fn name(&self) -> String {
+    fn name(&self) -> &'static str {
         match self {
-            UIPassive::Latency => "Latency".to_owned(),
+            UIPassive::Latency => "Latency",
         }
     }
 }
@@ -8249,12 +8244,12 @@ impl faust_ui::SetDsp for LambRs {
         faust_ui::UISelfSet::set(value, self);
     }
 }
-#[cfg(feature = "std")]
 impl faust_ui::UIEnumsDsp for LambRs {
     type DA = UIActive;
     type EA = UIActiveValue;
     type DP = UIPassive;
     type EP = UIPassiveValue;
+    #[cfg(feature = "std")]
     type G = WidgetTree;
 }
 pub mod meta {
@@ -8302,10 +8297,10 @@ pub mod meta {
         }
         pub mod routes {
             pub const NAME: &'static str = "Faust Signal Routing Library";
-            pub const VERSION: &'static str = "1.2.0";
+            pub const VERSION: &'static str = "1.3.0";
         }
         pub mod signals {
-            pub const NAME: &'static str = "Faust Signal Routing Library";
+            pub const NAME: &'static str = "Faust Routing Library";
             pub const VERSION: &'static str = "1.6.0";
         }
     }
