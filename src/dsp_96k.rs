@@ -7822,9 +7822,9 @@ impl faust_traits::AssociatedFaustFloat for LambRs {
         strum::FromRepr,
     )
 )]
-#[strum_discriminants(name(UIActive))]
+#[strum_discriminants(name(ControlWrite))]
 #[repr(usize)]
-pub enum UIActiveValue {
+pub enum ControlWriteValue {
     Bypass(FaustFloat),
     FixedLatency(FaustFloat),
     InputGain(FaustFloat),
@@ -7841,13 +7841,13 @@ pub enum UIActiveValue {
     Lookahead(FaustFloat),
     OutputGain(FaustFloat),
 }
-impl faust_traits::AssociatedFaustFloat for UIActiveValue {
+impl faust_traits::AssociatedFaustFloat for ControlWriteValue {
     type FF = FaustFloat;
 }
-impl faust_ui::DiscriminantOf for UIActive {
-    type ValueEnum = UIActiveValue;
+impl faust_ui::DiscriminantOf for ControlWrite {
+    type ValueEnum = ControlWriteValue;
 }
-impl faust_ui::UISet for UIActive {
+impl faust_ui::UISet for ControlWrite {
     type D = LambRs;
     fn set(
         &self,
@@ -7855,69 +7855,69 @@ impl faust_ui::UISet for UIActive {
         value: <Self::D as faust_traits::AssociatedFaustFloat>::FF,
     ) {
         match self {
-            UIActive::Bypass => dsp.fCheckbox0 = value,
-            UIActive::FixedLatency => dsp.fCheckbox1 = value,
-            UIActive::InputGain => dsp.fHslider5 = value,
-            UIActive::Strength => dsp.fHslider7 = value,
-            UIActive::Thresh => dsp.fHslider4 = value,
-            UIActive::Attack => dsp.fHslider1 = value,
-            UIActive::AttackShape => dsp.fHslider10 = value,
-            UIActive::Release => dsp.fHslider6 = value,
-            UIActive::ReleaseShape => dsp.fHslider11 = value,
-            UIActive::ReleaseHold => dsp.fHslider9 = value,
-            UIActive::Knee => dsp.fHslider3 = value,
-            UIActive::Link => dsp.fHslider8 = value,
-            UIActive::AdaptiveRelease => dsp.fHslider2 = value,
-            UIActive::Lookahead => dsp.fHslider0 = value,
-            UIActive::OutputGain => dsp.fHslider12 = value,
+            ControlWrite::Bypass => dsp.fCheckbox0 = value,
+            ControlWrite::FixedLatency => dsp.fCheckbox1 = value,
+            ControlWrite::InputGain => dsp.fHslider5 = value,
+            ControlWrite::Strength => dsp.fHslider7 = value,
+            ControlWrite::Thresh => dsp.fHslider4 = value,
+            ControlWrite::Attack => dsp.fHslider1 = value,
+            ControlWrite::AttackShape => dsp.fHslider10 = value,
+            ControlWrite::Release => dsp.fHslider6 = value,
+            ControlWrite::ReleaseShape => dsp.fHslider11 = value,
+            ControlWrite::ReleaseHold => dsp.fHslider9 = value,
+            ControlWrite::Knee => dsp.fHslider3 = value,
+            ControlWrite::Link => dsp.fHslider8 = value,
+            ControlWrite::AdaptiveRelease => dsp.fHslider2 = value,
+            ControlWrite::Lookahead => dsp.fHslider0 = value,
+            ControlWrite::OutputGain => dsp.fHslider12 = value,
         }
     }
 }
-impl faust_ui::UISelfSet for UIActiveValue {
+impl faust_ui::UISelfSet for ControlWriteValue {
     type D = LambRs;
     fn set(&self, dsp: &mut LambRs) {
         match self {
-            UIActiveValue::Bypass(value) => dsp.fCheckbox0 = *value,
-            UIActiveValue::FixedLatency(value) => dsp.fCheckbox1 = *value,
-            UIActiveValue::InputGain(value) => dsp.fHslider5 = *value,
-            UIActiveValue::Strength(value) => dsp.fHslider7 = *value,
-            UIActiveValue::Thresh(value) => dsp.fHslider4 = *value,
-            UIActiveValue::Attack(value) => dsp.fHslider1 = *value,
-            UIActiveValue::AttackShape(value) => dsp.fHslider10 = *value,
-            UIActiveValue::Release(value) => dsp.fHslider6 = *value,
-            UIActiveValue::ReleaseShape(value) => dsp.fHslider11 = *value,
-            UIActiveValue::ReleaseHold(value) => dsp.fHslider9 = *value,
-            UIActiveValue::Knee(value) => dsp.fHslider3 = *value,
-            UIActiveValue::Link(value) => dsp.fHslider8 = *value,
-            UIActiveValue::AdaptiveRelease(value) => dsp.fHslider2 = *value,
-            UIActiveValue::Lookahead(value) => dsp.fHslider0 = *value,
-            UIActiveValue::OutputGain(value) => dsp.fHslider12 = *value,
+            ControlWriteValue::Bypass(value) => dsp.fCheckbox0 = *value,
+            ControlWriteValue::FixedLatency(value) => dsp.fCheckbox1 = *value,
+            ControlWriteValue::InputGain(value) => dsp.fHslider5 = *value,
+            ControlWriteValue::Strength(value) => dsp.fHslider7 = *value,
+            ControlWriteValue::Thresh(value) => dsp.fHslider4 = *value,
+            ControlWriteValue::Attack(value) => dsp.fHslider1 = *value,
+            ControlWriteValue::AttackShape(value) => dsp.fHslider10 = *value,
+            ControlWriteValue::Release(value) => dsp.fHslider6 = *value,
+            ControlWriteValue::ReleaseShape(value) => dsp.fHslider11 = *value,
+            ControlWriteValue::ReleaseHold(value) => dsp.fHslider9 = *value,
+            ControlWriteValue::Knee(value) => dsp.fHslider3 = *value,
+            ControlWriteValue::Link(value) => dsp.fHslider8 = *value,
+            ControlWriteValue::AdaptiveRelease(value) => dsp.fHslider2 = *value,
+            ControlWriteValue::Lookahead(value) => dsp.fHslider0 = *value,
+            ControlWriteValue::OutputGain(value) => dsp.fHslider12 = *value,
         }
     }
 }
-impl faust_ui::UISelfGet for UIActiveValue {
+impl faust_ui::UISelfGet for ControlWriteValue {
     type D = LambRs;
     fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::FF {
         match self {
-            UIActiveValue::Bypass(value) => *value,
-            UIActiveValue::FixedLatency(value) => *value,
-            UIActiveValue::InputGain(value) => *value,
-            UIActiveValue::Strength(value) => *value,
-            UIActiveValue::Thresh(value) => *value,
-            UIActiveValue::Attack(value) => *value,
-            UIActiveValue::AttackShape(value) => *value,
-            UIActiveValue::Release(value) => *value,
-            UIActiveValue::ReleaseShape(value) => *value,
-            UIActiveValue::ReleaseHold(value) => *value,
-            UIActiveValue::Knee(value) => *value,
-            UIActiveValue::Link(value) => *value,
-            UIActiveValue::AdaptiveRelease(value) => *value,
-            UIActiveValue::Lookahead(value) => *value,
-            UIActiveValue::OutputGain(value) => *value,
+            ControlWriteValue::Bypass(value) => *value,
+            ControlWriteValue::FixedLatency(value) => *value,
+            ControlWriteValue::InputGain(value) => *value,
+            ControlWriteValue::Strength(value) => *value,
+            ControlWriteValue::Thresh(value) => *value,
+            ControlWriteValue::Attack(value) => *value,
+            ControlWriteValue::AttackShape(value) => *value,
+            ControlWriteValue::Release(value) => *value,
+            ControlWriteValue::ReleaseShape(value) => *value,
+            ControlWriteValue::ReleaseHold(value) => *value,
+            ControlWriteValue::Knee(value) => *value,
+            ControlWriteValue::Link(value) => *value,
+            ControlWriteValue::AdaptiveRelease(value) => *value,
+            ControlWriteValue::Lookahead(value) => *value,
+            ControlWriteValue::OutputGain(value) => *value,
         }
     }
 }
-impl faust_ui::UIToActiveValue for UIActive {
+impl faust_ui::UIToControlInputValue for ControlWrite {
     type D = LambRs;
     #[inline]
     fn value(
@@ -7925,145 +7925,265 @@ impl faust_ui::UIToActiveValue for UIActive {
         value: <Self::D as faust_traits::AssociatedFaustFloat>::FF,
     ) -> <Self::D as faust_ui::UIEnumsDsp>::EA {
         match self {
-            UIActive::Bypass => UIActiveValue::Bypass(value),
-            UIActive::FixedLatency => UIActiveValue::FixedLatency(value),
-            UIActive::InputGain => UIActiveValue::InputGain(value),
-            UIActive::Strength => UIActiveValue::Strength(value),
-            UIActive::Thresh => UIActiveValue::Thresh(value),
-            UIActive::Attack => UIActiveValue::Attack(value),
-            UIActive::AttackShape => UIActiveValue::AttackShape(value),
-            UIActive::Release => UIActiveValue::Release(value),
-            UIActive::ReleaseShape => UIActiveValue::ReleaseShape(value),
-            UIActive::ReleaseHold => UIActiveValue::ReleaseHold(value),
-            UIActive::Knee => UIActiveValue::Knee(value),
-            UIActive::Link => UIActiveValue::Link(value),
-            UIActive::AdaptiveRelease => UIActiveValue::AdaptiveRelease(value),
-            UIActive::Lookahead => UIActiveValue::Lookahead(value),
-            UIActive::OutputGain => UIActiveValue::OutputGain(value),
+            ControlWrite::Bypass => ControlWriteValue::Bypass(value),
+            ControlWrite::FixedLatency => ControlWriteValue::FixedLatency(value),
+            ControlWrite::InputGain => ControlWriteValue::InputGain(value),
+            ControlWrite::Strength => ControlWriteValue::Strength(value),
+            ControlWrite::Thresh => ControlWriteValue::Thresh(value),
+            ControlWrite::Attack => ControlWriteValue::Attack(value),
+            ControlWrite::AttackShape => ControlWriteValue::AttackShape(value),
+            ControlWrite::Release => ControlWriteValue::Release(value),
+            ControlWrite::ReleaseShape => ControlWriteValue::ReleaseShape(value),
+            ControlWrite::ReleaseHold => ControlWriteValue::ReleaseHold(value),
+            ControlWrite::Knee => ControlWriteValue::Knee(value),
+            ControlWrite::Link => ControlWriteValue::Link(value),
+            ControlWrite::AdaptiveRelease => ControlWriteValue::AdaptiveRelease(value),
+            ControlWrite::Lookahead => ControlWriteValue::Lookahead(value),
+            ControlWrite::OutputGain => ControlWriteValue::OutputGain(value),
+        }
+    }
+    fn mapped_value(&self, value: f32) -> <Self::D as faust_ui::UIEnumsDsp>::EA {
+        match self {
+            ControlWrite::Bypass => {
+                ControlWriteValue::Bypass(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::Bypass,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::FixedLatency => {
+                ControlWriteValue::FixedLatency(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::FixedLatency,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::InputGain => {
+                ControlWriteValue::InputGain(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::InputGain,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::Strength => {
+                ControlWriteValue::Strength(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::Strength,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::Thresh => {
+                ControlWriteValue::Thresh(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::Thresh,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::Attack => {
+                ControlWriteValue::Attack(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::Attack,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::AttackShape => {
+                ControlWriteValue::AttackShape(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::AttackShape,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::Release => {
+                ControlWriteValue::Release(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::Release,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::ReleaseShape => {
+                ControlWriteValue::ReleaseShape(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::ReleaseShape,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::ReleaseHold => {
+                ControlWriteValue::ReleaseHold(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::ReleaseHold,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::Knee => {
+                ControlWriteValue::Knee(
+                    <ControlWrite as faust_ui::UIRange>::map(&ControlWrite::Knee, value)
+                        as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::Link => {
+                ControlWriteValue::Link(
+                    <ControlWrite as faust_ui::UIRange>::map(&ControlWrite::Link, value)
+                        as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::AdaptiveRelease => {
+                ControlWriteValue::AdaptiveRelease(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::AdaptiveRelease,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::Lookahead => {
+                ControlWriteValue::Lookahead(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::Lookahead,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
+            ControlWrite::OutputGain => {
+                ControlWriteValue::OutputGain(
+                    <ControlWrite as faust_ui::UIRange>::map(
+                        &ControlWrite::OutputGain,
+                        value,
+                    ) as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
         }
     }
 }
-impl faust_ui::UIRange for UIActive {
+impl faust_ui::UIRange for ControlWrite {
     fn init(&self) -> f32 {
         match self {
-            UIActive::Bypass => 0f32,
-            UIActive::FixedLatency => 0f32,
-            UIActive::InputGain => 0f32,
-            UIActive::Strength => 100f32,
-            UIActive::Thresh => -1f32,
-            UIActive::Attack => 9f32,
-            UIActive::AttackShape => 0f32,
-            UIActive::Release => 60f32,
-            UIActive::ReleaseShape => 0.5f32,
-            UIActive::ReleaseHold => 50f32,
-            UIActive::Knee => 1f32,
-            UIActive::Link => 0f32,
-            UIActive::AdaptiveRelease => 50f32,
-            UIActive::Lookahead => 100f32,
-            UIActive::OutputGain => 0f32,
+            ControlWrite::Bypass => 0f32,
+            ControlWrite::FixedLatency => 0f32,
+            ControlWrite::InputGain => 0f32,
+            ControlWrite::Strength => 100f32,
+            ControlWrite::Thresh => -1f32,
+            ControlWrite::Attack => 9f32,
+            ControlWrite::AttackShape => 0f32,
+            ControlWrite::Release => 60f32,
+            ControlWrite::ReleaseShape => 0.5f32,
+            ControlWrite::ReleaseHold => 50f32,
+            ControlWrite::Knee => 1f32,
+            ControlWrite::Link => 0f32,
+            ControlWrite::AdaptiveRelease => 50f32,
+            ControlWrite::Lookahead => 100f32,
+            ControlWrite::OutputGain => 0f32,
         }
     }
     fn min(&self) -> f32 {
         match self {
-            UIActive::Bypass => 0f32,
-            UIActive::FixedLatency => 0f32,
-            UIActive::InputGain => -24f32,
-            UIActive::Strength => 0f32,
-            UIActive::Thresh => -30f32,
-            UIActive::Attack => 0f32,
-            UIActive::AttackShape => 0f32,
-            UIActive::Release => 1f32,
-            UIActive::ReleaseShape => 0f32,
-            UIActive::ReleaseHold => 0.0104167f32,
-            UIActive::Knee => 0f32,
-            UIActive::Link => 0f32,
-            UIActive::AdaptiveRelease => 0f32,
-            UIActive::Lookahead => 0f32,
-            UIActive::OutputGain => -24f32,
+            ControlWrite::Bypass => 0f32,
+            ControlWrite::FixedLatency => 0f32,
+            ControlWrite::InputGain => -24f32,
+            ControlWrite::Strength => 0f32,
+            ControlWrite::Thresh => -30f32,
+            ControlWrite::Attack => 0f32,
+            ControlWrite::AttackShape => 0f32,
+            ControlWrite::Release => 1f32,
+            ControlWrite::ReleaseShape => 0f32,
+            ControlWrite::ReleaseHold => 0.0104167f32,
+            ControlWrite::Knee => 0f32,
+            ControlWrite::Link => 0f32,
+            ControlWrite::AdaptiveRelease => 0f32,
+            ControlWrite::Lookahead => 0f32,
+            ControlWrite::OutputGain => -24f32,
         }
     }
     fn max(&self) -> f32 {
         match self {
-            UIActive::Bypass => 1f32,
-            UIActive::FixedLatency => 1f32,
-            UIActive::InputGain => 24f32,
-            UIActive::Strength => 100f32,
-            UIActive::Thresh => 0f32,
-            UIActive::Attack => 50f32,
-            UIActive::AttackShape => 1f32,
-            UIActive::Release => 500f32,
-            UIActive::ReleaseShape => 1f32,
-            UIActive::ReleaseHold => 50f32,
-            UIActive::Knee => 30f32,
-            UIActive::Link => 100f32,
-            UIActive::AdaptiveRelease => 100f32,
-            UIActive::Lookahead => 100f32,
-            UIActive::OutputGain => 24f32,
+            ControlWrite::Bypass => 1f32,
+            ControlWrite::FixedLatency => 1f32,
+            ControlWrite::InputGain => 24f32,
+            ControlWrite::Strength => 100f32,
+            ControlWrite::Thresh => 0f32,
+            ControlWrite::Attack => 50f32,
+            ControlWrite::AttackShape => 1f32,
+            ControlWrite::Release => 500f32,
+            ControlWrite::ReleaseShape => 1f32,
+            ControlWrite::ReleaseHold => 50f32,
+            ControlWrite::Knee => 30f32,
+            ControlWrite::Link => 100f32,
+            ControlWrite::AdaptiveRelease => 100f32,
+            ControlWrite::Lookahead => 100f32,
+            ControlWrite::OutputGain => 24f32,
         }
     }
     fn step(&self) -> f32 {
         match self {
-            UIActive::Bypass => 1f32,
-            UIActive::FixedLatency => 1f32,
-            UIActive::InputGain => 0.1f32,
-            UIActive::Strength => 1f32,
-            UIActive::Thresh => 0.1f32,
-            UIActive::Attack => 0.1f32,
-            UIActive::AttackShape => 0.01f32,
-            UIActive::Release => 1f32,
-            UIActive::ReleaseShape => 0.01f32,
-            UIActive::ReleaseHold => 1f32,
-            UIActive::Knee => 0.1f32,
-            UIActive::Link => 1f32,
-            UIActive::AdaptiveRelease => 1f32,
-            UIActive::Lookahead => 1f32,
-            UIActive::OutputGain => 0.1f32,
+            ControlWrite::Bypass => 1f32,
+            ControlWrite::FixedLatency => 1f32,
+            ControlWrite::InputGain => 0.1f32,
+            ControlWrite::Strength => 1f32,
+            ControlWrite::Thresh => 0.1f32,
+            ControlWrite::Attack => 0.1f32,
+            ControlWrite::AttackShape => 0.01f32,
+            ControlWrite::Release => 1f32,
+            ControlWrite::ReleaseShape => 0.01f32,
+            ControlWrite::ReleaseHold => 1f32,
+            ControlWrite::Knee => 0.1f32,
+            ControlWrite::Link => 1f32,
+            ControlWrite::AdaptiveRelease => 1f32,
+            ControlWrite::Lookahead => 1f32,
+            ControlWrite::OutputGain => 0.1f32,
         }
     }
 }
-impl faust_ui::UIName for UIActive {
+impl faust_ui::UIName for ControlWrite {
     fn name(&self) -> &'static str {
         match self {
-            UIActive::Bypass => "Bypass",
-            UIActive::FixedLatency => "FixedLatency",
-            UIActive::InputGain => "InputGain",
-            UIActive::Strength => "Strength",
-            UIActive::Thresh => "Thresh",
-            UIActive::Attack => "Attack",
-            UIActive::AttackShape => "AttackShape",
-            UIActive::Release => "Release",
-            UIActive::ReleaseShape => "ReleaseShape",
-            UIActive::ReleaseHold => "ReleaseHold",
-            UIActive::Knee => "Knee",
-            UIActive::Link => "Link",
-            UIActive::AdaptiveRelease => "AdaptiveRelease",
-            UIActive::Lookahead => "Lookahead",
-            UIActive::OutputGain => "OutputGain",
+            ControlWrite::Bypass => "Bypass",
+            ControlWrite::FixedLatency => "FixedLatency",
+            ControlWrite::InputGain => "InputGain",
+            ControlWrite::Strength => "Strength",
+            ControlWrite::Thresh => "Thresh",
+            ControlWrite::Attack => "Attack",
+            ControlWrite::AttackShape => "AttackShape",
+            ControlWrite::Release => "Release",
+            ControlWrite::ReleaseShape => "ReleaseShape",
+            ControlWrite::ReleaseHold => "ReleaseHold",
+            ControlWrite::Knee => "Knee",
+            ControlWrite::Link => "Link",
+            ControlWrite::AdaptiveRelease => "AdaptiveRelease",
+            ControlWrite::Lookahead => "Lookahead",
+            ControlWrite::OutputGain => "OutputGain",
         }
     }
 }
-impl faust_ui::UIShapeTrait for UIActive {
+impl faust_ui::UIShapeTrait for ControlWrite {
     fn shape(&self) -> faust_ui::UIShape {
         match self {
-            UIActive::Bypass => faust_ui::UIShape::CheckBox,
-            UIActive::FixedLatency => faust_ui::UIShape::CheckBox,
-            UIActive::InputGain => faust_ui::UIShape::HSlider,
-            UIActive::Strength => faust_ui::UIShape::HSlider,
-            UIActive::Thresh => faust_ui::UIShape::HSlider,
-            UIActive::Attack => faust_ui::UIShape::HSlider,
-            UIActive::AttackShape => faust_ui::UIShape::HSlider,
-            UIActive::Release => faust_ui::UIShape::HSlider,
-            UIActive::ReleaseShape => faust_ui::UIShape::HSlider,
-            UIActive::ReleaseHold => faust_ui::UIShape::HSlider,
-            UIActive::Knee => faust_ui::UIShape::HSlider,
-            UIActive::Link => faust_ui::UIShape::HSlider,
-            UIActive::AdaptiveRelease => faust_ui::UIShape::HSlider,
-            UIActive::Lookahead => faust_ui::UIShape::HSlider,
-            UIActive::OutputGain => faust_ui::UIShape::HSlider,
+            ControlWrite::Bypass => faust_ui::UIShape::CheckBox,
+            ControlWrite::FixedLatency => faust_ui::UIShape::CheckBox,
+            ControlWrite::InputGain => faust_ui::UIShape::HSlider,
+            ControlWrite::Strength => faust_ui::UIShape::HSlider,
+            ControlWrite::Thresh => faust_ui::UIShape::HSlider,
+            ControlWrite::Attack => faust_ui::UIShape::HSlider,
+            ControlWrite::AttackShape => faust_ui::UIShape::HSlider,
+            ControlWrite::Release => faust_ui::UIShape::HSlider,
+            ControlWrite::ReleaseShape => faust_ui::UIShape::HSlider,
+            ControlWrite::ReleaseHold => faust_ui::UIShape::HSlider,
+            ControlWrite::Knee => faust_ui::UIShape::HSlider,
+            ControlWrite::Link => faust_ui::UIShape::HSlider,
+            ControlWrite::AdaptiveRelease => faust_ui::UIShape::HSlider,
+            ControlWrite::Lookahead => faust_ui::UIShape::HSlider,
+            ControlWrite::OutputGain => faust_ui::UIShape::HSlider,
         }
     }
 }
-impl faust_ui::UIVariantArrayIndex for UIActive {
+impl faust_ui::UIVariantArrayIndex for ControlWrite {
     fn as_index(&self) -> usize {
         match self {
             Self::Bypass => 0usize,
@@ -8084,8 +8204,8 @@ impl faust_ui::UIVariantArrayIndex for UIActive {
         }
     }
 }
-impl strum::VariantArray for UIActiveValue {
-    const VARIANTS: &'static [UIActiveValue] = &[
+impl strum::VariantArray for ControlWriteValue {
+    const VARIANTS: &'static [ControlWriteValue] = &[
         Self::Bypass(0.0),
         Self::FixedLatency(0.0),
         Self::InputGain(0.0),
@@ -8126,18 +8246,18 @@ impl strum::VariantArray for UIActiveValue {
         strum::FromRepr,
     )
 )]
-#[strum_discriminants(name(UIPassive))]
+#[strum_discriminants(name(ControlRead))]
 #[repr(usize)]
-pub enum UIPassiveValue {
+pub enum ControlReadValue {
     Latency(FaustFloat),
 }
-impl faust_traits::AssociatedFaustFloat for UIPassiveValue {
+impl faust_traits::AssociatedFaustFloat for ControlReadValue {
     type FF = FaustFloat;
 }
-impl faust_ui::DiscriminantOf for UIPassive {
-    type ValueEnum = UIPassiveValue;
+impl faust_ui::DiscriminantOf for ControlRead {
+    type ValueEnum = ControlReadValue;
 }
-impl faust_ui::UIGet for UIPassive {
+impl faust_ui::UIGet for ControlRead {
     type D = LambRs;
     fn get_value(
         &self,
@@ -8149,27 +8269,27 @@ impl faust_ui::UIGet for UIPassive {
     }
     fn get_enum(&self, dsp: &LambRs) -> <Self::D as faust_ui::UIEnumsDsp>::EP {
         match self {
-            Self::Latency => UIPassiveValue::Latency(dsp.fHbargraph0),
+            Self::Latency => ControlReadValue::Latency(dsp.fHbargraph0),
         }
     }
 }
-impl faust_ui::UISelfGet for UIPassiveValue {
+impl faust_ui::UISelfGet for ControlReadValue {
     type D = LambRs;
     fn get(&self) -> <Self::D as faust_traits::AssociatedFaustFloat>::FF {
         match self {
-            UIPassiveValue::Latency(value) => *value,
+            ControlReadValue::Latency(value) => *value,
         }
     }
 }
-impl faust_ui::UISelfSet for UIPassiveValue {
+impl faust_ui::UISelfSet for ControlReadValue {
     type D = LambRs;
     fn set(&self, dsp: &mut LambRs) {
         match self {
-            UIPassiveValue::Latency(value) => dsp.fHbargraph0 = *value,
+            ControlReadValue::Latency(value) => dsp.fHbargraph0 = *value,
         }
     }
 }
-impl faust_ui::UIToPassiveValue for UIPassive {
+impl faust_ui::UIToControlOutputValue for ControlRead {
     type D = LambRs;
     #[inline]
     fn value(
@@ -8177,11 +8297,21 @@ impl faust_ui::UIToPassiveValue for UIPassive {
         value: <Self::D as faust_traits::AssociatedFaustFloat>::FF,
     ) -> <Self::D as faust_ui::UIEnumsDsp>::EP {
         match self {
-            UIPassive::Latency => UIPassiveValue::Latency(value),
+            ControlRead::Latency => ControlReadValue::Latency(value),
+        }
+    }
+    fn mapped_value(&self, value: f32) -> <Self::D as faust_ui::UIEnumsDsp>::EP {
+        match self {
+            ControlRead::Latency => {
+                ControlReadValue::Latency(
+                    <ControlRead as faust_ui::UIRange>::map(&ControlRead::Latency, value)
+                        as <Self::D as faust_traits::AssociatedFaustFloat>::FF,
+                )
+            }
         }
     }
 }
-impl faust_ui::UIRange for UIPassive {
+impl faust_ui::UIRange for ControlRead {
     fn init(&self) -> f32 {
         match self {
             Self::Latency => 0f32,
@@ -8203,32 +8333,32 @@ impl faust_ui::UIRange for UIPassive {
         }
     }
 }
-impl faust_ui::UIName for UIPassive {
+impl faust_ui::UIName for ControlRead {
     fn name(&self) -> &'static str {
         match self {
-            UIPassive::Latency => "Latency",
+            ControlRead::Latency => "Latency",
         }
     }
 }
-impl faust_ui::UIShapeTrait for UIPassive {
+impl faust_ui::UIShapeTrait for ControlRead {
     fn shape(&self) -> faust_ui::UIShape {
         match self {
-            UIPassive::Latency => faust_ui::UIShape::HBarGraph,
+            ControlRead::Latency => faust_ui::UIShape::HBarGraph,
         }
     }
 }
-impl faust_ui::UIVariantArrayIndex for UIPassive {
+impl faust_ui::UIVariantArrayIndex for ControlRead {
     fn as_index(&self) -> usize {
         match self {
             Self::Latency => 0usize,
         }
     }
 }
-impl strum::VariantArray for UIPassiveValue {
-    const VARIANTS: &'static [UIPassiveValue] = &[Self::Latency(0.0)];
+impl strum::VariantArray for ControlReadValue {
+    const VARIANTS: &'static [ControlReadValue] = &[Self::Latency(0.0)];
 }
 impl faust_ui::TrySetDsp for LambRs {
-    type E = UIActiveValue;
+    type E = ControlWriteValue;
     fn try_set(&mut self, value: impl TryInto<Self::E>) -> bool {
         if let Ok(value) = value.try_into() {
             faust_ui::UISelfSet::set(&value, self);
@@ -8239,16 +8369,16 @@ impl faust_ui::TrySetDsp for LambRs {
     }
 }
 impl faust_ui::SetDsp for LambRs {
-    type E = UIActiveValue;
+    type E = ControlWriteValue;
     fn set(&mut self, value: &Self::E) {
         faust_ui::UISelfSet::set(value, self);
     }
 }
 impl faust_ui::UIEnumsDsp for LambRs {
-    type DA = UIActive;
-    type EA = UIActiveValue;
-    type DP = UIPassive;
-    type EP = UIPassiveValue;
+    type DA = ControlWrite;
+    type EA = ControlWriteValue;
+    type DP = ControlRead;
+    type EP = ControlReadValue;
     #[cfg(feature = "std")]
     type G = WidgetTree;
 }
@@ -8312,24 +8442,24 @@ impl faust_ui::UIGroups<LambRs> for WidgetTree {
         vec![
             faust_ui::GroupOrWidget::VGroup(faust_ui::Group { name : "lamb-rs", items :
             vec![faust_ui::GroupOrWidget::HGroup(faust_ui::Group { name : "0x00", items :
-            vec![faust_ui::GroupOrWidget::HActive(UIActive::Bypass),
-            faust_ui::GroupOrWidget::HActive(UIActive::FixedLatency)] }),
-            faust_ui::GroupOrWidget::HActive(UIActive::InputGain),
+            vec![faust_ui::GroupOrWidget::HActive(ControlWrite::Bypass),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::FixedLatency)] }),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::InputGain),
             faust_ui::GroupOrWidget::HGroup(faust_ui::Group { name : "0x00", items :
             vec![faust_ui::GroupOrWidget::VGroup(faust_ui::Group { name : "peak limiter",
-            items : vec![faust_ui::GroupOrWidget::HActive(UIActive::Strength),
-            faust_ui::GroupOrWidget::HActive(UIActive::Thresh),
-            faust_ui::GroupOrWidget::HActive(UIActive::Attack),
-            faust_ui::GroupOrWidget::HActive(UIActive::AttackShape),
-            faust_ui::GroupOrWidget::HActive(UIActive::Release),
-            faust_ui::GroupOrWidget::HActive(UIActive::ReleaseShape),
-            faust_ui::GroupOrWidget::HActive(UIActive::ReleaseHold),
-            faust_ui::GroupOrWidget::HActive(UIActive::Knee),
-            faust_ui::GroupOrWidget::HActive(UIActive::Link),
-            faust_ui::GroupOrWidget::HActive(UIActive::AdaptiveRelease),
-            faust_ui::GroupOrWidget::HActive(UIActive::Lookahead)] })] }),
-            faust_ui::GroupOrWidget::HActive(UIActive::OutputGain),
-            faust_ui::GroupOrWidget::HPassive(UIPassive::Latency)] })
+            items : vec![faust_ui::GroupOrWidget::HActive(ControlWrite::Strength),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::Thresh),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::Attack),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::AttackShape),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::Release),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::ReleaseShape),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::ReleaseHold),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::Knee),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::Link),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::AdaptiveRelease),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::Lookahead)] })] }),
+            faust_ui::GroupOrWidget::HActive(ControlWrite::OutputGain),
+            faust_ui::GroupOrWidget::HPassive(ControlRead::Latency)] })
         ]
     }
 }
