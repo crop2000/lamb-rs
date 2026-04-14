@@ -213,138 +213,138 @@ impl LambParams {
             latency_mode: EnumParam::new("latency_mode", LatencyMode::Fixed),
             input_gain: FloatParam::new(
                 "input_gain",
-                dsp_48k::ControlWrite::InputGain.init(),
+                dsp_48k::ControlInput::InputGain.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::InputGain.min(),
-                    max: dsp_48k::ControlWrite::InputGain.max(),
+                    min: dsp_48k::ControlInput::InputGain.min(),
+                    max: dsp_48k::ControlInput::InputGain.max(),
                 },
             )
             .with_unit(" dB")
-            .with_step_size(dsp_48k::ControlWrite::InputGain.step()),
+            .with_step_size(dsp_48k::ControlInput::InputGain.step()),
             strength: FloatParam::new(
                 "ratio",
-                dsp_48k::ControlWrite::Strength.init(),
+                dsp_48k::ControlInput::Strength.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::Strength.min(),
-                    max: dsp_48k::ControlWrite::Strength.max(),
+                    min: dsp_48k::ControlInput::Strength.min(),
+                    max: dsp_48k::ControlInput::Strength.max(),
                 },
             )
             .with_value_to_string(Arc::new(strength_to_ratio))
             .with_string_to_value(Arc::new(ratio_to_strength)),
             thresh: FloatParam::new(
                 "thresh",
-                dsp_48k::ControlWrite::Thresh.init(),
+                dsp_48k::ControlInput::Thresh.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::Thresh.min(),
-                    max: dsp_48k::ControlWrite::Thresh.max(),
+                    min: dsp_48k::ControlInput::Thresh.min(),
+                    max: dsp_48k::ControlInput::Thresh.max(),
                 },
             )
             .with_unit(" dB")
             .with_step_size(0.1),
             attack: FloatParam::new(
                 "attack",
-                dsp_48k::ControlWrite::Attack.init(),
+                dsp_48k::ControlInput::Attack.init(),
                 FloatRange::Skewed {
-                    min: dsp_48k::ControlWrite::Attack.min(),
-                    max: dsp_48k::ControlWrite::Attack.max(),
+                    min: dsp_48k::ControlInput::Attack.min(),
+                    max: dsp_48k::ControlInput::Attack.max(),
                     factor: FloatRange::skew_factor(-1.0),
                 },
             )
             .with_unit(" ms")
-            .with_step_size(dsp_48k::ControlWrite::Attack.step())
+            .with_step_size(dsp_48k::ControlInput::Attack.step())
             .non_automatable(),
             attack_shape: FloatParam::new(
                 "attack_shape",
-                dsp_48k::ControlWrite::AttackShape.init(),
+                dsp_48k::ControlInput::AttackShape.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::AttackShape.min(),
-                    max: dsp_48k::ControlWrite::AttackShape.max(),
+                    min: dsp_48k::ControlInput::AttackShape.min(),
+                    max: dsp_48k::ControlInput::AttackShape.max(),
                 },
             )
-            .with_step_size(dsp_48k::ControlWrite::AttackShape.step()),
+            .with_step_size(dsp_48k::ControlInput::AttackShape.step()),
             release: FloatParam::new(
                 "release",
-                dsp_48k::ControlWrite::Release.init(),
+                dsp_48k::ControlInput::Release.init(),
                 FloatRange::Skewed {
-                    min: dsp_48k::ControlWrite::Release.min(),
-                    max: dsp_48k::ControlWrite::Release.max(),
+                    min: dsp_48k::ControlInput::Release.min(),
+                    max: dsp_48k::ControlInput::Release.max(),
                     factor: FloatRange::skew_factor(-1.0),
                 },
             )
             .with_unit(" ms")
-            .with_step_size(dsp_48k::ControlWrite::Release.step()),
+            .with_step_size(dsp_48k::ControlInput::Release.step()),
             release_shape: FloatParam::new(
                 "release_shape",
-                dsp_48k::ControlWrite::ReleaseShape.init(),
+                dsp_48k::ControlInput::ReleaseShape.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::ReleaseShape.min(),
-                    max: dsp_48k::ControlWrite::ReleaseShape.max(),
+                    min: dsp_48k::ControlInput::ReleaseShape.min(),
+                    max: dsp_48k::ControlInput::ReleaseShape.max(),
                 },
             )
-            .with_step_size(dsp_48k::ControlWrite::ReleaseShape.step()),
+            .with_step_size(dsp_48k::ControlInput::ReleaseShape.step()),
             release_hold: FloatParam::new(
                 "release_hold",
-                dsp_48k::ControlWrite::ReleaseHold.init(),
+                dsp_48k::ControlInput::ReleaseHold.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::ReleaseHold.min(),
-                    max: dsp_48k::ControlWrite::ReleaseHold.max(),
+                    min: dsp_48k::ControlInput::ReleaseHold.min(),
+                    max: dsp_48k::ControlInput::ReleaseHold.max(),
                 },
             )
             .with_unit(" ms")
-            .with_step_size(dsp_48k::ControlWrite::ReleaseHold.step())
+            .with_step_size(dsp_48k::ControlInput::ReleaseHold.step())
             .non_automatable(),
             knee: FloatParam::new(
                 "knee",
-                dsp_48k::ControlWrite::Knee.init(),
+                dsp_48k::ControlInput::Knee.init(),
                 FloatRange::Skewed {
-                    min: dsp_48k::ControlWrite::Knee.min(),
-                    max: dsp_48k::ControlWrite::Knee.max(),
+                    min: dsp_48k::ControlInput::Knee.min(),
+                    max: dsp_48k::ControlInput::Knee.max(),
                     factor: FloatRange::skew_factor(-1.0),
                 },
             )
             .with_unit(" dB")
-            .with_step_size(dsp_48k::ControlWrite::Knee.step()),
+            .with_step_size(dsp_48k::ControlInput::Knee.step()),
             link: FloatParam::new(
                 "link",
-                dsp_48k::ControlWrite::Link.init(),
+                dsp_48k::ControlInput::Link.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::Link.min(),
-                    max: dsp_48k::ControlWrite::Link.max(),
+                    min: dsp_48k::ControlInput::Link.min(),
+                    max: dsp_48k::ControlInput::Link.max(),
                 },
             )
             .with_unit(" %")
-            .with_step_size(dsp_48k::ControlWrite::Link.step()),
+            .with_step_size(dsp_48k::ControlInput::Link.step()),
             adaptive_release: FloatParam::new(
                 "adaptive_release",
-                dsp_48k::ControlWrite::AdaptiveRelease.init(),
+                dsp_48k::ControlInput::AdaptiveRelease.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::AdaptiveRelease.min(),
-                    max: dsp_48k::ControlWrite::AdaptiveRelease.max(),
+                    min: dsp_48k::ControlInput::AdaptiveRelease.min(),
+                    max: dsp_48k::ControlInput::AdaptiveRelease.max(),
                 },
             )
             .with_unit(" %")
-            .with_step_size(dsp_48k::ControlWrite::AdaptiveRelease.step()),
+            .with_step_size(dsp_48k::ControlInput::AdaptiveRelease.step()),
             lookahead: FloatParam::new(
                 "lookahead",
-                dsp_48k::ControlWrite::Lookahead.init(),
+                dsp_48k::ControlInput::Lookahead.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::Lookahead.min(),
-                    max: dsp_48k::ControlWrite::Lookahead.max(),
+                    min: dsp_48k::ControlInput::Lookahead.min(),
+                    max: dsp_48k::ControlInput::Lookahead.max(),
                 },
             )
             .with_unit(" %")
-            .with_step_size(dsp_48k::ControlWrite::Lookahead.step())
+            .with_step_size(dsp_48k::ControlInput::Lookahead.step())
             .non_automatable(),
             output_gain: FloatParam::new(
                 "output_gain",
-                dsp_48k::ControlWrite::OutputGain.init(),
+                dsp_48k::ControlInput::OutputGain.init(),
                 FloatRange::Linear {
-                    min: dsp_48k::ControlWrite::OutputGain.min(),
-                    max: dsp_48k::ControlWrite::OutputGain.max(),
+                    min: dsp_48k::ControlInput::OutputGain.min(),
+                    max: dsp_48k::ControlInput::OutputGain.max(),
                 },
             )
             .with_unit(" dB")
-            .with_step_size(dsp_48k::ControlWrite::OutputGain.step()),
+            .with_step_size(dsp_48k::ControlInput::OutputGain.step()),
             zoom_mode: EnumParam::new("zoom_mode", ZoomMode::Relative)
                 .hide()
                 .hide_in_generic_ui(),

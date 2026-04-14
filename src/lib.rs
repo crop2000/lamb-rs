@@ -18,7 +18,7 @@ mod dsp_192k;
 mod dsp_48k;
 mod dsp_96k;
 use crate::{
-    dsp_48k::{ControlWrite, ControlRead},
+    dsp_48k::{ControlInput, ControlOutput},
     params::{LambParams, LatencyMode},
 };
 use cyma::prelude::*;
@@ -32,26 +32,26 @@ mod editor;
 mod params;
 
 //provide into for different parameters
-impl From<ControlWrite> for dsp_96k::ControlWrite {
-    fn from(value: ControlWrite) -> Self {
+impl From<ControlInput> for dsp_96k::ControlInput {
+    fn from(value: ControlInput) -> Self {
         Self::from_repr(value as usize).expect("infallible")
     }
 }
 
-impl From<ControlWrite> for dsp_192k::ControlWrite {
-    fn from(value: ControlWrite) -> Self {
+impl From<ControlInput> for dsp_192k::ControlInput {
+    fn from(value: ControlInput) -> Self {
         Self::from_repr(value as usize).expect("infallible")
     }
 }
 
-impl From<dsp_48k::ControlRead> for dsp_96k::ControlRead {
-    fn from(value: dsp_48k::ControlRead) -> Self {
+impl From<dsp_48k::ControlOutput> for dsp_96k::ControlOutput {
+    fn from(value: dsp_48k::ControlOutput) -> Self {
         Self::from_repr(value as usize).expect("infallible")
     }
 }
 
-impl From<dsp_48k::ControlRead> for dsp_192k::ControlRead {
-    fn from(value: dsp_48k::ControlRead) -> Self {
+impl From<dsp_48k::ControlOutput> for dsp_192k::ControlOutput {
+    fn from(value: dsp_48k::ControlOutput) -> Self {
         Self::from_repr(value as usize).expect("infallible")
     }
 }
@@ -82,26 +82,26 @@ impl DspVariant {
         }
     }
 
-    fn get_param(&mut self, param: dsp_48k::ControlRead) -> f64 {
+    fn get_param(&mut self, param: dsp_48k::ControlOutput) -> f64 {
         match self {
             Self::Dsp48k(dsp) => param.get_value(dsp),
             Self::Dsp96k(dsp) => {
-                std::convert::Into::<dsp_96k::ControlRead>::into(param).get_value(dsp)
+                std::convert::Into::<dsp_96k::ControlOutput>::into(param).get_value(dsp)
             }
             Self::Dsp192k(dsp) => {
-                std::convert::Into::<dsp_192k::ControlRead>::into(param).get_value(dsp)
+                std::convert::Into::<dsp_192k::ControlOutput>::into(param).get_value(dsp)
             }
         }
     }
 
-    fn set_param(&mut self, param: ControlWrite, value: f64) {
+    fn set_param(&mut self, param: ControlInput, value: f64) {
         match self {
             Self::Dsp48k(dsp) => param.set(dsp, value),
             Self::Dsp96k(dsp) => {
-                std::convert::Into::<dsp_96k::ControlWrite>::into(param).set(dsp, value);
+                std::convert::Into::<dsp_96k::ControlInput>::into(param).set(dsp, value);
             }
             Self::Dsp192k(dsp) => {
-                std::convert::Into::<dsp_192k::ControlWrite>::into(param).set(dsp, value);
+                std::convert::Into::<dsp_192k::ControlInput>::into(param).set(dsp, value);
             }
         }
     }
@@ -255,48 +255,48 @@ impl Plugin for Lamb {
         }
 
         let bypass: f64 = if self.params.bypass.value() { 1.0 } else { 0.0 };
-        self.dsp_variant.set_param(ControlWrite::Bypass, bypass);
+        self.dsp_variant.set_param(ControlInput::Bypass, bypass);
 
         let latency_mode: f64 = match self.params.latency_mode.value() {
             LatencyMode::Minimal => 0.0,
             LatencyMode::Fixed => 1.0,
         };
         self.dsp_variant
-            .set_param(ControlWrite::FixedLatency, latency_mode);
+            .set_param(ControlInput::FixedLatency, latency_mode);
         self.dsp_variant
-            .set_param(ControlWrite::InputGain, self.params.input_gain.value().into());
+            .set_param(ControlInput::InputGain, self.params.input_gain.value().into());
         self.dsp_variant
-            .set_param(ControlWrite::Strength, self.params.strength.value().into());
+            .set_param(ControlInput::Strength, self.params.strength.value().into());
         self.dsp_variant
-            .set_param(ControlWrite::Thresh, self.params.thresh.value().into());
+            .set_param(ControlInput::Thresh, self.params.thresh.value().into());
         self.dsp_variant
-            .set_param(ControlWrite::Attack, self.params.attack.value().into());
+            .set_param(ControlInput::Attack, self.params.attack.value().into());
         self.dsp_variant.set_param(
-            ControlWrite::AttackShape,
+            ControlInput::AttackShape,
             self.params.attack_shape.value().into(),
         );
         self.dsp_variant
-            .set_param(ControlWrite::Release, self.params.release.value().into());
+            .set_param(ControlInput::Release, self.params.release.value().into());
         self.dsp_variant.set_param(
-            ControlWrite::ReleaseShape,
+            ControlInput::ReleaseShape,
             self.params.release_shape.value().into(),
         );
         self.dsp_variant.set_param(
-            ControlWrite::ReleaseHold,
+            ControlInput::ReleaseHold,
             self.params.release_hold.value().into(),
         );
         self.dsp_variant
-            .set_param(ControlWrite::Knee, self.params.knee.value().into());
+            .set_param(ControlInput::Knee, self.params.knee.value().into());
         self.dsp_variant
-            .set_param(ControlWrite::Link, self.params.link.value().into());
+            .set_param(ControlInput::Link, self.params.link.value().into());
         self.dsp_variant.set_param(
-            ControlWrite::AdaptiveRelease,
+            ControlInput::AdaptiveRelease,
             self.params.adaptive_release.value().into(),
         );
         self.dsp_variant
-            .set_param(ControlWrite::Lookahead, self.params.lookahead.value().into());
+            .set_param(ControlInput::Lookahead, self.params.lookahead.value().into());
         self.dsp_variant
-            .set_param(ControlWrite::OutputGain, self.params.output_gain.value().into());
+            .set_param(ControlInput::OutputGain, self.params.output_gain.value().into());
 
         let [io_buffer_l, io_buffer_r] = &mut self.accum_buffer;
         let buffers = &mut [
@@ -307,7 +307,7 @@ impl Plugin for Lamb {
         ];
 
         self.dsp_variant.compute(count, buffers);
-        let latency_samples = self.dsp_variant.get_param(ControlRead::Latency) as u32;
+        let latency_samples = self.dsp_variant.get_param(ControlOutput::Latency) as u32;
         context.set_latency_samples(latency_samples);
 
         if self.params.editor_state.is_open() {
