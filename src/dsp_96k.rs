@@ -1,4 +1,5 @@
 // @generated
+#![allow(unsafe_code)]
 #![allow(unused_parens)]
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
@@ -7759,10 +7760,15 @@ fn rint(val: f64) -> f64 {
     #[cfg(not(target_arch = "wasm32"))] unsafe { ffi::rint(val) }
     #[cfg(target_arch = "wasm32")] libm::rint(val)
 }
-pub const IOS: usize = [
-    FAUST_INPUTS,
-    FAUST_OUTPUTS,
-][(FAUST_INPUTS < FAUST_OUTPUTS) as usize];
+impl faust_traits::InPlaceVecDsp for LambRs
+where
+    Self: faust_traits::AssociatedFaustFloat<FF = FaustFloat>,
+{
+    fn compute_vec(&mut self, count: usize, ios: &mut [Vec<Self::FF>]) {
+        self.compute(count, ios)
+    }
+}
+pub type FaustFloat = F64;
 impl faust_traits::InitDsp for LambRs {
     fn instance_init(&mut self, sample_rate: u32) {
         self.instance_init(sample_rate as i32)
@@ -7779,6 +7785,13 @@ impl faust_traits::IOSizeDsp for LambRs {
         FAUST_OUTPUTS
     }
 }
+impl faust_traits::AssociatedFaustFloat for LambRs {
+    type FF = FaustFloat;
+}
+pub const IOS: usize = [
+    FAUST_INPUTS,
+    FAUST_OUTPUTS,
+][(FAUST_INPUTS < FAUST_OUTPUTS) as usize];
 impl faust_traits::InPlaceDsp for LambRs
 where
     Self: faust_traits::AssociatedFaustFloat<FF = FaustFloat>,
@@ -7786,18 +7799,6 @@ where
     fn compute(&mut self, count: usize, ios: &mut [&mut [Self::FF]]) {
         self.compute(count, ios)
     }
-}
-impl faust_traits::InPlaceVecDsp for LambRs
-where
-    Self: faust_traits::AssociatedFaustFloat<FF = FaustFloat>,
-{
-    fn compute_vec(&mut self, count: usize, ios: &mut [Vec<Self::FF>]) {
-        self.compute(count, ios)
-    }
-}
-pub type FaustFloat = F64;
-impl faust_traits::AssociatedFaustFloat for LambRs {
-    type FF = FaustFloat;
 }
 #[derive(
     Debug,

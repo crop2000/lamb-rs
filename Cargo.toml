@@ -26,8 +26,12 @@ crate-type = ["cdylib", "lib"]
 [dependencies]
 # Uncomment the below line to disable the on-by-default VST3 feature to remove
 # the GPL compatibility requirement
-cyma           = { git = "https://github.com/exa04/cyma.git" }
+cyma = { git = "https://github.com/exa04/cyma.git" }
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", features = [
+  "standalone",
+] }
 nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+
 # libm           = "0.2.16"
 
 
@@ -35,8 +39,8 @@ faust-traits = { path = "../../../faust-traits" }
 faust-ui     = { path = "../../../faust-ui" }
 
 default-boxed.workspace = true
-nih_plug.workspace      = true
-strum.workspace         = true
+# nih_plug.workspace      = true
+strum.workspace = true
 
 # [profile.release]
 # lto   = "thin"
